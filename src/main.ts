@@ -1,7 +1,6 @@
 import App from "./App.vue"
 import router from "./router"
 import { setupStore } from "@/store"
-import ElementPlus from "element-plus"
 import { useI18n } from "@/plugins/i18n"
 import { getServerConfig } from "./config"
 import { createApp, Directive } from "vue"
@@ -43,14 +42,16 @@ app.component("FontIcon", FontIcon)
 
 // 全局注册按钮级别权限组件
 import { Auth } from "@/components/ReAuth"
+import { loadPlugins } from "@/plugins"
 app.component("Auth", Auth)
 
 getServerConfig(app).then(async (config) => {
   app.use(router)
   await router.isReady()
+  loadPlugins(app)
   injectResponsiveStorage(app, config)
   setupStore(app)
-  app.use(MotionPlugin).use(useI18n).use(ElementPlus)
+  app.use(MotionPlugin).use(useI18n)
   // .use(useEcharts);
   // .use(Table);
   // .use(PureDescriptions);

@@ -22,6 +22,7 @@ import globalization from "@/assets/svg/globalization.svg?component"
 import Lock from "@iconify-icons/ri/lock-fill"
 import Check from "@iconify-icons/ep/check"
 import User from "@iconify-icons/ri/user-3-fill"
+import { loginApi } from "@/api/auth"
 
 defineOptions({
   name: "Login",
@@ -40,30 +41,28 @@ const { title, getDropdownItemStyle, getDropdownItemClass } = useNav()
 const { locale, translationCh, translationEn } = useTranslationLang()
 
 const ruleForm = reactive({
-  username: "admin",
-  password: "admin123",
+  username: "admin@qq.com",
+  password: "1234567",
 })
 
 const onLogin = async(formEl: FormInstance | undefined) => {
   loading.value = true
   if (!formEl) return
   await formEl.validate((valid, fields) => {
-    if (valid) {
-      useUserStoreHook()
-        .loginByUsername({ username: ruleForm.username, password: "admin123" })
-        .then((res) => {
-          if (res.success) {
-            // 获取后端路由
-            initRouter().then(() => {
-              router.push(getTopMenu(true).path)
-              message("登录成功", { type: "success" })
-            })
-          }
-        })
-    } else {
-      loading.value = false
-      return fields
-    }
+    // if (!valid) {
+    loginApi(ruleForm).then((res) => {
+      useUserStoreHook().loginByUser(res.data)
+      // 获取后端路由
+      // initRouter().then(() => {
+      //   router.push(getTopMenu(true).path)
+      //   message("登录成功", { type: "success" })
+      // })
+    })
+
+    // } else {
+    //   loading.value = false
+    //   return fields
+    // }
   })
 }
 

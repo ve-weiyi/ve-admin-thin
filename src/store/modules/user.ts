@@ -4,10 +4,10 @@ import { userType } from "./types"
 import { routerArrays } from "@/layout/types"
 import { router, resetRouter } from "@/router"
 import { storageSession } from "@pureadmin/utils"
-import { getLogin, refreshTokenApi } from "@/api/user"
-import { UserResult, RefreshTokenResult } from "@/api/user"
 import { useMultiTagsStoreHook } from "@/store/modules/multiTags"
 import { type DataInfo, setToken, removeToken, sessionKey } from "@/utils/auth"
+import { getUserInfoApi } from "@/api/user"
+import { Login, User, UserDetail } from "@/api/types"
 
 export const useUserStore = defineStore({
   id: "pure-user",
@@ -28,18 +28,13 @@ export const useUserStore = defineStore({
       this.roles = roles
     },
     /** 登入 */
-    async loginByUsername(data) {
-      return new Promise<UserResult>((resolve, reject) => {
-        getLogin(data)
-          .then((data) => {
-            if (data) {
-              setToken(data.data)
-              resolve(data)
-            }
-          })
-          .catch((error) => {
-            reject(error)
-          })
+    loginByUser(data: Login) {
+      setToken({
+        expires: undefined,
+        refreshToken: "",
+        roles: undefined,
+        username: "",
+        accessToken: data.token,
       })
     },
     /** 前端登出（不调用接口） */
@@ -53,18 +48,7 @@ export const useUserStore = defineStore({
     },
     /** 刷新`token` */
     async handRefreshToken(data) {
-      return new Promise<RefreshTokenResult>((resolve, reject) => {
-        refreshTokenApi(data)
-          .then((data) => {
-            if (data) {
-              setToken(data.data)
-              resolve(data)
-            }
-          })
-          .catch((error) => {
-            reject(error)
-          })
-      })
+      return getUserInfoApi()
     },
   },
 })

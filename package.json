@@ -39,7 +39,9 @@
     "dayjs": "^1.11.8",
     "echarts": "^5.4.2",
     "element-plus": "2.3.6",
+    "image-conversion": "^2.1.1",
     "js-cookie": "^3.0.5",
+    "md-editor-v3": "^4.4.0",
     "mitt": "^3.0.0",
     "mockjs": "^1.1.0",
     "nprogress": "^0.2.0",
@@ -52,7 +54,8 @@
     "vue": "^3.3.4",
     "vue-i18n": "^9.2.2",
     "vue-router": "^4.2.2",
-    "vue-types": "^5.1.0"
+    "vue-types": "^5.1.0",
+    "vuedraggable": "^4.1.0"
   },
   "devDependencies": {
     "@commitlint/cli": "^17.6.6",

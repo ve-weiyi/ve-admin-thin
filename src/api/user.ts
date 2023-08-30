@@ -1,39 +1,89 @@
-import { http } from "@/utils/http"
+import http from "@/utils/request"
+import { UserInformation, Upload, UserAccount, UpdateUserRoles, Role } from './types'
 
-export type UserResult = {
-  success: boolean
-  data: {
-    /** 用户名 */
-    username: string
-    /** 当前登陆用户的角色 */
-    roles: Array<string>
-    /** `token` */
-    accessToken: string
-    /** 用于调用刷新`accessToken`的接口时所需的`token` */
-    refreshToken: string
-    /** `accessToken`的过期时间（格式'xxxx/xx/xx xx:xx:xx'） */
-    expires: Date
-  }
+/** 获取用户列表 */
+export function findUserListApi(page: PageQuery): Promise<IApiResponseData<any>> {
+  return http.request<IApiResponseData<any>>({
+    url: `/api/v1/user/list`,
+    method: "post",
+    data: page,
+  })
 }
 
-export type RefreshTokenResult = {
-  success: boolean
-  data: {
-    /** `token` */
-    accessToken: string
-    /** 用于调用刷新`accessToken`的接口时所需的`token` */
-    refreshToken: string
-    /** `accessToken`的过期时间（格式'xxxx/xx/xx xx:xx:xx'） */
-    expires: Date
-  }
+/** 获取用户地区 */
+export function findUserListAreasApi(page: PageQuery): Promise<IApiResponseData<any>> {
+  return http.request<IApiResponseData<any>>({
+    url: `/api/v1/user/list/areas`,
+    method: "post",
+    data: page,
+  })
 }
 
-/** 登录 */
-export const getLogin = (data?: object) => {
-  return http.request<UserResult>("post", "/login", { data })
+/** 获取用户登录历史 */
+export function findUserLoginHistoryApi(page: PageQuery): Promise<IApiResponseData<any>> {
+  return http.request<IApiResponseData<any>>({
+    url: `/api/v1/user/login_history`,
+    method: "post",
+    data: page,
+  })
 }
 
-/** 刷新token */
-export const refreshTokenApi = (data?: object) => {
-  return http.request<RefreshTokenResult>("post", "/refreshToken", { data })
+/** 获取用户菜单权限 */
+export function getUserMenusApi(): Promise<IApiResponseData<any>> {
+  return http.request<IApiResponseData<any>>({
+    url: `/api/v1/user/menus`,
+    method: "get",
+  })
+}
+
+/** 获取用户接口权限 */
+export function getUserApisApi(): Promise<IApiResponseData<any>> {
+  return http.request<IApiResponseData<any>>({
+    url: `/api/v1/user/apis`,
+    method: "get",
+  })
+}
+
+/** 获取用户信息 */
+export function getUserInfoApi(): Promise<IApiResponseData<any>> {
+  return http.request<IApiResponseData<any>>({
+    url: `/api/v1/user/info`,
+    method: "get",
+  })
+}
+
+/** 修改用户信息 */
+export function updateUserInfoApi(data: UserInformation): Promise<IApiResponseData<Upload>> {
+  return http.request<IApiResponseData<Upload>>({
+    url: `/api/v1/user/info`,
+    method: "post",
+    data: data,
+  })
+}
+
+/** 更换用户头像 */
+export function updateUserAvatarApi(data: Upload): Promise<IApiResponseData<Upload>> {
+  return http.request<IApiResponseData<Upload>>({
+    url: `/api/v1/user/avatar`,
+    method: "post",
+    data: data,
+  })
+}
+
+/** 修改用户状态 */
+export function updateUserStatusApi(data: UserAccount): Promise<IApiResponseData<any>> {
+  return http.request<IApiResponseData<any>>({
+    url: `/api/v1/user/update_status`,
+    method: "post",
+    data: data,
+  })
+}
+
+/** 修改用户角色 */
+export function updateUserRolesApi(data: UpdateUserRoles): Promise<IApiResponseData<Role>> {
+  return http.request<IApiResponseData<Role>>({
+    url: `/api/v1/user/update_roles`,
+    method: "post",
+    data: data,
+  })
 }
