@@ -5,13 +5,13 @@ export default {
   name: "log", // router.push
   component: Layout,
   redirect: "/log/operation",
-  meta: { title: "日志管理", alwaysShow: true, icon: "document" },
+  meta: { title: "日志管理", icon: "document" },
   children: [
     {
       path: "/operation",
       component: () => import("@/views/blog/log/Operation.vue"),
       name: "operation",
-      meta: { title: "操作日志", keepAlive: true },
+      meta: { title: "操作日志", showParent: true, keepAlive: true },
     },
   ],
 }

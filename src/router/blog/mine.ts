@@ -5,7 +5,7 @@ export default {
   name: "mine",
   component: Layout,
   redirect: "/mine/userinfo",
-  meta: { title: "个人中心", alwaysShow: true, icon: "user" },
+  meta: { title: "个人中心", icon: "user" },
   children: [
     {
       path: "/userinfo",

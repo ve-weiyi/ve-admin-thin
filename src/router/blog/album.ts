@@ -11,19 +11,19 @@ export default {
       path: "/list",
       name: "Albums",
       component: () => import("@/views/blog/album/Album.vue"),
-      meta: { title: "相册列表", noCache: true },
+      meta: { title: "相册列表" },
     },
     {
       path: "/:id",
       name: "Photo",
       component: () => import("@/views/blog/album/Photo.vue"),
-      meta: { title: "照片管理", hidden: true, noCache: true },
+      meta: { title: "照片管理", hidden: true },
     },
     {
       path: "/photo/delete",
       name: "Delete",
       component: () => import("@/views/blog/album/Delete.vue"),
-      meta: { title: "照片回收站", noCache: true },
+      meta: { title: "照片回收站" },
     },
   ],
 }

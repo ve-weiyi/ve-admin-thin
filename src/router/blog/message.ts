@@ -5,7 +5,7 @@ export default {
   name: "message",
   component: Layout,
   redirect: "/message/comment",
-  meta: { title: "消息管理", alwaysShow: true, icon: "message" },
+  meta: { title: "消息管理", icon: "message" },
   children: [
     {
       path: "/comment",

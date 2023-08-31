@@ -1,52 +1,28 @@
 import { defineStore } from "pinia"
-import cookies from "@/utils/cookies"
+import { getToken, setToken, removeToken, Token } from "@/utils/token"
+import { store } from "@/store"
+import { Login } from "@/api/types"
 
 export const useAdminStore = defineStore({
   id: "admin",
   state: () => ({
     collapse: false,
     tabList: [{ name: "首页", path: "/" }],
-    userId: null,
-    roleList: null,
-    avatar: null,
-    nickname: null,
-    intro: null,
-    webSite: null,
-    userMenuList: [],
-    name: null,
-    phone: null,
-    email: null,
-    identity: null,
+    userInfo: getToken()?.user_info,
   }),
   actions: {
-    setLoginUser(user) {
-      // console.log("user", user)
-      this.userId = user.id
-      this.roleList = user.roleList
-      this.avatar = user.avatar
-      this.nickname = user.nickname
-      this.intro = user.intro
-      this.webSite = user.webSite
-      cookies.set("uid", user.id)
-    },
+    login(data: Login) {},
     logout() {
-      this.userId = null
-      this.roleList = null
-      this.avatar = null
-      this.nickname = null
-      this.intro = null
-      this.webSite = null
-      this.userMenuList = []
-      cookies.clearAll()
+      removeToken()
     },
     getToken() {
-      return cookies.get("token")
+      return getToken()
     },
     setToken(token) {
-      cookies.set("token", token)
+      setToken(token)
     },
     removeToken() {
-      cookies.remove("token")
+      removeToken()
     },
 
     saveTab(tab) {
@@ -77,3 +53,7 @@ export const useAdminStore = defineStore({
     },
   },
 })
+
+export function useAdminStoreHook() {
+  return useAdminStore(store)
+}

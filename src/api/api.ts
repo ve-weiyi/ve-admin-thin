@@ -1,5 +1,5 @@
 import http from "@/utils/request"
-import { Api } from './types'
+import { Api, ApiDetails } from "./types"
 
 /** 创建接口 */
 export function createApiApi(data: Api): Promise<IApiResponseData<Api>> {
@@ -36,7 +36,9 @@ export function findApiApi(id: number): Promise<IApiResponseData<Api>> {
 }
 
 /** 批量删除接口 */
-export function deleteApiByIdsApi(data: number[]): Promise<IApiResponseData<any>> {
+export function deleteApiByIdsApi(
+  data: number[]
+): Promise<IApiResponseData<any>> {
   return http.request<IApiResponseData<any>>({
     url: `/api/v1/api/batch_delete`,
     method: "delete",
@@ -45,7 +47,9 @@ export function deleteApiByIdsApi(data: number[]): Promise<IApiResponseData<any>
 }
 
 /** 分页获取接口列表 */
-export function findApiListApi(page: PageQuery): Promise<IApiResponseData<PageResult<Api>>> {
+export function findApiListApi(
+  page: PageQuery
+): Promise<IApiResponseData<PageResult<Api>>> {
   return http.request<IApiResponseData<PageResult<Api>>>({
     url: `/api/v1/api/list`,
     method: "post",
@@ -54,7 +58,9 @@ export function findApiListApi(page: PageQuery): Promise<IApiResponseData<PageRe
 }
 
 /** 获取api列表 */
-export function findApiListDetailsApi(page: PageQuery): Promise<IApiResponseData<PageResult<ApiDetails>>> {
+export function findApiListDetailsApi(
+  page: PageQuery
+): Promise<IApiResponseData<PageResult<ApiDetails>>> {
   return http.request<IApiResponseData<PageResult<ApiDetails>>>({
     url: `/api/v1/api/list/details`,
     method: "post",

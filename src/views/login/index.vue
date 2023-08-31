@@ -22,7 +22,6 @@ import type { FormInstance } from "element-plus"
 import { $t, transformI18n } from "@/plugins/i18n"
 import { operates, thirdParty } from "./utils/enums"
 import { useLayout } from "@/layout/hooks/useLayout"
-import { useUserStoreHook } from "@/store/modules/user"
 import { initRouter, getTopMenu } from "@/router/utils"
 import { bg, avatar, illustration } from "./utils/static"
 import TypeIt from "@/components/ReTypeit"
@@ -38,6 +37,8 @@ import Lock from "@iconify-icons/ri/lock-fill"
 import Check from "@iconify-icons/ep/check"
 import User from "@iconify-icons/ri/user-3-fill"
 import { loginApi } from "@/api/auth"
+import { useAdminStore, useAdminStoreHook } from "@/store/modules/admin"
+import { usePermissionStoreHook } from "@/store/modules/permission"
 
 defineOptions({
   name: "Login",
@@ -69,14 +70,29 @@ const onLogin = async(formEl: FormInstance | undefined) => {
   if (!formEl) return
   await formEl.validate((valid, fields) => {
     // if (!valid) {
-    loginApi(ruleForm).then((res) => {
-      useUserStoreHook().loginByUser(res.data)
-      // 获取后端路由
-      // initRouter().then(() => {
-      //   router.push(getTopMenu(true).path)
-      //   message("登录成功", { type: "success" })
-      // })
-    })
+    loginApi(ruleForm)
+      .then((res) => {
+        loading.value = false
+        console.log("res", res)
+        console.log("router", router.getRoutes())
+        message("登录成功", { type: "success" })
+        // 保存token
+        useAdminStoreHook().setToken(res.data)
+        // 拉取用户菜单
+        usePermissionStoreHook().handleWholeMenus([])
+        // 跳转到首页
+        router.push({ path: "/welcome" })
+        // useUserStoreHook().loginByUser(res.data)
+        // 获取后端路由
+        // initRouter().then(() => {
+        //   router.push(getTopMenu(true).path)
+        //   message("登录成功", { type: "success" })
+        // })
+      })
+      .catch((err) => {
+        loading.value = false
+        console.log(err)
+      })
 
     // } else {
     //   loading.value = false
@@ -273,11 +289,11 @@ onBeforeUnmount(() => {
             </el-form-item>
           </Motion>
           <!-- 手机号登录 -->
-          <phone v-if="currentPage === 1" @onBack="() => (currentPage = 0)"/>
+          <phone v-if="currentPage === 1" @onBack="() => (currentPage = 0)" />
           <!-- 二维码登录 -->
-          <qrCode v-if="currentPage === 2" @onBack="() => (currentPage = 0)"/>
+          <qrCode v-if="currentPage === 2" @onBack="() => (currentPage = 0)" />
           <!-- 注册 -->
-          <regist v-if="currentPage === 3" @onBack="() => (currentPage = 0)"/>
+          <regist v-if="currentPage === 3" @onBack="() => (currentPage = 0)" />
           <!-- 忘记密码 -->
           <update v-if="currentPage === 4" @onBack="() => (currentPage = 0)" />
         </div>

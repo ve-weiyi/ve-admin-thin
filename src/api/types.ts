@@ -1,4 +1,3 @@
-
 export interface Api {
   id?: number // 主键id
   name?: string // api名称
@@ -426,11 +425,9 @@ export interface BlogHomeInfoDTO {
   page_list?: PageVO[] // 页面列表
 }
 
-export interface WebsiteConfigVO {
-}
+export interface WebsiteConfigVO {}
 
-export interface PageVO {
-}
+export interface PageVO {}
 
 export interface BlogBackInfoDTO {
   views_count?: number // 访问量
@@ -514,18 +511,21 @@ export interface CommentBackDTO {
   created_at?: string
 }
 
-export interface Login {
-  token?: string
-  userinfo?: UserDetail
-  last_login_history?: LoginHistory
+export interface Login extends Token {
+  user_info?: UserInfo
+  login_info?: LoginInfo
 }
 
-export interface OauthLoginUrl {
-  url?: string // 授权地址
+export interface Token {
+  token_type?: string // token类型,Bearer
+  access_token?: string // 访问token,过期时间较短。2h
+  expires_in?: number // 访问token过期时间
+  refresh_token?: string // 刷新token,过期时间较长。30d
+  refresh_expires_in?: number // 刷新token过期时间
 }
 
-export interface UserDetail {
-  id?: number
+export interface UserInfo {
+  uid?: number
   username?: string
   nickname?: string
   avatar?: string
@@ -534,11 +534,15 @@ export interface UserDetail {
   roles?: Role[]
 }
 
-export interface LoginHistory {
+export interface LoginInfo {
   login_type?: string // 登录类型
   ip_address?: string // ip host
   ip_source?: string // ip 源
   login_time?: string // 创建时间
+}
+
+export interface OauthLoginUrl {
+  url?: string // 授权地址
 }
 
 export interface UserMenu {
@@ -582,4 +586,40 @@ export interface TalkDetails {
 export interface UserArea {
   name?: string
   value?: number
+}
+
+export interface ChatRequest {
+  model?: string // 模型名称
+  messages?: ChatMessage[] // 对话消息列表
+}
+
+export interface ChatMessage {
+  role?: string // 角色：system 或 user ，assistant ChatGPT 生成的响应
+  content?: string // 消息内容
+}
+
+export interface ChatResponse {
+  id?: string // 对话 ID
+  object?: string // 对象类型
+  created?: number // 创建时间戳
+  model?: string // 模型名称
+  choices?: ChatChoice[] // 生成的回复列表
+  usage?: Usage // API 调用的使用情况
+}
+
+export interface ChatChoice {
+  index?: number // 回复的索引
+  message?: ChatMessage // 回复的消息
+  finish_reason?: string // 回复的完成原因
+}
+
+export interface Usage {
+  prompt_tokens?: number // 提示 tokens 数量
+  completion_tokens?: number // 生成回复的 tokens 数量
+  total_tokens?: number // 总 tokens 数量
+}
+
+export interface Role {
+  act?: string
+  prompt?: string
 }
