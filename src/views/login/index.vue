@@ -1,18 +1,33 @@
 <script setup lang="ts">
+import {
+  ref,
+  toRaw,
+  reactive,
+  watch,
+  computed,
+  onMounted,
+  onBeforeUnmount,
+} from "vue"
 import { useI18n } from "vue-i18n"
 import Motion from "./utils/motion"
 import { useRouter } from "vue-router"
 import { message } from "@/utils/message"
 import { loginRules } from "./utils/rule"
+import phone from "./components/phone.vue"
+import qrCode from "./components/qrCode.vue"
+import regist from "./components/regist.vue"
+import update from "./components/update.vue"
 import { useNav } from "@/layout/hooks/useNav"
 import type { FormInstance } from "element-plus"
 import { $t, transformI18n } from "@/plugins/i18n"
+import { operates, thirdParty } from "./utils/enums"
 import { useLayout } from "@/layout/hooks/useLayout"
 import { useUserStoreHook } from "@/store/modules/user"
 import { initRouter, getTopMenu } from "@/router/utils"
 import { bg, avatar, illustration } from "./utils/static"
+import TypeIt from "@/components/ReTypeit"
+import { ReImageVerify } from "@/components/ReImageVerify"
 import { useRenderIcon } from "@/components/ReIcon/src/hooks"
-import { ref, reactive, toRaw, onMounted, onBeforeUnmount } from "vue"
 import { useTranslationLang } from "@/layout/hooks/useTranslationLang"
 import { useDataThemeChange } from "@/layout/hooks/useDataThemeChange"
 
@@ -27,14 +42,17 @@ import { loginApi } from "@/api/auth"
 defineOptions({
   name: "Login",
 })
+
+const imgCode = ref("")
 const router = useRouter()
 const loading = ref(false)
+const checked = ref(false)
 const ruleFormRef = ref<FormInstance>()
-
-const { initStorage } = useLayout()
-initStorage()
+const currentPage = ref(0)
 
 const { t } = useI18n()
+const { initStorage } = useLayout()
+initStorage()
 const { dataTheme, dataThemeChange } = useDataThemeChange()
 dataThemeChange()
 const { title, getDropdownItemStyle, getDropdownItemClass } = useNav()
@@ -43,6 +61,7 @@ const { locale, translationCh, translationEn } = useTranslationLang()
 const ruleForm = reactive({
   username: "admin@qq.com",
   password: "1234567",
+  verifyCode: "",
 })
 
 const onLogin = async(formEl: FormInstance | undefined) => {
@@ -135,10 +154,13 @@ onBeforeUnmount(() => {
         <div class="login-form">
           <avatar class="avatar" />
           <Motion>
-            <h2 class="outline-none">{{ title }}</h2>
+            <h2 class="outline-none">
+              <TypeIt :values="[title]" :cursor="false" :speed="150" />
+            </h2>
           </Motion>
 
           <el-form
+            v-if="currentPage === 0"
             ref="ruleFormRef"
             :model="ruleForm"
             :rules="loginRules"
@@ -176,18 +198,88 @@ onBeforeUnmount(() => {
               </el-form-item>
             </Motion>
 
+            <Motion :delay="200">
+              <el-form-item prop="verifyCode">
+                <el-input
+                  clearable
+                  v-model="ruleForm.verifyCode"
+                  :placeholder="t('login.verifyCode')"
+                  :prefix-icon="useRenderIcon('ri:shield-keyhole-line')"
+                >
+                  <template v-slot:append>
+                    <ReImageVerify v-model:code="imgCode" />
+                  </template>
+                </el-input>
+              </el-form-item>
+            </Motion>
+
             <Motion :delay="250">
-              <el-button
-                class="w-full mt-4"
-                size="default"
-                type="primary"
-                :loading="loading"
-                @click="onLogin(ruleFormRef)"
-              >
-                {{ t("login.login") }}
-              </el-button>
+              <el-form-item>
+                <div class="w-full h-[20px] flex justify-between items-center">
+                  <el-checkbox v-model="checked">
+                    {{ t("login.remember") }}
+                  </el-checkbox>
+                  <el-button link type="primary" @click="currentPage = 4">
+                    {{ t("login.forget") }}
+                  </el-button>
+                </div>
+                <el-button
+                  class="w-full mt-4"
+                  size="default"
+                  type="primary"
+                  :loading="loading"
+                  @click="onLogin(ruleFormRef)"
+                >
+                  {{ t("login.login") }}
+                </el-button>
+              </el-form-item>
+            </Motion>
+
+            <Motion :delay="300">
+              <el-form-item>
+                <div class="w-full h-[20px] flex justify-between items-center">
+                  <el-button
+                    v-for="(item, index) in operates"
+                    :key="index"
+                    class="w-full mt-4"
+                    size="default"
+                    @click="currentPage = index + 1"
+                  >
+                    {{ t(item.title) }}
+                  </el-button>
+                </div>
+              </el-form-item>
             </Motion>
           </el-form>
+
+          <Motion v-if="currentPage === 0" :delay="350">
+            <el-form-item>
+              <el-divider>
+                <p class="text-gray-500 text-xs">{{ t("login.thirdLogin") }}</p>
+              </el-divider>
+              <div class="w-full flex justify-evenly">
+                <span
+                  v-for="(item, index) in thirdParty"
+                  :key="index"
+                  :title="t(item.title)"
+                >
+                  <IconifyIconOnline
+                    :icon="`ri:${item.icon}-fill`"
+                    width="20"
+                    class="cursor-pointer text-gray-500 hover:text-blue-400"
+                  />
+                </span>
+              </div>
+            </el-form-item>
+          </Motion>
+          <!-- 手机号登录 -->
+          <phone v-if="currentPage === 1" @onBack="() => (currentPage = 0)"/>
+          <!-- 二维码登录 -->
+          <qrCode v-if="currentPage === 2" @onBack="() => (currentPage = 0)"/>
+          <!-- 注册 -->
+          <regist v-if="currentPage === 3" @onBack="() => (currentPage = 0)"/>
+          <!-- 忘记密码 -->
+          <update v-if="currentPage === 4" @onBack="() => (currentPage = 0)" />
         </div>
       </div>
     </div>

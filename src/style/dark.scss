@@ -22,7 +22,9 @@ html.dark {
     background: #020409 !important;
   }
 
-  .frame {
+  .frame,
+  .logic-flow-view,
+  .wangeditor {
     filter: invert(0.9) hue-rotate(180deg);
   }
 
@@ -48,6 +50,35 @@ html.dark {
     .el-divider--horizontal {
       border-top: none;
     }
+  }
+
+  /* 表单设计器 */
+  .design-form {
+    .el-main.config-content,
+    .el-header,
+    .el-main.widget-empty,
+    .widget-form-list,
+    .el-aside,
+    .widget-view {
+      background: var(--el-bg-color) !important;
+    }
+
+    .form-edit-widget-label a {
+      color: $color-white;
+      background: var(--el-color-primary);
+      border: none;
+      border-radius: 5px;
+    }
+
+    .el-aside {
+      color: $color-white;
+    }
+  }
+
+  /* intro.js */
+  .introjs-tooltip-title,
+  .introjs-tooltiptext {
+    color: var(--el-color-primary);
   }
 
   /* element-plus */
