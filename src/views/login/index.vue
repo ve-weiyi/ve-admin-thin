@@ -61,7 +61,7 @@ const { locale, translationCh, translationEn } = useTranslationLang()
 
 const ruleForm = reactive({
   username: "admin@qq.com",
-  password: "1234567",
+  password: "admin@qq.com",
   verifyCode: "",
 })
 
@@ -69,35 +69,34 @@ const onLogin = async(formEl: FormInstance | undefined) => {
   loading.value = true
   if (!formEl) return
   await formEl.validate((valid, fields) => {
-    // if (!valid) {
-    loginApi(ruleForm)
-      .then((res) => {
-        loading.value = false
-        console.log("res", res)
-        console.log("router", router.getRoutes())
-        message("登录成功", { type: "success" })
-        // 保存token
-        useAdminStoreHook().setToken(res.data)
-        // 拉取用户菜单
-        usePermissionStoreHook().handleWholeMenus([])
-        // 跳转到首页
-        router.push({ path: "/welcome" })
-        // useUserStoreHook().loginByUser(res.data)
-        // 获取后端路由
-        // initRouter().then(() => {
-        //   router.push(getTopMenu(true).path)
-        //   message("登录成功", { type: "success" })
-        // })
-      })
-      .catch((err) => {
-        loading.value = false
-        console.log(err)
-      })
-
-    // } else {
-    //   loading.value = false
-    //   return fields
-    // }
+    if (valid) {
+      loginApi(ruleForm)
+        .then((res) => {
+          loading.value = false
+          console.log("res", res)
+          console.log("router", router.getRoutes())
+          message("登录成功", { type: "success" })
+          // 保存token
+          useAdminStoreHook().setToken(res.data)
+          // 拉取用户菜单
+          usePermissionStoreHook().handleWholeMenus([])
+          // 跳转到首页
+          router.push({ path: "/welcome" })
+          // useUserStoreHook().loginByUser(res.data)
+          // 获取后端路由
+          // initRouter().then(() => {
+          //   router.push(getTopMenu(true).path)
+          //   message("登录成功", { type: "success" })
+          // })
+        })
+        .catch((err) => {
+          loading.value = false
+          message(err.message, { type: "error" })
+        })
+    } else {
+      loading.value = false
+      return fields
+    }
   })
 }
 

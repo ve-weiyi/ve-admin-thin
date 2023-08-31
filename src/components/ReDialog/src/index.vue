@@ -5,7 +5,7 @@ import {
   type EventType,
   type ButtonProps,
   type DialogOptions,
-} from "./index"
+} from "../index"
 import { ref, computed } from "vue"
 import { isFunction } from "@pureadmin/utils"
 import Fullscreen from "@iconify-icons/ri/fullscreen-fill"

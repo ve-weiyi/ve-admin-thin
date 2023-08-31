@@ -1,5 +1,5 @@
 import { ref } from "vue"
-import reDialog from "./index.vue"
+import reDialog from "./src/index.vue"
 import { useTimeoutFn } from "@vueuse/core"
 import { withInstall } from "@pureadmin/utils"
 import type {
@@ -8,7 +8,7 @@ import type {
   DialogProps,
   ButtonProps,
   DialogOptions,
-} from "./type"
+} from "./src/type"
 
 const dialogStore = ref<Array<DialogOptions>>([])
 

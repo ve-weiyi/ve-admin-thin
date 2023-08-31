@@ -31,7 +31,8 @@ const loginRules = reactive<FormRules>({
     {
       validator: (rule, value, callback) => {
         if (value === "") {
-          callback(new Error(transformI18n($t("login.verifyCodeReg"))))
+          callback()
+          // callback(new Error(transformI18n($t("login.verifyCodeReg"))))
         } else if (useUserStoreHook().verifyCode !== value) {
           callback(new Error(transformI18n($t("login.verifyCodeCorrectReg"))))
         } else {
