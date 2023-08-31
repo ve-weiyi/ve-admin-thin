@@ -19,7 +19,7 @@ import {
 import { getConfig } from "@/config"
 import { menuType } from "@/layout/types"
 import { buildHierarchyTree } from "@/utils/tree"
-import { sessionKey, type DataInfo } from "@/utils/auth"
+import { sessionKey, Token } from "@/utils/token"
 import { useMultiTagsStoreHook } from "@/store/modules/multiTags"
 import { usePermissionStoreHook } from "@/store/modules/permission"
 const IFrame = () => import("@/layout/frameView.vue")
@@ -27,7 +27,7 @@ const IFrame = () => import("@/layout/frameView.vue")
 const modulesRoutes = import.meta.glob("/src/views/**/*.{vue,tsx}")
 
 // 动态路由
-import { getAsyncRoutes } from "@/api/routes"
+import { getUserMenusApi } from "@/api/user"
 
 function handRank(routeInfo: any) {
   const { name, path, parentId, meta } = routeInfo
@@ -83,15 +83,18 @@ function isOneOfArray(a: Array<string>, b: Array<string>) {
 
 /** 从sessionStorage里取出当前登陆用户的角色roles，过滤无权限的菜单 */
 function filterNoPermissionTree(data: RouteComponent[]) {
-  const currentRoles =
-    storageSession().getItem<DataInfo<number>>(sessionKey)?.roles ?? []
-  const newTree = cloneDeep(data).filter((v: any) =>
-    isOneOfArray(v.meta?.roles, currentRoles)
-  )
-  newTree.forEach(
-    (v: any) => v.children && (v.children = filterNoPermissionTree(v.children))
-  )
-  return filterChildrenTree(newTree)
+  return data
+
+  // const currentRoles =
+  //   storageSession().getItem<Token>(sessionKey)?.user_info.roles ?? []
+  //
+  // const newTree = cloneDeep(data).filter((v: any) =>
+  //   isOneOfArray(v.meta?.roles, currentRoles)
+  // )
+  // newTree.forEach(
+  //   (v: any) => v.children && (v.children = filterNoPermissionTree(v.children))
+  // )
+  // return filterChildrenTree(newTree)
 }
 
 /** 通过指定 `key` 获取父级路径集合，默认 `key` 为 `path` */
@@ -194,7 +197,7 @@ function initRouter() {
       })
     } else {
       return new Promise((resolve) => {
-        getAsyncRoutes().then(({ data }) => {
+        getUserMenusApi().then(({ data }) => {
           handleAsyncRoutes(cloneDeep(data))
           storageSession().setItem(key, data)
           resolve(router)
@@ -203,7 +206,7 @@ function initRouter() {
     }
   } else {
     return new Promise((resolve) => {
-      getAsyncRoutes().then(({ data }) => {
+      getUserMenusApi().then(({ data }) => {
         handleAsyncRoutes(cloneDeep(data))
         resolve(router)
       })

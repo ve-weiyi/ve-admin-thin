@@ -9,7 +9,7 @@
 "use strict"
 import axios, { AxiosRequestConfig, AxiosInstance, AxiosResponse } from "axios"
 import { ElMessage } from "element-plus"
-import cookies from "@/utils/cookies"
+import { getToken, removeToken } from "@/utils/token"
 
 class HttpRequest {
   private baseUrl: string
@@ -111,11 +111,10 @@ class HttpRequest {
   }
 
   private setHeader(config: AxiosRequestConfig) {
-    const token = cookies.get("token")
-    const uid = cookies.get("uid")
-    if (token) {
-      config.headers!.token = token
-      config.headers!.uid = uid
+    const tk = getToken()
+    if (tk) {
+      config.headers!.token = tk?.access_token
+      config.headers!.uid = tk?.user_info.uid
     }
   }
 
@@ -142,7 +141,7 @@ class HttpRequest {
       },
       (error) => {
         return Promise.reject(new Error(error))
-      },
+      }
     )
 
     // 响应拦截
@@ -162,7 +161,7 @@ class HttpRequest {
           // token 错误
           case 403:
             console.log("403")
-            cookies.clearAll()
+            removeToken()
             return Promise.reject(new Error(message || "Error"))
           default:
             ElMessage({
@@ -179,12 +178,14 @@ class HttpRequest {
         }
         const isTimeout = error.message.includes("timeout")
         ElMessage({
-          message: isTimeout ? "网络请求超时" : error.message || "连接到服务器失败",
+          message: isTimeout
+            ? "网络请求超时"
+            : error.message || "连接到服务器失败",
           type: "error",
           duration: 2 * 1000,
         })
         return Promise.reject(new Error(error.message))
-      },
+      }
     )
     return instance
   }

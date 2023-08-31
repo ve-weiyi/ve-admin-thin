@@ -5,18 +5,17 @@ import { routerArrays } from "@/layout/types"
 import { router, resetRouter } from "@/router"
 import { storageSession } from "@pureadmin/utils"
 import { useMultiTagsStoreHook } from "@/store/modules/multiTags"
-import { type DataInfo, setToken, removeToken, sessionKey } from "@/utils/auth"
+import { setToken, removeToken, sessionKey } from "@/utils/token"
 import { getUserInfoApi } from "@/api/user"
-import { Login, User, UserDetail } from "@/api/types"
+import { Login } from "@/api/types"
 
 export const useUserStore = defineStore({
   id: "pure-user",
   state: (): userType => ({
     // 用户名
-    username:
-      storageSession().getItem<DataInfo<number>>(sessionKey)?.username ?? "",
+    username: storageSession().getItem<any>(sessionKey)?.username ?? "",
     // 页面级别权限
-    roles: storageSession().getItem<DataInfo<number>>(sessionKey)?.roles ?? [],
+    roles: storageSession().getItem<any>(sessionKey)?.roles ?? [],
   }),
   actions: {
     /** 存储用户名 */
@@ -29,13 +28,7 @@ export const useUserStore = defineStore({
     },
     /** 登入 */
     loginByUser(data: Login) {
-      setToken({
-        expires: undefined,
-        refreshToken: "",
-        roles: undefined,
-        username: "",
-        accessToken: data.token,
-      })
+      setToken(null)
     },
     /** 前端登出（不调用接口） */
     logOut() {
