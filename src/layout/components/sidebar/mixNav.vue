@@ -1,25 +1,25 @@
 <script setup lang="ts">
-import extraIcon from "./extraIcon.vue";
-import Search from "../search/index.vue";
-import Notice from "../notice/index.vue";
-import { isAllEmpty } from "@pureadmin/utils";
-import { useNav } from "@/layout/hooks/useNav";
-import { transformI18n } from "@/plugins/i18n";
-import { ref, toRaw, watch, onMounted, nextTick } from "vue";
-import { useRenderIcon } from "@/components/ReIcon/src/hooks";
-import { getParentPaths, findRouteByPath } from "@/router/utils";
-import { useTranslationLang } from "../../hooks/useTranslationLang";
-import { usePermissionStoreHook } from "@/store/modules/permission";
-import globalization from "@/assets/svg/globalization.svg?component";
-import LogoutCircleRLine from "@iconify-icons/ri/logout-circle-r-line";
-import Setting from "@iconify-icons/ri/settings-3-line";
-import Check from "@iconify-icons/ep/check";
+import extraIcon from "./extraIcon.vue"
+import Search from "../search/index.vue"
+import Notice from "../notice/index.vue"
+import { isAllEmpty } from "@pureadmin/utils"
+import { useNav } from "@/layout/hooks/useNav"
+import { transformI18n } from "@/plugins/i18n"
+import { ref, toRaw, watch, onMounted, nextTick } from "vue"
+import { useRenderIcon } from "@/components/ReIcon/src/hooks"
+import { getParentPaths, findRouteByPath } from "@/router/utils"
+import { useTranslationLang } from "../../hooks/useTranslationLang"
+import { usePermissionStoreHook } from "@/store/modules/permission"
+import globalization from "@/assets/svg/globalization.svg?component"
+import LogoutCircleRLine from "@iconify-icons/ri/logout-circle-r-line"
+import Setting from "@iconify-icons/ri/settings-3-line"
+import Check from "@iconify-icons/ep/check"
 
-const menuRef = ref();
-const defaultActive = ref(null);
+const menuRef = ref()
+const defaultActive = ref(null)
 
 const { t, route, locale, translationCh, translationEn } =
-  useTranslationLang(menuRef);
+  useTranslationLang(menuRef)
 const {
   device,
   logout,
@@ -30,32 +30,32 @@ const {
   getDivStyle,
   avatarsStyle,
   getDropdownItemStyle,
-  getDropdownItemClass
-} = useNav();
+  getDropdownItemClass,
+} = useNav()
 
 function getDefaultActive(routePath) {
-  const wholeMenus = usePermissionStoreHook().wholeMenus;
+  const wholeMenus = usePermissionStoreHook().wholeMenus
   /** 当前路由的父级路径 */
-  const parentRoutes = getParentPaths(routePath, wholeMenus)[0];
+  const parentRoutes = getParentPaths(routePath, wholeMenus)[0]
   defaultActive.value = !isAllEmpty(route.meta?.activePath)
     ? route.meta.activePath
-    : findRouteByPath(parentRoutes, wholeMenus)?.children[0]?.path;
+    : findRouteByPath(parentRoutes, wholeMenus)?.children[0]?.path
 }
 
 onMounted(() => {
-  getDefaultActive(route.path);
-});
+  getDefaultActive(route.path)
+})
 
 nextTick(() => {
-  menuRef.value?.handleResize();
-});
+  menuRef.value?.handleResize()
+})
 
 watch(
   () => [route.path, usePermissionStoreHook().wholeMenus],
   () => {
-    getDefaultActive(route.path);
+    getDefaultActive(route.path)
   }
-);
+)
 </script>
 
 <template>

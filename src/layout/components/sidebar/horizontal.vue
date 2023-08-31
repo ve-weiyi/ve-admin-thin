@@ -1,21 +1,21 @@
 <script setup lang="ts">
-import Search from "../search/index.vue";
-import Notice from "../notice/index.vue";
-import SidebarItem from "./sidebarItem.vue";
-import { isAllEmpty } from "@pureadmin/utils";
-import { ref, nextTick, computed } from "vue";
-import { useNav } from "@/layout/hooks/useNav";
-import { useTranslationLang } from "../../hooks/useTranslationLang";
-import { usePermissionStoreHook } from "@/store/modules/permission";
-import globalization from "@/assets/svg/globalization.svg?component";
-import LogoutCircleRLine from "@iconify-icons/ri/logout-circle-r-line";
-import Setting from "@iconify-icons/ri/settings-3-line";
-import Check from "@iconify-icons/ep/check";
+import Search from "../search/index.vue"
+import Notice from "../notice/index.vue"
+import SidebarItem from "./sidebarItem.vue"
+import { isAllEmpty } from "@pureadmin/utils"
+import { ref, nextTick, computed } from "vue"
+import { useNav } from "@/layout/hooks/useNav"
+import { useTranslationLang } from "../../hooks/useTranslationLang"
+import { usePermissionStoreHook } from "@/store/modules/permission"
+import globalization from "@/assets/svg/globalization.svg?component"
+import LogoutCircleRLine from "@iconify-icons/ri/logout-circle-r-line"
+import Setting from "@iconify-icons/ri/settings-3-line"
+import Check from "@iconify-icons/ep/check"
 
-const menuRef = ref();
+const menuRef = ref()
 
 const { t, route, locale, translationCh, translationEn } =
-  useTranslationLang(menuRef);
+  useTranslationLang(menuRef)
 const {
   title,
   logout,
@@ -25,16 +25,16 @@ const {
   userAvatar,
   avatarsStyle,
   getDropdownItemStyle,
-  getDropdownItemClass
-} = useNav();
+  getDropdownItemClass,
+} = useNav()
 
 const defaultActive = computed(() =>
   !isAllEmpty(route.meta?.activePath) ? route.meta.activePath : route.path
-);
+)
 
 nextTick(() => {
-  menuRef.value?.handleResize();
-});
+  menuRef.value?.handleResize()
+})
 </script>
 
 <template>

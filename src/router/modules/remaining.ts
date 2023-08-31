@@ -1,5 +1,5 @@
-import { $t } from "@/plugins/i18n";
-const Layout = () => import("@/layout/index.vue");
+import { $t } from "@/plugins/i18n"
+const Layout = () => import("@/layout/index.vue")
 
 export default [
   {
@@ -9,8 +9,8 @@ export default [
     meta: {
       title: $t("menus.hslogin"),
       showLink: false,
-      rank: 101
-    }
+      rank: 101,
+    },
   },
   {
     path: "/redirect",
@@ -18,14 +18,14 @@ export default [
     meta: {
       title: $t("status.hsLoad"),
       showLink: false,
-      rank: 102
+      rank: 102,
     },
     children: [
       {
         path: "/redirect/:path(.*)",
         name: "Redirect",
-        component: () => import("@/layout/redirect.vue")
-      }
-    ]
-  }
-] as Array<RouteConfigsTable>;
+        component: () => import("@/layout/redirect.vue"),
+      },
+    ],
+  },
+] as Array<RouteConfigsTable>
