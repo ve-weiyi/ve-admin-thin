@@ -2,8 +2,13 @@
   <div class="app-container">
     <!-- 表格搜索条件 -->
     <el-card v-loading="loading" shadow="never" class="search-container">
-      <el-form ref="searchFormRef" :inline="true" :model="searchFields">
-        <el-form-item v-for="item of searchFields" :key="item.field" :prop="item.field" :label="item.label + '：'">
+      <el-form ref="searchRef" :inline="true" :model="searchFields">
+        <el-form-item
+          v-for="item of searchFields"
+          :key="item.field"
+          :prop="item.field"
+          :label="item.label + '：'"
+        >
           <template v-if="item.field">
             <component
               style="display: flex; justify-content: center; align-items: center"
@@ -12,7 +17,7 @@
           </template>
         </el-form-item>
         <el-form-item class="align-right">
-          <el-button type="primary" icon="Search" @click="onSearchList">搜索</el-button>
+          <el-button type="primary" icon="Search" @click="onSearchList"> 搜索</el-button>
           <el-button icon="Refresh" @click="resetSearch">重置</el-button>
         </el-form-item>
       </el-form>
@@ -36,7 +41,11 @@
         <div class="flex-between align-right">
           <div class="flex-between">
             <!-- 通过data属性传递参数 -->
-            <slot name="operation" :selectionIds="selectionIds" :checkedColumnFields="checkedColumnFields"></slot>
+            <slot
+              name="operation"
+              :selectionIds="selectionIds"
+              :checkedColumnFields="checkedColumnFields"
+            ></slot>
             <el-button
               v-if="props.showAddButton"
               type="primary"
@@ -67,13 +76,22 @@
                 <el-button style="margin-inline: 0.5rem" type="primary" icon="Download" circle />
                 <template #dropdown>
                   <el-dropdown-menu class="translation">
-                    <el-dropdown-item :style="getDropdownItemStyle('large')" @click="size = 'large'">
+                    <el-dropdown-item
+                      :style="getDropdownItemStyle('large')"
+                      @click="size = 'large'"
+                    >
                       宽松
                     </el-dropdown-item>
-                    <el-dropdown-item :style="getDropdownItemStyle('default')" @click="size = 'default'">
+                    <el-dropdown-item
+                      :style="getDropdownItemStyle('default')"
+                      @click="size = 'default'"
+                    >
                       默认
                     </el-dropdown-item>
-                    <el-dropdown-item :style="getDropdownItemStyle('small')" @click="size = 'small'">
+                    <el-dropdown-item
+                      :style="getDropdownItemStyle('small')"
+                      @click="size = 'small'"
+                    >
                       紧凑
                     </el-dropdown-item>
                   </el-dropdown-menu>
@@ -104,7 +122,10 @@
               </div>
 
               <el-divider direction="horizontal" style="margin-top: 0; margin-bottom: 5px" />
-              <el-checkbox-group v-model="checkedColumnFields" @change="handleCheckedColumnFieldsChange">
+              <el-checkbox-group
+                v-model="checkedColumnFields"
+                @change="handleCheckedColumnFieldsChange"
+              >
                 <el-space direction="vertical" alignment="stretch">
                   <!-- 单列拖拽 -->
                   <draggable
@@ -125,7 +146,10 @@
                           :label="element"
                           @change="(value) => handleCheckedColumnChange(value, element)"
                         >
-                          <span :title="element" class="inline-block w-[120px] truncate hover:text-text_color_primary">
+                          <span
+                            :title="element"
+                            class="inline-block w-[120px] truncate hover:text-text_color_primary"
+                          >
                             {{ element.title }}
                           </span>
                         </el-checkbox>
@@ -202,7 +226,7 @@
       <div style="font-size: 1rem">是否彻底删除选中项？</div>
       <template #footer>
         <el-button @click="removeVisibility = false">取 消</el-button>
-        <el-button type="primary" @click="onDeleteByIds(selectionIds)">确 定</el-button>
+        <el-button type="primary" @click="onDeleteByIds(selectionIds)"> 确 定</el-button>
       </template>
     </el-dialog>
 
@@ -213,16 +237,27 @@
           {{ formTitle }}
         </div>
       </template>
-      <el-form ref="formRef" :model="formData" :rules="formRules" label-width="100px" size="default">
-        <el-form-item v-for="item of formFields" :key="item.field" :prop="item.field" :label="item.label + '：'">
+      <el-form
+        ref="formRef"
+        :model="formData"
+        :rules="formRules"
+        label-width="100px"
+        size="default"
+      >
+        <el-form-item
+          v-for="item of formFields.filter((item) => item.hidden !== true)"
+          :key="item.field"
+          :prop="item.field"
+          :label="item.label + '：'"
+        >
           <template v-if="item.field">
             <component :is="builderFormRender(item, formData)" />
           </template>
         </el-form-item>
       </el-form>
       <template #footer v-if="showEditButton">
-        <el-button @click="handleFormHidden">取消</el-button>
-        <el-button type="primary" @click="onSaveForm(formData)">确定</el-button>
+        <el-button @click="hiddenForm">取消</el-button>
+        <el-button type="primary" @click="submitForm(formData)">确定</el-button>
       </template>
     </el-dialog>
   </div>
@@ -230,7 +265,14 @@
 
 <script setup lang="ts">
 import { computed, defineComponent, getCurrentInstance, onMounted, reactive, ref } from "vue"
-import { builderFormRender, Condition, defaultPaginationData, FormField, Pagination, Sort } from "@/utils/render"
+import {
+  builderFormRender,
+  Condition,
+  defaultPaginationData,
+  FormField,
+  Pagination,
+  Sort,
+} from "@/utils/render"
 import { Column, ElMessage, FormInstance, FormRules, TableInstance } from "element-plus"
 import { MenuDetails } from "@/api/types"
 import draggable from "vuedraggable/src/vuedraggable"
@@ -305,16 +347,6 @@ const isActive = (status) => {
 
 const tableTitle = props.tableTitle ? props.tableTitle : useRoute().meta.title
 const tableName = props.modelName ? props.modelName : useRoute().meta.title
-const formTitle = computed(() => {
-  if (formData.value.id) {
-    if (!props.showAddButton) {
-      return `查看${tableName}`
-    }
-    return `编辑${tableName}`
-  } else {
-    return `新增${tableName}`
-  }
-})
 
 const buttonRef = ref()
 const size = ref("default")
@@ -328,20 +360,8 @@ const getDropdownItemStyle = computed(() => {
   }
 })
 
-// 表单数据定义
-const formFields = ref<FormField[]>([])
-const formVisibility = ref(false)
-const formStatus = ref("")
-
-// 表单规则定义
-const formRef = ref<FormInstance | null>(null)
-const formData = ref<any>({})
-const formRules: FormRules = reactive({})
-
 // 表格加载状态
 const loading = ref(true)
-// 批量移除提示框
-const removeVisibility = ref(false)
 
 // 表格结构定义
 const columnFields = ref<Column[]>([])
@@ -356,8 +376,8 @@ const pagination = reactive<Pagination>({ ...defaultPaginationData })
 const selectionIds = reactive<number[]>([])
 
 // 表搜素条件定义
+const searchRef = ref<FormInstance | null>(null)
 const searchFields = ref<FormField[]>(props.getSearchFields())
-const searchFormRef = ref<FormInstance | null>(null)
 // 搜索条件,{k:v}
 const searchData = ref<any>({})
 // 排序条件,{k:v}
@@ -402,6 +422,11 @@ function onSearchList() {
       conditions: conditions,
     })
     .then((res) => {
+      if (res.data.page_size !== pagination.pageSize) {
+        pagination.currentPage = res.data.page
+        pagination.pageSize = res.data.page_size
+      }
+
       tableData.value = res.data.list
       pagination.total = res.data.total
       loading.value = false
@@ -412,7 +437,7 @@ function onCreate(row) {
   console.log("onCreate", row)
   props.handleApi(row, "create").then((res) => {
     ElMessage.success("创建成功")
-    formVisibility.value = false
+    hiddenForm()
     onSearchList()
   })
 }
@@ -421,7 +446,7 @@ function onUpdate(row) {
   console.log("onUpdate", row)
   props.handleApi("update", row).then((res) => {
     ElMessage.success("更新成功")
-    formVisibility.value = false
+    hiddenForm()
     onSearchList()
   })
 }
@@ -438,19 +463,19 @@ function onDeleteByIds(ids: number[]) {
   console.log("onDeleteByIds", ids)
   props.handleApi("deleteByIds", ids).then((res) => {
     ElMessage.success("批量删除成功")
-    removeVisibility.value = false
+    hiddenForm()
     onSearchList()
   })
 }
 
 // 表格点击事件 查看、新增、编辑、删除、启用、停用
-type actionEvent = "add" | "edit" | "view" | "delete" | "enable" | "disable" | "onSaveForm"
+type actionEvent = "add" | "edit" | "view" | "delete" | "enable" | "disable" | "submitForm"
 
 // function onClickAction(event: actionEvent, data: any) {
 //   console.log("onClickAction", event, data)
 //   switch (event) {
-//     case "onSaveForm":
-//       onSaveForm(data)
+//     case "submitForm":
+//       submitForm(data)
 //       break
 //     default:
 //       break
@@ -521,7 +546,44 @@ function handleCheckedColumnChange(val: boolean, element: any) {
   columnFields.value.filter((item) => item.title === element.title)[0].hidden = !val
 }
 
-function onSaveForm(row) {
+const formTitle = computed(() => {
+  if (formData.value.id) {
+    if (!props.showAddButton) {
+      return `查看${tableName}`
+    }
+    return `编辑${tableName}`
+  } else {
+    return `新增${tableName}`
+  }
+})
+
+// 表单数据定义
+const formFields = ref<FormField[]>([])
+const formVisibility = ref(false)
+const formStatus = ref("")
+
+// 表单规则定义
+const formRef = ref<FormInstance | null>(null)
+const formData = ref<any>({})
+const formRules: FormRules = reactive({})
+
+// 批量移除提示框
+const removeVisibility = ref(false)
+
+// 显示表单
+function handleFormVisibility(row: any) {
+  formVisibility.value = true
+  resetForm(row)
+}
+
+// 隐藏表单
+function hiddenForm() {
+  formVisibility.value = false
+  resetForm(null)
+}
+
+// 提交表单
+function submitForm(row) {
   formRef.value?.validate((valid: boolean, fields: any) => {
     if (valid) {
       if (row.id === 0) {
@@ -535,16 +597,7 @@ function onSaveForm(row) {
   })
 }
 
-function handleFormHidden() {
-  formVisibility.value = false
-  resetForm(null)
-}
-
-function handleFormVisibility(row: any) {
-  formVisibility.value = true
-  resetForm(row)
-}
-
+// 重置表单
 function resetForm(row) {
   if (row != null) {
     formData.value = row
@@ -553,7 +606,7 @@ function resetForm(row) {
   }
 
   console.log("resetForm", formData.value)
-  formFields.value = props.getFormFields(row)
+  formFields.value = props.getFormFields(formData.value)
 }
 
 function resetSearch() {
@@ -561,7 +614,6 @@ function resetSearch() {
   orderData.value = props.defaultOrder
   tableRef.value?.clearSort()
   tableRef.value?.clearSelection()
-  onSearchList()
 }
 
 function resetTable() {
@@ -581,6 +633,9 @@ onMounted(() => {
 })
 
 defineExpose({
+  onDelete,
+  onDeleteByIds,
+  onSearchList,
   handleSortChange,
   handleDragChange,
   handleCheckAllChange,
@@ -590,18 +645,15 @@ defineExpose({
   handleSizeChange,
   handleCurrentChange,
   handleFormVisibility,
-  onSaveForm,
-  onDelete,
-  onDeleteByIds,
-  onSearchList,
+  hiddenForm,
+  submitForm,
+  resetForm,
   resetSearch,
   resetTable,
-  resetForm,
 })
 </script>
 
 <style lang="scss" scoped>
-
 .search-container {
   margin-bottom: 10px;
 

@@ -5,22 +5,26 @@ export default {
   name: "album-management",
   component: Layout,
   redirect: "/album/albums",
-  meta: { title: "相册管理", icon: "picture" },
+  meta: {
+    title: "相册管理",
+    icon: "picture",
+    rank: 12,
+  },
   children: [
     {
-      path: "/list",
+      path: "/albums/list",
       name: "Albums",
       component: () => import("@/views/blog/album/Album.vue"),
       meta: { title: "相册列表" },
     },
     {
-      path: "/:id",
+      path: "/albums/:id",
       name: "Photo",
       component: () => import("@/views/blog/album/Photo.vue"),
-      meta: { title: "照片管理", hidden: true },
+      meta: { title: "照片管理", showLink: false },
     },
     {
-      path: "/photo/delete",
+      path: "/albums/photo/delete",
       name: "Delete",
       component: () => import("@/views/blog/album/Delete.vue"),
       meta: { title: "照片回收站" },

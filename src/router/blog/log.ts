@@ -8,7 +8,7 @@ export default {
   meta: { title: "日志管理", icon: "document" },
   children: [
     {
-      path: "/operation",
+      path: "/log/operation",
       component: () => import("@/views/blog/log/Operation.vue"),
       name: "operation",
       meta: { title: "操作日志", showParent: true, keepAlive: true },

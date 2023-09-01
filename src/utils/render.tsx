@@ -45,6 +45,7 @@ export interface FormField {
   label: string
   field: string
   default?: any
+  hidden?: boolean
   // value?: any
   placeholder?: string
   options?: Option[]
@@ -78,7 +79,9 @@ export function builderFormRender(field: FormField, model: any): VNode {
 export function formRender(field: FormField, model: any): VNode {
   switch (field.type) {
     case RenderType.Input:
-      return <el-input v-model={model[field.field]} clearable placeholder={`请输入${field.label}`} />
+      return (
+        <el-input v-model={model[field.field]} clearable placeholder={`请输入${field.label}`} />
+      )
     case RenderType.Select:
       return (
         <el-select v-model={model[field.field]} placeholder={`请选择${field.label}`}>
@@ -91,7 +94,7 @@ export function formRender(field: FormField, model: any): VNode {
       return <el-tag type={model[field.field]}>{model[field.field]}</el-tag>
     case RenderType.Radio:
       return (
-        <el-radio-group v-model={model[field.field]} >
+        <el-radio-group v-model={model[field.field]}>
           {field.options.map((item) => (
             <el-radio key={item.value} label={item.value}>
               {item.label}
