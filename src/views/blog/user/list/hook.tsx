@@ -1,6 +1,6 @@
 import { ComponentInternalInstance, getCurrentInstance, onMounted, reactive, ref } from "vue"
-import { Column, ElMessage, ElMessageBox, FormInstance, FormRules, TableInstance } from "element-plus"
-import { defaultPaginationData, Pagination, Sort, Condition, FormField, RenderType } from "@/utils/render"
+import { Column, ElMessage, ElMessageBox } from "element-plus"
+import { FormField, RenderType } from "@/utils/render"
 import { FixedDir } from "element-plus/es/components/table-v2/src/constants"
 import { Timer } from "@element-plus/icons-vue"
 
@@ -11,7 +11,7 @@ import {
   updateOperationLogApi,
 } from "@/api/operation_log"
 
-import { findUserListApi } from "@/api/user"
+import { findUserListApi, updateUserStatusApi } from "@/api/user"
 import { OperationLog } from "@/api/types"
 
 const align = "center"
@@ -73,16 +73,16 @@ function getColumnFields(): Column[] {
       align: align,
       sortable: true,
     },
-        {
+    {
       key: "avatar",
       title: "头像",
       dataKey: "avatar",
       width: 60,
       align: align,
-      cellRenderer: (row: any) => {
+      cellRenderer: (scope: any) => {
         return (
           <div>
-            <img src={row.avatar} width="40" height="40" />
+            <img src={scope.row.avatar} width="40" height="40" />
           </div>
         )
       },
@@ -93,6 +93,50 @@ function getColumnFields(): Column[] {
       dataKey: "nickname",
       width: 100,
       align: align,
+    },
+    {
+      key: "roles",
+      title: "角色列表",
+      dataKey: "roles",
+      width: 0,
+      align: align,
+      cellRenderer: (scope: any) => {
+        return (
+          <div style={"display: flex;flex-wrap: wrap;"}>
+            {scope.row.roles.map((item: any) => {
+              return (
+                <el-tag style={"margin-right:0.2rem;margin-top:0.2rem"}>{item.role_comment}</el-tag>
+              )
+            })}
+          </div>
+        )
+      },
+    },
+    {
+      key: "status",
+      title: "状态",
+      dataKey: "status",
+      width: 0,
+      align: align,
+      cellRenderer: (scope: any) => {
+        return (
+          <el-switch
+            v-model={scope.row.status}
+            active-value={1}
+            inactive-value={0}
+            active-color="#13ce66"
+            inactive-color="#F4F4F5"
+            active-text="已启用"
+            inactive-text="已停用"
+            inline-prompt
+            onChange={() => {
+              updateUserStatusApi(scope.row).then((res) => {
+                ElMessage.success("更新状态成功")
+              })
+            }}
+          />
+        )
+      },
     },
     {
       key: "ip_address",
@@ -115,13 +159,13 @@ function getColumnFields(): Column[] {
       width: 0,
       align: align,
       sortable: true,
-      cellRenderer: (row: any) => {
+      cellRenderer: (scope: any) => {
         return (
           <div>
             <el-icon style="margin-right: 2px">
               <Timer />
             </el-icon>
-            <span>{new Date(row.created_at).toLocaleString()}</span>
+            <span>{new Date(scope.row.created_at).toLocaleString()}</span>
           </div>
         )
       },
@@ -132,7 +176,7 @@ function getColumnFields(): Column[] {
       width: 150,
       align: align,
       fixed: FixedDir.RIGHT,
-      cellRenderer: (row: any) => {
+      cellRenderer: (scope: any) => {
         return (
           <div>
             <el-button
@@ -140,11 +184,14 @@ function getColumnFields(): Column[] {
               type="primary"
               size="small"
               icon="view"
-              onClick={() => instance.exposed.handleFormVisibility(row)}
+              onClick={() => instance.exposed.handleFormVisibility(scope.row)}
             >
               查看
             </el-button>
-            <el-popconfirm title="确定删除吗？" onConfirm={() => instance.exposed.onDelete(row)}>
+            <el-popconfirm
+              title="确定删除吗？"
+              onConfirm={() => instance.exposed.onDelete(scope.row)}
+            >
               {{
                 reference: () => (
                   <el-button text type="danger" size="small" icon="delete">
@@ -185,46 +232,8 @@ function getSearchFields(): FormField[] {
 function getFormFields(model: OperationLog): FormField[] {
   return [
     {
-      field: "opt_module",
-      label: "操作模块",
-    },
-    {
-      field: "opt_desc",
-      label: "操作描述",
-    },
-    {
-      field: "request_url",
-      label: "请求地址",
-    },
-    {
-      field: "request_method",
-      label: "请求方式",
-      render: (field, model) => {
-        return <el-tag type={tagType(model.request_method)}>{model.request_method}</el-tag>
-      },
-    },
-    {
-      field: "opt_method",
-      label: "操作方法",
-    },
-    {
-      field: "request_param",
-      label: "请求参数",
-    },
-    {
-      field: "response_data",
-      label: "返回数据",
-    },
-    {
-      field: "nickname",
-      label: "操作人员",
-    },
-    {
-      field: "created_at",
-      label: "操作日期",
-      render: (field, model) => {
-        return <span>{new Date(model.created_at).toLocaleString()}</span>
-      },
+      field: "roles",
+      label: "角色",
     },
   ]
 }

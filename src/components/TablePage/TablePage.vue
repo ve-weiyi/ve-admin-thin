@@ -186,15 +186,15 @@
           :sortable="item.sortable"
           :fixed="item.fixed"
         >
-          <template #default="{ row }">
+          <template #default="scope">
             <template v-if="item.cellRenderer">
               <component
                 style="display: flex; justify-content: center; align-items: center"
-                :is="item.cellRenderer(row)"
+                :is="item.cellRenderer(scope)"
               />
             </template>
             <template v-else-if="item.type !== 'selection'">
-              {{ row[item.dataKey] }}
+              {{ scope.row[item.dataKey] }}
             </template>
           </template>
         </el-table-column>

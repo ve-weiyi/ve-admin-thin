@@ -1,6 +1,6 @@
 import { ComponentInternalInstance, getCurrentInstance, onMounted, reactive, ref } from "vue"
-import { Column, ElMessage, ElMessageBox, FormInstance, FormRules, TableInstance } from "element-plus"
-import { defaultPaginationData, Pagination, Sort, Condition, FormField, RenderType } from "@/utils/render"
+import { Column } from "element-plus"
+import { FormField, RenderType } from "@/utils/render"
 import { FixedDir } from "element-plus/es/components/table-v2/src/constants"
 import { Timer } from "@element-plus/icons-vue"
 
@@ -100,8 +100,8 @@ function getColumnFields(): Column[] {
       dataKey: "request_method",
       width: 100,
       align: align,
-      cellRenderer: (row: any) => {
-        return <el-tag type={tagType(row.request_method)}>{row.request_method}</el-tag>
+      cellRenderer: (scope: any) => {
+        return <el-tag type={tagType(scope.row.request_method)}>{scope.row.request_method}</el-tag>
       },
     },
     {
@@ -132,13 +132,13 @@ function getColumnFields(): Column[] {
       width: 0,
       align: align,
       sortable: true,
-      cellRenderer: (row: any) => {
+      cellRenderer: (scope: any) => {
         return (
           <div>
             <el-icon style="margin-right: 2px">
               <Timer />
             </el-icon>
-            <span>{new Date(row.created_at).toLocaleString()}</span>
+            <span>{new Date(scope.row.created_at).toLocaleString()}</span>
           </div>
         )
       },
@@ -149,7 +149,7 @@ function getColumnFields(): Column[] {
       width: 150,
       align: align,
       fixed: FixedDir.RIGHT,
-      cellRenderer: (row: any) => {
+      cellRenderer: (scope: any) => {
         return (
           <div>
             <el-button
@@ -157,11 +157,14 @@ function getColumnFields(): Column[] {
               type="primary"
               size="small"
               icon="view"
-              onClick={() => instance.exposed.handleFormVisibility(row)}
+              onClick={() => instance.exposed.handleFormVisibility(scope.row)}
             >
               查看
             </el-button>
-            <el-popconfirm title="确定删除吗？" onConfirm={() => instance.exposed.onDelete(row)}>
+            <el-popconfirm
+              title="确定删除吗？"
+              onConfirm={() => instance.exposed.onDelete(scope.row)}
+            >
               {{
                 reference: () => (
                   <el-button text type="danger" size="small" icon="delete">

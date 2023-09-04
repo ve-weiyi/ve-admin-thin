@@ -99,7 +99,7 @@
 //       dataKey: "icon",
 //       width: 0,
 //       align: align,
-//       cellRenderer: (row: any) => {
+//       cellRenderer: (scope: any) => {
 //         return (
 //           <div>
 //             <el-icon>
@@ -131,13 +131,13 @@
 //       dataKey: "is_hidden",
 //       width: 120,
 //       align: align,
-//       cellRenderer: (row: any) => {
+//       cellRenderer: (scope: any) => {
 //         if (row.path === "") {
 //           return <div></div>
 //         }
 //         return (
 //           <el-switch
-//             v-model={row.is_hidden}
+//             v-model={scope.row.is_hidden}
 //             active-color="#13ce66"
 //             inactive-color="#F4F4F5"
 //             active-value={true}
@@ -154,13 +154,13 @@
 //       width: 0,
 //       align: align,
 //       sortable: true,
-//       cellRenderer: (row: any) => {
+//       cellRenderer: (scope: any) => {
 //         return (
 //           <div>
 //             <el-icon style={"margin-right: 2px"}>
 //               <Timer />
 //             </el-icon>
-//             <span>{new Date(row.created_at).toLocaleDateString()}</span>
+//             <span>{new Date(scope.row.created_at).toLocaleDateString()}</span>
 //           </div>
 //         )
 //       },
@@ -171,7 +171,7 @@
 //       dataKey: "operation",
 //       width: 150,
 //       align: align,
-//       cellRenderer: (row: any) => {
+//       cellRenderer: (scope: any) => {
 //         return (
 //           <div>
 //             <el-button

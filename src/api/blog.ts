@@ -1,5 +1,5 @@
 import http from "@/utils/request"
-import { BlogBackInfoDTO, ChatRecord } from './types'
+import { BlogBackInfoDTO, ChatRecord } from "./types"
 
 /** 查询聊天记录 */
 export function webSocketApi(): Promise<any> {
@@ -18,10 +18,11 @@ export function getAboutMeApi(): Promise<IApiResponseData<any>> {
 }
 
 /** 更新我的信息 */
-export function updateAboutMeApi(): Promise<IApiResponseData<any>> {
+export function updateAboutMeApi(body): Promise<IApiResponseData<any>> {
   return http.request<IApiResponseData<any>>({
     url: `/api/v1/about`,
     method: "post",
+    data: body,
   })
 }
 

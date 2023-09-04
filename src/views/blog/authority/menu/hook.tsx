@@ -87,9 +87,7 @@ function getSearchFields(): FormField[] {
   ]
 }
 
-function getColumnFields(
-  onChange: (row: any, event: changeEvent) => void
-): Column[] {
+function getColumnFields(onChange: (row: any, event: changeEvent) => void): Column[] {
   return [
     {
       key: "selection",
@@ -120,13 +118,13 @@ function getColumnFields(
       dataKey: "icon",
       width: 0,
       align: align,
-      cellRenderer: (row: any) => {
+      cellRenderer: (scope: any) => {
         return (
           <div>
             <el-icon>
-              <component is={row.icon} />
+              <component is={scope.row.icon} />
             </el-icon>
-            {row.icon}
+            {scope.row.icon}
           </div>
         )
       },
@@ -152,18 +150,18 @@ function getColumnFields(
       dataKey: "is_hidden",
       width: 120,
       align: align,
-      cellRenderer: (row: any) => {
-        if (row.path === "") {
+      cellRenderer: (scope: any) => {
+        if (scope.row.path === "") {
           return <div></div>
         }
         return (
           <el-switch
-            v-model={row.is_hidden}
+            v-model={scope.row.is_hidden}
             active-color="#13ce66"
             inactive-color="#F4F4F5"
             active-value={true}
             inactive-value={false}
-            onClick={() => onChange(row, "is_hidden")}
+            onClick={() => onChange(scope.row, "is_hidden")}
           />
         )
       },
@@ -175,13 +173,13 @@ function getColumnFields(
       width: 0,
       align: align,
       sortable: true,
-      cellRenderer: (row: any) => {
+      cellRenderer: (scope: any) => {
         return (
           <div>
             <el-icon style={"margin-right: 2px"}>
               <Timer />
             </el-icon>
-            <span>{new Date(row.created_at).toLocaleDateString()}</span>
+            <span>{new Date(scope.row.created_at).toLocaleDateString()}</span>
           </div>
         )
       },
@@ -192,7 +190,7 @@ function getColumnFields(
       dataKey: "operation",
       width: 150,
       align: align,
-      cellRenderer: (row: any) => {
+      cellRenderer: (scope: any) => {
         return (
           <div>
             <el-button
@@ -201,7 +199,7 @@ function getColumnFields(
               type="primary"
               size="small"
               icon="Plus"
-              onClick={() => onChange(row, "add")}
+              onClick={() => onChange(scope.row, "add")}
             >
               新增
             </el-button>
@@ -211,23 +209,14 @@ function getColumnFields(
               type="primary"
               size="small"
               icon="editPen"
-              onClick={() => onChange(row, "edit")}
+              onClick={() => onChange(scope.row, "edit")}
             >
               修改
             </el-button>
-            <el-popconfirm
-              title="确定删除吗？"
-              onConfirm={() => onChange(row, "delete")}
-            >
+            <el-popconfirm title="确定删除吗？" onConfirm={() => onChange(scope.row, "delete")}>
               {{
                 reference: () => (
-                  <el-button
-                    text
-                    type="danger"
-                    size="small"
-                    class="operation-button"
-                    icon="delete"
-                  >
+                  <el-button text type="danger" size="small" class="operation-button" icon="delete">
                     删除
                   </el-button>
                 ),
@@ -453,7 +442,7 @@ export function useTableHook() {
         })
     }
     // ElMessageBox.confirm(
-    //   `确认要<strong>${row.status === 0 ? "停用" : "启用"}</strong><strong style="color:var(--el-color-primary)">${
+    //   `确认要<strong>${scope.row.status === 0 ? "停用" : "启用"}</strong><strong style="color:var(--el-color-primary)">${
     //     row.username
     //   }</strong>用户吗?`,
     //   "系统提示",
@@ -524,9 +513,7 @@ export function useTableHook() {
     console.log("handleCheckAllChange ", val, columnFields.value)
     isIndeterminate.value = false
     checkedColumnFields.value = val ? columnFields.value : []
-    columnFields.value.map((column) =>
-      val ? (column.hidden = false) : (column.hidden = true)
-    )
+    columnFields.value.map((column) => (val ? (column.hidden = false) : (column.hidden = true)))
   }
 
   // 已选列表发送变化
@@ -539,9 +526,7 @@ export function useTableHook() {
   // 当前选择的列
   function handleCheckedColumnChange(val: boolean, element: any) {
     console.log("handleCheckedColumnChange ", val, element)
-    columnFields.value.filter(
-      (item) => item.title === element.title
-    )[0].hidden = !val
+    columnFields.value.filter((item) => item.title === element.title)[0].hidden = !val
   }
 
   function resetForm(row) {
@@ -568,9 +553,7 @@ export function useTableHook() {
     checkAllColumns.value = true
     isIndeterminate.value = false
     columnFields.value = getColumnFields(handleStatusChange)
-    checkedColumnFields.value = columnFields.value.filter(
-      (column) => column.hidden != true
-    )
+    checkedColumnFields.value = columnFields.value.filter((column) => column.hidden != true)
     console.log("columnFields", columnFields.value)
     console.log("checkedColumnFields", checkedColumnFields.value)
   }

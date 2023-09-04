@@ -38,21 +38,7 @@ export const defaultPaginationData: Pagination = {
   layout: "total, sizes, prev, pager, next, jumper",
 }
 
-export interface FormField {
-  type?: RenderType
-  render?: (field: FormField, model: any) => VNode
-
-  label: string
-  field: string
-  default?: any
-  hidden?: boolean
-  // value?: any
-  placeholder?: string
-  options?: Option[]
-  flag?: string
-  rule?: string
-}
-
+// 表单字段类型
 export enum RenderType {
   Input = "input",
   Select = "select",
@@ -61,6 +47,32 @@ export enum RenderType {
   Number = "number",
 }
 
+// 表单字段定义
+export interface FormField {
+  /** 表单类型 */
+  type?: RenderType
+  /** 自定义渲染方法 */
+  render?: (field: FormField, model: any) => VNode
+
+  /** 字段展示名称 name */
+  label: string
+  /** 字段名称 key */
+  field: string
+  /** 字段默认值 */
+  default?: any
+  /** 是否隐藏表单项 */
+  hidden?: boolean
+  /** 提示信息 */
+  placeholder?: string
+  /** 选项 */
+  options?: Option[]
+
+  /** 搜索校验规则 */
+  flag?: string
+  rule?: string
+}
+
+// 表单字段的选项
 interface Option {
   // 展示的标签
   label: string

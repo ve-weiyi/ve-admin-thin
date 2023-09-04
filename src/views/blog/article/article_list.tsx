@@ -1,5 +1,5 @@
 import { FormField, RenderType } from "@/utils/render"
-import { Column } from "element-plus"
+import { Column, ElMessage } from "element-plus"
 import { Timer } from "@element-plus/icons-vue"
 import {
   createArticleApi,
@@ -9,6 +9,7 @@ import {
   findArticleListDetailsApi,
 } from "@/api/article"
 import { getCurrentInstance } from "vue"
+import { updateUserStatusApi } from "@/api/user"
 
 const align = "center"
 
@@ -37,10 +38,10 @@ function getColumnFields(): Column[] {
       dataKey: "article_cover",
       width: 120,
       align: align,
-      cellRenderer: (row: any) => {
+      cellRenderer: (scope: any) => {
         return (
           <div>
-            <el-image class="article-cover" src={row.article_cover} />
+            <el-image class="article-cover" src={scope.row.article_cover} />
           </div>
         )
       },
@@ -65,11 +66,13 @@ function getColumnFields(): Column[] {
       dataKey: "article_tag_list",
       width: 180,
       align: align,
-      cellRenderer: (row: any) => {
+      cellRenderer: (scope: any) => {
         return (
           <div style={"display: flex;flex-wrap: wrap;"}>
-            {row.article_tag_list.map((item: any) => {
-              return <el-tag style={"margin-right:0.2rem;margin-top:0.2rem"}>{item.tag_name}</el-tag>
+            {scope.row.article_tag_list.map((item: any) => {
+              return (
+                <el-tag style={"margin-right:0.2rem;margin-top:0.2rem"}>{item.tag_name}</el-tag>
+              )
             })}
           </div>
         )
@@ -102,18 +105,25 @@ function getColumnFields(): Column[] {
       dataKey: "is_top",
       width: 0,
       align: align,
-      cellRenderer: (row: any) => {
-        if (row.path === "") {
+      cellRenderer: (scope: any) => {
+        if (scope.row.path === "") {
           return <div></div>
         }
         return (
           <el-switch
-            v-model={row.is_top}
-            active-color="#13ce66"
-            inactive-color="#F4F4F5"
+            v-model={scope.row.is_top}
             active-value={true}
             inactive-value={false}
-            onClick={() => exposed.onUpdate(row)}
+            active-color="#13ce66"
+            inactive-color="#F4F4F5"
+            active-text="置顶"
+            inactive-text="普通"
+            inline-prompt
+            onChange={() => {
+              updateArticleApi(scope.row).then((res) => {
+                ElMessage.success("更新状态成功")
+              })
+            }}
           />
         )
       },
@@ -125,13 +135,13 @@ function getColumnFields(): Column[] {
       width: 0,
       align: align,
       sortable: true,
-      cellRenderer: (row: any) => {
+      cellRenderer: (scope: any) => {
         return (
           <div>
             <el-icon style={"margin-right: 2px"}>
               <Timer />
             </el-icon>
-            <span>{new Date(row.created_at).toLocaleDateString()}</span>
+            <span>{new Date(scope.row.created_at).toLocaleDateString()}</span>
           </div>
         )
       },
@@ -142,7 +152,7 @@ function getColumnFields(): Column[] {
       dataKey: "operation",
       width: 150,
       align: align,
-      cellRenderer: (row: any) => {
+      cellRenderer: (scope: any) => {
         return (
           <div>
             <el-button
@@ -151,7 +161,7 @@ function getColumnFields(): Column[] {
               type="primary"
               size="small"
               icon="Plus"
-              onClick={() => exposed.handleFormVisibility(row, "add")}
+              onClick={() => exposed.handleFormVisibility(scope.row, "add")}
             >
               新增
             </el-button>
@@ -161,11 +171,11 @@ function getColumnFields(): Column[] {
               type="primary"
               size="small"
               icon="editPen"
-              onClick={() => exposed.handleFormVisibility(row, "edit")}
+              onClick={() => exposed.handleFormVisibility(scope.row, "edit")}
             >
               修改
             </el-button>
-            <el-popconfirm title="确定删除吗？" onConfirm={() => exposed.onDelete(row)}>
+            <el-popconfirm title="确定删除吗？" onConfirm={() => exposed.onDelete(scope.row)}>
               {{
                 reference: () => (
                   <el-button text type="danger" size="small" class="operation-button" icon="delete">

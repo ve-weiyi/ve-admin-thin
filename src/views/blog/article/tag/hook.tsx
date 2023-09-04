@@ -1,6 +1,20 @@
 import { ComponentInternalInstance, getCurrentInstance, onMounted, reactive, ref } from "vue"
-import { Column, ElMessage, ElMessageBox, FormInstance, FormRules, TableInstance } from "element-plus"
-import { defaultPaginationData, Pagination, Sort, Condition, FormField, RenderType } from "@/utils/render"
+import {
+  Column,
+  ElMessage,
+  ElMessageBox,
+  FormInstance,
+  FormRules,
+  TableInstance,
+} from "element-plus"
+import {
+  defaultPaginationData,
+  Pagination,
+  Sort,
+  Condition,
+  FormField,
+  RenderType,
+} from "@/utils/render"
 import { FixedDir } from "element-plus/es/components/table-v2/src/constants"
 import { ElTag } from "element-plus"
 import { Timer } from "@element-plus/icons-vue"
@@ -41,13 +55,13 @@ function getColumnFields(): Column[] {
       dataKey: "tag_name",
       width: 0,
       align: align,
-      cellRenderer: (row: any) => {
+      cellRenderer: (scope: any) => {
         return (
           <div>
             <el-tag>{row.tag_name}</el-tag>
           </div>
         )
-      }
+      },
     },
     {
       key: "article_count",
@@ -63,13 +77,13 @@ function getColumnFields(): Column[] {
       width: 170,
       align: align,
       sortable: true,
-      cellRenderer: (row: any) => {
+      cellRenderer: (scope: any) => {
         return (
           <div>
             <el-icon style="margin-right: 2px">
               <Timer />
             </el-icon>
-            <span>{new Date(row.created_at).toLocaleString()}</span>
+            <span>{new Date(scope.row.created_at).toLocaleString()}</span>
           </div>
         )
       },
@@ -79,15 +93,22 @@ function getColumnFields(): Column[] {
       title: "操作",
       width: 140,
       align: align,
-      cellRenderer: (row: any) => {
+      cellRenderer: (scope: any) => {
         return (
           <div>
             {
-              <el-button type="primary" size="default" onClick={() => instance.exposed.handleFormVisibility(row)}>
+              <el-button
+                type="primary"
+                size="default"
+                onClick={() => instance.exposed.handleFormVisibility(scope.row)}
+              >
                 编辑
               </el-button>
             }
-            <el-popconfirm title="确定删除吗？" onConfirm={() => instance.exposed.onDelete(row)}>
+            <el-popconfirm
+              title="确定删除吗？"
+              onConfirm={() => instance.exposed.onDelete(scope.row)}
+            >
               {{
                 reference: () => (
                   <el-button type="danger" size="default">

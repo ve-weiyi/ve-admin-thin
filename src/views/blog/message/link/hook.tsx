@@ -1,6 +1,6 @@
 import { ComponentInternalInstance, getCurrentInstance, onMounted, reactive, ref } from "vue"
-import { Column, ElMessage, ElMessageBox, FormInstance, FormRules, TableInstance } from "element-plus"
-import { defaultPaginationData, Pagination, Sort, Condition, FormField, RenderType } from "@/utils/render"
+import { Column, ElMessage, ElMessageBox } from "element-plus"
+import { FormField, RenderType } from "@/utils/render"
 import { FixedDir } from "element-plus/es/components/table-v2/src/constants"
 import { ElTag } from "element-plus"
 import { Timer } from "@element-plus/icons-vue"
@@ -41,10 +41,10 @@ function getColumnFields(): Column[] {
       dataKey: "link_avatar",
       width: 100,
       align: align,
-      cellRenderer: (row: any) => {
+      cellRenderer: (scope: any) => {
         return (
           <div>
-            <img src={row.link_avatar} width="40" height="40" />
+            <img src={scope.row.link_avatar} width="40" height="40" />
           </div>
         )
       },
@@ -69,10 +69,10 @@ function getColumnFields(): Column[] {
       dataKey: "link_intro",
       width: 0,
       align: align,
-      cellRenderer: (row: any) => {
+      cellRenderer: (scope: any) => {
         return (
           <div>
-            <div v-html={row.link_intro}></div>
+            <div v-html={scope.row.link_intro}></div>
           </div>
         )
       },
@@ -84,13 +84,13 @@ function getColumnFields(): Column[] {
       width: 170,
       align: align,
       sortable: true,
-      cellRenderer: (row: any) => {
+      cellRenderer: (scope: any) => {
         return (
           <div>
             <el-icon style="margin-right: 2px">
               <Timer />
             </el-icon>
-            <span>{new Date(row.created_at).toLocaleString()}</span>
+            <span>{new Date(scope.row.created_at).toLocaleString()}</span>
           </div>
         )
       },
@@ -100,15 +100,22 @@ function getColumnFields(): Column[] {
       title: "操作",
       width: 140,
       align: align,
-      cellRenderer: (row: any) => {
+      cellRenderer: (scope: any) => {
         return (
           <div>
             {
-              <el-button type="primary" size="default" onClick={() => instance.exposed.handleFormVisibility(row)}>
+              <el-button
+                type="primary"
+                size="default"
+                onClick={() => instance.exposed.handleFormVisibility(scope.row)}
+              >
                 编辑
               </el-button>
             }
-            <el-popconfirm title="确定删除吗？" onConfirm={() => instance.exposed.onDelete(row)}>
+            <el-popconfirm
+              title="确定删除吗？"
+              onConfirm={() => instance.exposed.onDelete(scope.row)}
+            >
               {{
                 reference: () => (
                   <el-button type="danger" size="default">

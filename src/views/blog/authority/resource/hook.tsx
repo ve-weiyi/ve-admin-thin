@@ -112,11 +112,11 @@ function getColumnFields(): Column[] {
       dataKey: "method",
       width: 100,
       align: align,
-      cellRenderer: (row: any) => {
-        if (row.path === "") {
+      cellRenderer: (scope: any) => {
+        if (scope.row.path === "") {
           return <div></div>
         }
-        return <el-tag type={tagType(row.method)}>{row.method}</el-tag>
+        return <el-tag type={tagType(scope.row.method)}>{scope.row.method}</el-tag>
       },
     },
     {
@@ -125,19 +125,19 @@ function getColumnFields(): Column[] {
       dataKey: "traceable",
       width: 120,
       align: align,
-      cellRenderer: (row: any) => {
-        if (row.path === "") {
+      cellRenderer: (scope: any) => {
+        if (scope.row.path === "") {
           return <div></div>
         }
         return (
           <el-switch
-            v-model={row.traceable}
+            v-model={scope.row.traceable}
             active-color="#13ce66"
             inactive-color="#F4F4F5"
             active-value={1}
             inactive-value={0}
             onClick={() => {
-              updateApiApi(row).then((res) => {
+              updateApiApi(scope.row).then((res) => {
                 ElMessage.success("更新状态成功")
               })
             }}
@@ -152,13 +152,13 @@ function getColumnFields(): Column[] {
       width: 0,
       align: align,
       sortable: true,
-      cellRenderer: (row: any) => {
+      cellRenderer: (scope: any) => {
         return (
           <div>
             <el-icon style="margin-right: 2px">
               <Timer />
             </el-icon>
-            <span>{new Date(row.created_at).toLocaleString()}</span>
+            <span>{new Date(scope.row.created_at).toLocaleString()}</span>
           </div>
         )
       },
@@ -169,7 +169,7 @@ function getColumnFields(): Column[] {
       dataKey: "operation",
       width: 150,
       align: align,
-      cellRenderer: (row: any) => {
+      cellRenderer: (scope: any) => {
         return (
           <div>
             <el-button
@@ -178,7 +178,7 @@ function getColumnFields(): Column[] {
               type="primary"
               size="small"
               icon="Plus"
-              onClick={() => instance.exposed.handleFormVisibility({ parent_id: row.id })}
+              onClick={() => instance.exposed.handleFormVisibility({ parent_id: scope.row.id })}
             >
               新增
             </el-button>
@@ -188,14 +188,14 @@ function getColumnFields(): Column[] {
               type="primary"
               size="small"
               icon="editPen"
-              onClick={() => instance.exposed.handleFormVisibility(row)}
+              onClick={() => instance.exposed.handleFormVisibility(scope.row)}
             >
               修改
             </el-button>
             <el-popconfirm
               title="确定删除吗？"
               onConfirm={() => {
-                deleteApiApi(row).then((res) => {
+                deleteApiApi(scope.row).then((res) => {
                   ElMessage.success("删除成功")
                 })
               }}

@@ -1,6 +1,6 @@
 import { ComponentInternalInstance, getCurrentInstance, onMounted, reactive, ref } from "vue"
-import { Column, ElMessage, ElMessageBox, FormInstance, FormRules, TableInstance } from "element-plus"
-import { defaultPaginationData, Pagination, Sort, Condition, FormField, RenderType } from "@/utils/render"
+import { Column, ElMessage, ElMessageBox } from "element-plus"
+import { FormField, RenderType } from "@/utils/render"
 import { FixedDir } from "element-plus/es/components/table-v2/src/constants"
 import { ElTag } from "element-plus"
 import { Timer } from "@element-plus/icons-vue"
@@ -56,10 +56,10 @@ function getColumnFields(): Column[] {
       dataKey: "avatar",
       width: 80,
       align: align,
-      cellRenderer: (row: any) => {
+      cellRenderer: (scope: any) => {
         return (
           <div>
-            <img src={row.avatar} width="40" height="40" />
+            <img src={scope.row.avatar} width="40" height="40" />
           </div>
         )
       },
@@ -89,15 +89,15 @@ function getColumnFields(): Column[] {
       key: "comment_content",
       title: "评论内容",
       dataKey: "comment_content",
-      width: 140,
+      width: 0,
       align: align,
-      cellRenderer: (row: any) => {
+      cellRenderer: (scope: any) => {
         return (
           <div>
-           <div v-html={row.comment_content}></div>
+            <div v-html={scope.row.comment_content}></div>
           </div>
         )
-      }
+      },
     },
     {
       key: "is_review",
@@ -105,12 +105,12 @@ function getColumnFields(): Column[] {
       dataKey: "is_review",
       width: 80,
       align: align,
-      cellRenderer: (row: any) => {
+      cellRenderer: (scope: any) => {
         return (
           <div>
             <span>
-              {row.is_review === true && <ElTag type="success">正常</ElTag>}
-              {row.is_review === false && <ElTag type="warning">审核中</ElTag>}
+              {scope.row.is_review === true && <ElTag type="success">正常</ElTag>}
+              {scope.row.is_review === false && <ElTag type="warning">审核中</ElTag>}
             </span>
           </div>
         )
@@ -122,13 +122,13 @@ function getColumnFields(): Column[] {
       dataKey: "type",
       width: 80,
       align: align,
-      cellRenderer: (row: any) => {
+      cellRenderer: (scope: any) => {
         return (
           <div>
             <span>
-              {row.type === 1 && <ElTag>文章</ElTag>}
-              {row.type === 2 && <ElTag type="warning">友链</ElTag>}
-              {row.type === 3 && <ElTag type="danger">说说</ElTag>}
+              {scope.row.type === 1 && <ElTag>文章</ElTag>}
+              {scope.row.type === 2 && <ElTag type="warning">友链</ElTag>}
+              {scope.row.type === 3 && <ElTag type="danger">说说</ElTag>}
             </span>
           </div>
         )
@@ -141,13 +141,13 @@ function getColumnFields(): Column[] {
       width: 170,
       align: align,
       sortable: true,
-      cellRenderer: (row: any) => {
+      cellRenderer: (scope: any) => {
         return (
           <div>
             <el-icon style="margin-right: 2px">
               <Timer />
             </el-icon>
-            <span>{new Date(row.created_at).toLocaleString()}</span>
+            <span>{new Date(scope.row.created_at).toLocaleString()}</span>
           </div>
         )
       },
@@ -157,15 +157,22 @@ function getColumnFields(): Column[] {
       title: "操作",
       width: 140,
       align: align,
-      cellRenderer: (row: any) => {
+      cellRenderer: (scope: any) => {
         return (
           <div>
-            {row.is_review === false && (
-              <el-button type="success" size="default" onClick={() => instance.exposed.handleFormVisibility(row)}>
+            {scope.row.is_review === false && (
+              <el-button
+                type="success"
+                size="default"
+                onClick={() => instance.exposed.handleFormVisibility(scope.row)}
+              >
                 通过
               </el-button>
             )}
-            <el-popconfirm title="确定删除吗？" onConfirm={() => instance.exposed.onDelete(row)}>
+            <el-popconfirm
+              title="确定删除吗？"
+              onConfirm={() => instance.exposed.onDelete(scope.row)}
+            >
               {{
                 reference: () => (
                   <el-button type="danger" size="default">
