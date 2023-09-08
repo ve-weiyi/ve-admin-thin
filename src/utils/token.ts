@@ -12,6 +12,8 @@ export interface Token {
   refresh_token: string
   /** `refreshToken`的过期时间（时间戳） */
   refresh_expires_in: number
+  /** 用户`uid` */
+  uid: string
   /** 用户信息 */
   user_info: any
   /** 用户登录历史 */

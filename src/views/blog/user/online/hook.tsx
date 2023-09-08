@@ -187,16 +187,20 @@ function getSearchFields(): FormField[] {
       type: RenderType.Input,
       label: "系统模块",
       field: "opt_module",
-      flag: "and",
-      rule: "like",
+      searchRules: {
+        flag: "and",
+        rule: "like",
+      },
     },
     {
       type: RenderType.Select,
       label: "操作类型",
       field: "opt_type",
-      flag: "and",
-      rule: "=",
       options: options,
+      searchRules: {
+        flag: "and",
+        rule: "=",
+      },
     },
   ]
 }

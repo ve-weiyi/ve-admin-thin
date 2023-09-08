@@ -1,5 +1,5 @@
 import http from "@/utils/request"
-import { Menu } from './types'
+import { Menu, MenuDetails } from './types'
 
 /** 创建菜单 */
 export function createMenuApi(data: Menu): Promise<IApiResponseData<Menu>> {

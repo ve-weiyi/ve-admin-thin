@@ -109,7 +109,7 @@ const updateInfo = () => {
     ElMessage.error("昵称不能为空")
     return false
   }
-  updateUserAvatarApi()
+  // updateUserAvatarApi()
   axios.put("/api/users/info", infoForm.value).then(({ data }) => {
     if (data.flag) {
       ElMessage.success(data.message)

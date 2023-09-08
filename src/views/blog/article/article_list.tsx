@@ -197,22 +197,28 @@ function getSearchFields(): FormField[] {
       type: RenderType.Input,
       label: "文章标题",
       field: "article_title",
-      flag: "and",
-      rule: "like",
+      searchRules: {
+        flag: "and",
+        rule: "like",
+      },
     },
     {
       type: RenderType.Input,
       label: "文章分类",
       field: "category_name",
-      flag: "and",
-      rule: "=",
+      searchRules: {
+        flag: "and",
+        rule: "=",
+      },
     },
     {
       type: RenderType.Input,
       label: "文章标签",
       field: "tag_name",
-      flag: "and",
-      rule: "=",
+      searchRules: {
+        flag: "and",
+        rule: "=",
+      },
     },
   ]
 }

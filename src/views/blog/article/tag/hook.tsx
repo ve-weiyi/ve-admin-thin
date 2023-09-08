@@ -7,14 +7,7 @@ import {
   FormRules,
   TableInstance,
 } from "element-plus"
-import {
-  defaultPaginationData,
-  Pagination,
-  Sort,
-  Condition,
-  FormField,
-  RenderType,
-} from "@/utils/render"
+import { FormField, RenderType } from "@/utils/render"
 import { FixedDir } from "element-plus/es/components/table-v2/src/constants"
 import { ElTag } from "element-plus"
 import { Timer } from "@element-plus/icons-vue"
@@ -58,7 +51,7 @@ function getColumnFields(): Column[] {
       cellRenderer: (scope: any) => {
         return (
           <div>
-            <el-tag>{row.tag_name}</el-tag>
+            <el-tag>{scope.row.tag_name}</el-tag>
           </div>
         )
       },
@@ -131,8 +124,10 @@ function getSearchFields(): FormField[] {
       type: RenderType.Input,
       label: "标签名称",
       field: "tag_name",
-      flag: "and",
-      rule: "like",
+      searchRules: {
+        flag: "and",
+        rule: "like",
+      },
     },
   ]
 }

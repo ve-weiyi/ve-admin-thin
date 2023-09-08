@@ -1,24 +1,5 @@
 import { VNode, Ref, toRef } from "vue"
-
-/** 分页请求参数 */
-interface Page {
-  page?: number
-  page_size?: number
-  sorts?: Sort[]
-  conditions?: Condition[]
-}
-
-export interface Sort {
-  field: string
-  order: string
-}
-
-export interface Condition {
-  flag?: string
-  field: string
-  value?: any
-  rule?: "like" | "=" | ">" | "<" | string
-}
+import { FormRules } from "element-plus"
 
 /** 表格分页参数 */
 export interface Pagination {
@@ -40,11 +21,19 @@ export const defaultPaginationData: Pagination = {
 
 // 表单字段类型
 export enum RenderType {
+  Textarea = "textarea",
   Input = "input",
   Select = "select",
   Tag = "tag",
   Radio = "radio",
   Number = "number",
+}
+
+/** 搜索校验规则 */
+interface SearchRules {
+  field?: string
+  rule?: "like" | "=" | ">" | "<" | string
+  flag?: string
 }
 
 // 表单字段定义
@@ -64,12 +53,13 @@ export interface FormField {
   hidden?: boolean
   /** 提示信息 */
   placeholder?: string
-  /** 选项 */
+  /** 可选项 */
   options?: Option[]
 
-  /** 搜索校验规则 */
-  flag?: string
-  rule?: string
+  /** 表单校验规则 */
+  formRules?: FormRules
+  /** 列表搜索规则 */
+  searchRules?: SearchRules
 }
 
 // 表单字段的选项
@@ -93,6 +83,14 @@ export function formRender(field: FormField, model: any): VNode {
     case RenderType.Input:
       return (
         <el-input v-model={model[field.field]} clearable placeholder={`请输入${field.label}`} />
+      )
+    case RenderType.Textarea:
+      return (
+        <el-input
+          v-model={model[field.field]}
+          type="textarea"
+          placeholder={`请输入${field.label}`}
+        />
       )
     case RenderType.Select:
       return (

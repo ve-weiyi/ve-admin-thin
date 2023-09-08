@@ -19,7 +19,6 @@ interface PageQuery {
   conditions?: Condition[]
 }
 
-
 interface Sort {
   field: string
   order: string
@@ -29,5 +28,5 @@ interface Condition {
   flag?: string
   field: string
   value?: any
-  rule?: "like" | "=" | ">" | "<" |string
+  rule?: "like" | "=" | ">" | "<" | string
 }

@@ -114,7 +114,7 @@ class HttpRequest {
     const tk = getToken()
     if (tk) {
       config.headers!.token = tk?.access_token
-      config.headers!.uid = tk?.user_info.uid
+      config.headers!.uid = tk?.uid
     }
   }
 
@@ -178,9 +178,7 @@ class HttpRequest {
         }
         const isTimeout = error.message.includes("timeout")
         ElMessage({
-          message: isTimeout
-            ? "网络请求超时"
-            : error.message || "连接到服务器失败",
+          message: isTimeout ? "网络请求超时" : error.message || "连接到服务器失败",
           type: "error",
           duration: 2 * 1000,
         })

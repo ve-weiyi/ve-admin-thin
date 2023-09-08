@@ -7,14 +7,7 @@ import {
   FormRules,
   TableInstance,
 } from "element-plus"
-import {
-  defaultPaginationData,
-  Pagination,
-  Sort,
-  Condition,
-  FormField,
-  RenderType,
-} from "@/utils/render"
+import { FormField, RenderType } from "@/utils/render"
 import { FixedDir } from "element-plus/es/components/table-v2/src/constants"
 import { ElTag } from "element-plus"
 import { Timer } from "@element-plus/icons-vue"
@@ -169,8 +162,10 @@ function getSearchFields(): FormField[] {
       type: RenderType.Input,
       label: "用户昵称",
       field: "nickname",
-      flag: "and",
-      rule: "like",
+      searchRules: {
+        flag: "and",
+        rule: "like",
+      },
     },
   ]
 }

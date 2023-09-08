@@ -195,16 +195,20 @@ function getSearchFields(): FormField[] {
       type: RenderType.Select,
       label: "来源",
       field: "type",
-      flag: "and",
-      rule: "=",
       options: options,
+      searchRules: {
+        flag: "and",
+        rule: "=",
+      },
     },
     {
       type: RenderType.Input,
       label: "用户昵称",
       field: "nickname",
-      flag: "and",
-      rule: "like",
+      searchRules: {
+        flag: "and",
+        rule: "like",
+      },
     },
   ]
 }

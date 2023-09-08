@@ -1,9 +1,9 @@
 import http from "@/utils/request"
-import { ChatMessage } from "./types"
+import { ChatMessage, ChatResponse } from './types'
 
 /** 和Chatgpt聊天 */
-export function chatAIApi(data: ChatMessage[]): Promise<IApiResponseData<any>> {
-  return http.request<IApiResponseData<any>>({
+export function chatAIApi(data: ChatMessage[]): Promise<IApiResponseData<ChatResponse>> {
+  return http.request<IApiResponseData<ChatResponse>>({
     url: `/api/v1/ai/chat`,
     method: "post",
     data: data,
@@ -11,8 +11,8 @@ export function chatAIApi(data: ChatMessage[]): Promise<IApiResponseData<any>> {
 }
 
 /** Chatgpt扮演角色 */
-export function chatCosApi(data: string): Promise<IApiResponseData<any>> {
-  return http.request<IApiResponseData<any>>({
+export function chatCosApi(data: string): Promise<IApiResponseData<ChatResponse>> {
+  return http.request<IApiResponseData<ChatResponse>>({
     url: `/api/v1/ai/cos`,
     method: "post",
     data: data,

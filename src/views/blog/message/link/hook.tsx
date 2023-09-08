@@ -138,8 +138,10 @@ function getSearchFields(): FormField[] {
       type: RenderType.Input,
       label: "链接名称",
       field: "link_name",
-      flag: "and",
-      rule: "like",
+      searchRules: {
+        flag: "and",
+        rule: "like",
+      },
     },
   ]
 }
@@ -163,7 +165,7 @@ function getFormFields(model: FriendLink): FormField[] {
       label: "链接地址",
     },
     {
-      type: RenderType.Input,
+      type: RenderType.Textarea,
       field: "link_intro",
       label: "链接介绍",
     },

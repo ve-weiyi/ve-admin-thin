@@ -1,3 +1,4 @@
+
 export interface Api {
   id?: number // 主键id
   name?: string // api名称
@@ -350,6 +351,11 @@ export interface UpdateRoleResources {
   resource_ids?: number[]
 }
 
+export interface WebsiteConfig {
+  key?: string
+  value?: string
+}
+
 export interface ArticleDTO {
   id?: number // 文章ID
   article_cover?: string // 文章缩略图
@@ -425,9 +431,11 @@ export interface BlogHomeInfoDTO {
   page_list?: PageVO[] // 页面列表
 }
 
-export interface WebsiteConfigVO {}
+export interface WebsiteConfigVO {
+}
 
-export interface PageVO {}
+export interface PageVO {
+}
 
 export interface BlogBackInfoDTO {
   views_count?: number // 访问量
@@ -522,15 +530,18 @@ export interface Token {
   expires_in?: number // 访问token过期时间
   refresh_token?: string // 刷新token,过期时间较长。30d
   refresh_expires_in?: number // 刷新token过期时间
+  uid?: number // 用户id
 }
 
 export interface UserInfo {
-  uid?: number
+  id?: number
   username?: string
+  status?: number
   nickname?: string
   avatar?: string
   intro?: string
   email?: string
+  created_at?: string
   roles?: Role[]
 }
 

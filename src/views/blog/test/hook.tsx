@@ -33,16 +33,20 @@ function getSearchFields(): FormField[] {
       type: RenderType.Input,
       label: "名称",
       field: "name",
-      flag: "and",
-      rule: "like",
+      searchRules: {
+        flag: "and",
+        rule: "like",
+      },
     },
     {
       type: RenderType.Select,
       label: "请求方法",
       field: "method",
-      flag: "and",
-      rule: "=",
       options: methodOpt,
+      searchRules: {
+        flag: "and",
+        rule: "=",
+      },
     },
   ]
 }

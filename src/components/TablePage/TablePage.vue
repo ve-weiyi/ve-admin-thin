@@ -267,11 +267,9 @@
 import { computed, defineComponent, getCurrentInstance, onMounted, reactive, ref } from "vue"
 import {
   builderFormRender,
-  Condition,
   defaultPaginationData,
   FormField,
   Pagination,
-  Sort,
 } from "@/utils/render"
 import { Column, ElMessage, FormInstance, FormRules, TableInstance } from "element-plus"
 import { MenuDetails } from "@/api/types"
@@ -387,7 +385,7 @@ const conditions = reactive<Condition[]>([])
 const sorts = reactive<Sort[]>([])
 
 function onSearchList() {
-  console.log("onSearchList", searchData.value, orderData.value)
+  // console.log("onSearchList", searchData.value, orderData.value)
 
   conditions.length = 0
   sorts.length = 0
@@ -397,10 +395,10 @@ function onSearchList() {
     const item = searchFields.value.find((v) => v.field === key)
     const value = searchData.value[key]
     conditions.push({
-      flag: item?.flag || "and",
+      flag: item?.searchRules.flag || "and",
       field: key,
       value: value,
-      rule: item?.rule || "=",
+      rule: item?.searchRules.rule || "=",
     })
   }
 
@@ -605,7 +603,7 @@ function resetForm(row) {
     formData.value = {}
   }
 
-  console.log("resetForm", formData.value)
+  // console.log("resetForm", formData.value)
   formFields.value = props.getFormFields(formData.value)
 }
 
@@ -621,8 +619,8 @@ function resetTable() {
   isIndeterminate.value = false
   columnFields.value = props.getColumnFields()
   checkedColumnFields.value = columnFields.value.filter((column) => column.hidden != true)
-  console.log("columnFields", columnFields.value)
-  console.log("checkedColumnFields", checkedColumnFields.value)
+  // console.log("columnFields", columnFields.value)
+  // console.log("checkedColumnFields", checkedColumnFields.value)
 }
 
 onMounted(() => {

@@ -1,32 +1,17 @@
-import { getCurrentInstance } from "vue"
-import { Column, ElMessage } from "element-plus"
-import { FormField, RenderType } from "@/utils/render"
+import { onMounted, reactive, ref, VNode } from "vue"
+import { Column, ElMessage, ElMessageBox } from "element-plus"
+import { defaultPaginationData, FormField, RenderType } from "@/utils/render"
+import {
+  createRoleApi,
+  deleteRoleByIdsApi,
+  deleteRoleApi,
+  updateRoleApi,
+  findRoleListDetailsApi,
+} from "@/api/role"
+
 import { Timer } from "@element-plus/icons-vue"
 
-import {
-  createApiApi,
-  deleteApiApi,
-  deleteApiByIdsApi,
-  findApiListDetailsApi,
-  updateApiApi,
-} from "@/api/api"
-
 const align = "center"
-
-const tagType = (type) => {
-  switch (type) {
-    case "GET":
-      return "info"
-    case "POST":
-      return "success"
-    case "PUT":
-      return "warning"
-    case "DELETE":
-      return "danger"
-    default:
-      return ""
-  }
-}
 
 const methodOpt = [
   {
@@ -54,9 +39,18 @@ const methodOpt = [
 function getSearchFields(): FormField[] {
   return [
     {
+      type: RenderType.Input,
+      label: "角色名称",
+      field: "role_name",
+      searchRules: {
+        flag: "and",
+        rule: "like",
+      },
+    },
+    {
       type: RenderType.Select,
-      label: "请求方法",
-      field: "method",
+      label: "权限范围",
+      field: "role_domain",
       options: methodOpt,
       searchRules: {
         flag: "and",
@@ -64,9 +58,10 @@ function getSearchFields(): FormField[] {
       },
     },
     {
-      type: RenderType.Input,
-      label: "名称",
-      field: "name",
+      type: RenderType.Select,
+      label: "权限标签",
+      field: "role_comment",
+      options: methodOpt,
       searchRules: {
         flag: "and",
         rule: "like",
@@ -76,7 +71,6 @@ function getSearchFields(): FormField[] {
 }
 
 function getColumnFields(): Column[] {
-  const instance = getCurrentInstance()
   return [
     {
       key: "selection",
@@ -95,36 +89,31 @@ function getColumnFields(): Column[] {
       sortable: true,
     },
     {
-      key: "name",
-      title: "名称",
-      dataKey: "name",
+      key: "role_name",
+      title: "角色名称",
+      dataKey: "role_name",
       width: 120,
       align: align,
     },
     {
-      key: "path",
-      title: "路径",
-      dataKey: "path",
+      key: "role_domain",
+      title: "角色范围",
+      dataKey: "role_domain",
       width: 0,
       align: align,
     },
     {
-      key: "method",
-      title: "方法",
-      dataKey: "method",
-      width: 100,
+      key: "role_comment",
+      title: "角色标签",
+      dataKey: "role_comment",
+      width: 80,
       align: align,
-      cellRenderer: (scope: any) => {
-        if (scope.row.path === "") {
-          return <div></div>
-        }
-        return <el-tag type={tagType(scope.row.method)}>{scope.row.method}</el-tag>
-      },
+      sortable: true,
     },
     {
-      key: "traceable",
-      title: "是否追溯操作",
-      dataKey: "traceable",
+      key: "is_disable",
+      title: "是否启用",
+      dataKey: "is_disable",
       width: 120,
       align: align,
       cellRenderer: (scope: any) => {
@@ -133,16 +122,12 @@ function getColumnFields(): Column[] {
         }
         return (
           <el-switch
-            v-model={scope.row.traceable}
+            v-model={scope.row.is_disable}
             active-color="#13ce66"
             inactive-color="#F4F4F5"
-            active-value={1}
-            inactive-value={0}
-            onClick={() => {
-              updateApiApi(scope.row).then((res) => {
-                ElMessage.success("更新状态成功")
-              })
-            }}
+            active-value={true}
+            inactive-value={false}
+            onClick={() => {}}
           />
         )
       },
@@ -157,10 +142,10 @@ function getColumnFields(): Column[] {
       cellRenderer: (scope: any) => {
         return (
           <div>
-            <el-icon style="margin-right: 2px">
+            <el-icon style={"margin-right: 2px"}>
               <Timer />
             </el-icon>
-            <span>{new Date(scope.row.created_at).toLocaleString()}</span>
+            <span>{new Date(scope.row.created_at).toLocaleDateString()}</span>
           </div>
         )
       },
@@ -180,7 +165,7 @@ function getColumnFields(): Column[] {
               type="primary"
               size="small"
               icon="Plus"
-              onClick={() => instance.exposed.handleFormVisibility({ parent_id: scope.row.id })}
+              onClick={() => {}}
             >
               新增
             </el-button>
@@ -190,18 +175,11 @@ function getColumnFields(): Column[] {
               type="primary"
               size="small"
               icon="editPen"
-              onClick={() => instance.exposed.handleFormVisibility(scope.row)}
+              onClick={() => {}}
             >
               修改
             </el-button>
-            <el-popconfirm
-              title="确定删除吗？"
-              onConfirm={() => {
-                deleteApiApi(scope.row).then((res) => {
-                  ElMessage.success("删除成功")
-                })
-              }}
-            >
+            <el-popconfirm title="确定删除吗？" onConfirm={() => {}}>
               {{
                 reference: () => (
                   <el-button text type="danger" size="small" class="operation-button" icon="delete">
@@ -217,29 +195,22 @@ function getColumnFields(): Column[] {
   ]
 }
 
-function getFormFields(model): FormField[] {
+function getFormFields(row: any): FormField[] {
   return [
     {
       type: RenderType.Input,
-      field: "parent_id",
-      label: "接口分组",
-      hidden: model.parent_id === 0,
+      field: "role_name",
+      label: "角色名称",
     },
     {
       type: RenderType.Input,
-      field: "name",
-      label: "接口名称",
+      field: "role_domain",
+      label: "权限访问",
     },
     {
       type: RenderType.Input,
-      field: "path",
-      label: "接口路径",
-    },
-    {
-      type: RenderType.Radio,
-      field: "method",
-      label: "请求方式",
-      options: methodOpt,
+      field: "role_comment",
+      label: "角色标签",
     },
   ]
 }
@@ -248,15 +219,15 @@ function handleApi(event: string, data: any) {
   console.log("event", event)
   switch (event) {
     case "create":
-      return createApiApi(data)
+      return createRoleApi(data)
     case "update":
-      return updateApiApi(data)
+      return updateRoleApi(data)
     case "delete":
-      return deleteApiApi(data)
+      return deleteRoleApi(data)
     case "deleteByIds":
-      return deleteApiByIdsApi(data)
+      return deleteRoleByIdsApi(data)
     case "list":
-      return findApiListDetailsApi(data)
+      return findRoleListDetailsApi(data)
     default:
       return
   }
