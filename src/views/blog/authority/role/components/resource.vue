@@ -29,14 +29,14 @@
 <script lang="ts" setup>
 import { defineComponent, nextTick, ref, watch } from "vue"
 import { type FormInstance, type FormRules, ElMessage, ElMessageBox, ElTree } from "element-plus"
-import { findApiListDetailsApi } from "@/api/api"
+import { findApiDetailsListApi } from "@/api/api"
 
 // 父组件向子组件传输的数据
 const props = defineProps({
   row: {
     type: Array,
     required: false,
-    default: function () {
+    default: function() {
       return []
     },
   },
@@ -51,14 +51,14 @@ const resourceTreeData = ref([])
 const defaultCheckIds = ref([])
 const resourceDefaultProps = ref({
   children: "children",
-  label: function (data) {
+  label: function(data) {
     return data.name
   },
 })
 
 const getTableData = () => {
   defaultCheckIds.value = props.row
-  findApiListDetailsApi({}).then((res) => {
+  findApiDetailsListApi({}).then((res) => {
     resourceTreeData.value = res.data.list
   })
 }

@@ -6,7 +6,7 @@ import {
   deleteArticleApi,
   findArticleListApi,
   updateArticleApi,
-  findArticleListDetailsApi,
+  findArticleDetailsListApi,
 } from "@/api/article"
 import { getCurrentInstance } from "vue"
 import { updateUserStatusApi } from "@/api/user"
@@ -291,7 +291,7 @@ function handleApi(event: string, data: any) {
       return deleteArticleApi(data)
     case "list":
       console.log("list")
-      return findArticleListDetailsApi(data)
+      return findArticleDetailsListApi(data)
     default:
       return
   }

@@ -30,6 +30,7 @@
               </el-button>
             </el-form>
           </div>
+          <Identity/>
         </el-tab-pane>
         <!-- 修改密码 -->
         <el-tab-pane label="修改密码" name="password">
@@ -65,6 +66,7 @@ import { ElMessage } from "element-plus"
 import axios from "axios"
 import { useAdminStore } from "@/store/modules/admin"
 import { updateUserAvatarApi } from "@/api/user"
+import Identity from "./components/Identity.vue"
 
 // 获取缓存信息
 const store = useAdminStore()

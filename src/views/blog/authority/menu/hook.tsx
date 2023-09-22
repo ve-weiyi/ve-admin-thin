@@ -6,7 +6,7 @@ import {
   deleteMenuByIdsApi,
   deleteMenuApi,
   updateMenuApi,
-  findMenuListDetailsApi,
+  findMenuDetailsListApi,
 } from "@/api/menu"
 
 import { Timer } from "@element-plus/icons-vue"
@@ -272,7 +272,7 @@ function handleApi(event: string, data: any) {
     case "deleteByIds":
       return deleteMenuByIdsApi(data)
     case "list":
-      return findMenuListDetailsApi(data)
+      return findMenuDetailsListApi(data)
     default:
       return
   }

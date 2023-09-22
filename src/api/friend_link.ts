@@ -1,5 +1,5 @@
 import http from "@/utils/request"
-import { FriendLink } from './types'
+import { FriendLink } from "./types"
 
 /** 创建友链 */
 export function createFriendLinkApi(data: FriendLink): Promise<IApiResponseData<FriendLink>> {

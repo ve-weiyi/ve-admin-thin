@@ -1,5 +1,5 @@
 import http from "@/utils/request"
-import { Remark } from './types'
+import { Remark } from "./types"
 
 /** 创建留言 */
 export function createRemarkApi(data: Remark): Promise<IApiResponseData<Remark>> {

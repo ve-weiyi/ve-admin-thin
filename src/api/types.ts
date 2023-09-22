@@ -256,6 +256,7 @@ export interface UserLoginHistory {
   id?: number // id
   user_id?: number // 用户id
   login_type?: string // 登录类型
+  agent?: string // 代理
   ip_address?: string // ip host
   ip_source?: string // ip 源
   created_at?: string // 创建时间
@@ -351,7 +352,21 @@ export interface UpdateRoleResources {
   resource_ids?: number[]
 }
 
-export interface WebsiteConfig {
+export interface spanContext {
+  trace_id?: string // TraceID 表示tracer的全局唯一ID
+  span_id?: string // SpanId 标示单个trace中某一个span的唯一ID，在trace中唯一
+}
+
+export interface Span {
+  ctx?: spanContext // 传递的上下文
+  service_name?: string // 服务名
+  operation_name?: string // 操作
+  start_time?: string // 开始时间戳
+  flag?: string // 标记开启trace是 server 还是 client
+  children?: number // 本 span fork出来的 childsnums
+}
+
+export interface WebsiteConfigRequest {
   key?: string
   value?: string
 }
@@ -400,6 +415,12 @@ export interface ArticleDetails {
 export interface TagDTO {
   id?: number // 标签ID
   tag_name?: string // 标签名
+}
+
+export interface CategoryDTO {
+  id?: number
+  category_name?: string // 分类名
+  article_count?: number
 }
 
 export interface ArticlePaginationDTO {
@@ -471,10 +492,18 @@ export interface CaptchaResp {
   length?: number
 }
 
-export interface CategoryDTO {
+export interface CategoryDetailsDTO {
   id?: number
   category_name?: string // 分类名
   article_count?: number
+  created_at?: string // 创建时间
+  updated_at?: string // 更新时间
+}
+
+export interface TagDetailsDTO {
+  id?: number // 标签ID
+  tag_name?: string // 标签名
+  article_count?: number // 文章数量
   created_at?: string // 创建时间
   updated_at?: string // 更新时间
 }
@@ -521,7 +550,7 @@ export interface CommentBackDTO {
 
 export interface Login extends Token {
   user_info?: UserInfo
-  login_info?: LoginInfo
+  login_info?: LoginHistory
 }
 
 export interface Token {
@@ -545,8 +574,9 @@ export interface UserInfo {
   roles?: Role[]
 }
 
-export interface LoginInfo {
+export interface LoginHistory {
   login_type?: string // 登录类型
+  agent?: string // 代理
   ip_address?: string // ip host
   ip_source?: string // ip 源
   login_time?: string // 创建时间
@@ -615,7 +645,7 @@ export interface ChatResponse {
   created?: number // 创建时间戳
   model?: string // 模型名称
   choices?: ChatChoice[] // 生成的回复列表
-  usage?: Usage // API 调用的使用情况
+  usage?: ChatUsage // API 调用的使用情况
 }
 
 export interface ChatChoice {
@@ -624,13 +654,13 @@ export interface ChatChoice {
   finish_reason?: string // 回复的完成原因
 }
 
-export interface Usage {
+export interface ChatUsage {
   prompt_tokens?: number // 提示 tokens 数量
   completion_tokens?: number // 生成回复的 tokens 数量
   total_tokens?: number // 总 tokens 数量
 }
 
-export interface Role {
+export interface ChatRole {
   act?: string
   prompt?: string
 }

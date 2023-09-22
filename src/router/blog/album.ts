@@ -8,7 +8,7 @@ export default {
   meta: {
     title: "相册管理",
     icon: "picture",
-    rank: 12,
+    rank: 40,
   },
   children: [
     {

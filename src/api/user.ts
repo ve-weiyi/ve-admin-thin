@@ -1,5 +1,5 @@
 import http from "@/utils/request"
-import { UserInformation, Upload, UserAccount, UpdateUserRoles, Role } from './types'
+import { LoginHistory, MenuDetails, ApiDetails, UserInfo, UserInformation, Upload, UserAccount, UpdateUserRoles, Role } from "./types"
 
 /** 获取用户列表 */
 export function findUserListApi(page: PageQuery): Promise<IApiResponseData<any>> {
@@ -20,8 +20,8 @@ export function findUserListAreasApi(page: PageQuery): Promise<IApiResponseData<
 }
 
 /** 获取用户登录历史 */
-export function findUserLoginHistoryApi(page: PageQuery): Promise<IApiResponseData<any>> {
-  return http.request<IApiResponseData<any>>({
+export function findUserLoginHistoryApi(page: PageQuery): Promise<IApiResponseData<PageResult<LoginHistory>>> {
+  return http.request<IApiResponseData<PageResult<LoginHistory>>>({
     url: `/api/v1/user/login_history`,
     method: "post",
     data: page,
@@ -29,24 +29,24 @@ export function findUserLoginHistoryApi(page: PageQuery): Promise<IApiResponseDa
 }
 
 /** 获取用户菜单权限 */
-export function getUserMenusApi(): Promise<IApiResponseData<any>> {
-  return http.request<IApiResponseData<any>>({
+export function getUserMenusApi(): Promise<IApiResponseData<MenuDetails>> {
+  return http.request<IApiResponseData<MenuDetails>>({
     url: `/api/v1/user/menus`,
     method: "get",
   })
 }
 
 /** 获取用户接口权限 */
-export function getUserApisApi(): Promise<IApiResponseData<any>> {
-  return http.request<IApiResponseData<any>>({
+export function getUserApisApi(): Promise<IApiResponseData<ApiDetails>> {
+  return http.request<IApiResponseData<ApiDetails>>({
     url: `/api/v1/user/apis`,
     method: "get",
   })
 }
 
 /** 获取用户信息 */
-export function getUserInfoApi(): Promise<IApiResponseData<any>> {
-  return http.request<IApiResponseData<any>>({
+export function getUserInfoApi(): Promise<IApiResponseData<UserInfo>> {
+  return http.request<IApiResponseData<UserInfo>>({
     url: `/api/v1/user/info`,
     method: "get",
   })

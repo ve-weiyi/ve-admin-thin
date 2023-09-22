@@ -6,7 +6,7 @@ import {
   deleteRoleByIdsApi,
   deleteRoleApi,
   updateRoleApi,
-  findRoleListDetailsApi,
+  findRoleDetailsListApi,
 } from "@/api/role"
 
 import { Timer } from "@element-plus/icons-vue"
@@ -227,7 +227,7 @@ function handleApi(event: string, data: any) {
     case "deleteByIds":
       return deleteRoleByIdsApi(data)
     case "list":
-      return findRoleListDetailsApi(data)
+      return findRoleDetailsListApi(data)
     default:
       return
   }

@@ -7,7 +7,7 @@ import {
   createApiApi,
   deleteApiApi,
   deleteApiByIdsApi,
-  findApiListDetailsApi,
+  findApiDetailsListApi,
   updateApiApi,
 } from "@/api/api"
 
@@ -256,7 +256,7 @@ function handleApi(event: string, data: any) {
     case "deleteByIds":
       return deleteApiByIdsApi(data)
     case "list":
-      return findApiListDetailsApi(data)
+      return findApiDetailsListApi(data)
     default:
       return
   }

@@ -275,7 +275,7 @@ import { Column, ElMessage, FormInstance, FormRules, TableInstance } from "eleme
 import { MenuDetails } from "@/api/types"
 import draggable from "vuedraggable/src/vuedraggable"
 import { useRoute } from "vue-router"
-import "./table.scss"
+import "@/style/table.scss"
 
 // 父组件向子组件传输的数据
 const props = defineProps({

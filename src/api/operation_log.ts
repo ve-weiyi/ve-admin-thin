@@ -1,5 +1,5 @@
 import http from "@/utils/request"
-import { OperationLog } from './types'
+import { OperationLog } from "./types"
 
 /** 创建操作记录 */
 export function createOperationLogApi(data: OperationLog): Promise<IApiResponseData<OperationLog>> {

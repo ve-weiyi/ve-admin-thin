@@ -1,5 +1,5 @@
 import http from "@/utils/request"
-import { Role } from './types'
+import { Role } from "./types"
 
 /** 创建角色 */
 export function createRoleApi(data: Role): Promise<IApiResponseData<Role>> {
@@ -54,7 +54,7 @@ export function findRoleListApi(page: PageQuery): Promise<IApiResponseData<PageR
 }
 
 /** 获取角色列表 */
-export function findRoleListDetailsApi(page: PageQuery): Promise<IApiResponseData<PageResult<Role>>> {
+export function findRoleDetailsListApi(page: PageQuery): Promise<IApiResponseData<PageResult<Role>>> {
   return http.request<IApiResponseData<PageResult<Role>>>({
     url: `/api/v1/role/list/details`,
     method: "post",

@@ -1,5 +1,5 @@
 import http from "@/utils/request"
-import { Article, ArticleDetails } from './types'
+import { Article, ArticleDetails } from "./types"
 
 /** 创建文章 */
 export function createArticleApi(data: Article): Promise<IApiResponseData<Article>> {
@@ -79,7 +79,7 @@ export function findArticleArchivesApi(page: PageQuery): Promise<IApiResponseDat
 }
 
 /** 分页获取文章详情列表 */
-export function findArticleListDetailsApi(page: PageQuery): Promise<IApiResponseData<PageResult<Article>>> {
+export function findArticleDetailsListApi(page: PageQuery): Promise<IApiResponseData<PageResult<Article>>> {
   return http.request<IApiResponseData<PageResult<Article>>>({
     url: `/api/v1/article/list/details`,
     method: "post",

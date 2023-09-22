@@ -1,5 +1,5 @@
 import http from "@/utils/request"
-import { Photo } from './types'
+import { Photo } from "./types"
 
 /** 创建相片 */
 export function createPhotoApi(data: Photo): Promise<IApiResponseData<Photo>> {

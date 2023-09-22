@@ -1,5 +1,5 @@
 import http from "@/utils/request"
-import { Api, ApiDetails } from './types'
+import { Api, ApiDetails } from "./types"
 
 /** 创建接口 */
 export function createApiApi(data: Api): Promise<IApiResponseData<Api>> {
@@ -54,7 +54,7 @@ export function findApiListApi(page: PageQuery): Promise<IApiResponseData<PageRe
 }
 
 /** 获取api列表 */
-export function findApiListDetailsApi(page: PageQuery): Promise<IApiResponseData<PageResult<ApiDetails>>> {
+export function findApiDetailsListApi(page: PageQuery): Promise<IApiResponseData<PageResult<ApiDetails>>> {
   return http.request<IApiResponseData<PageResult<ApiDetails>>>({
     url: `/api/v1/api/list/details`,
     method: "post",

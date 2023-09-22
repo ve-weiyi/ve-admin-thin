@@ -29,14 +29,14 @@
 <script lang="ts" setup>
 import { defineComponent, nextTick, ref, unref, watch } from "vue"
 import { type FormInstance, type FormRules, ElMessage, ElMessageBox, ElTree } from "element-plus"
-import { findMenuListDetailsApi } from "@/api/menu"
+import { findMenuDetailsListApi } from "@/api/menu"
 
 // 父组件向子组件传输的数据
 const props = defineProps({
   row: {
     type: Array,
     required: false,
-    default: function () {
+    default: function() {
       return []
     },
   },
@@ -51,14 +51,14 @@ const menuTreeData = ref([])
 const defaultCheckIds = ref([])
 const menuDefaultProps = ref({
   children: "children",
-  label: function (data) {
+  label: function(data) {
     return data.name
   },
 })
 
 const getTableData = () => {
   defaultCheckIds.value = props.row
-  findMenuListDetailsApi({}).then((res) => {
+  findMenuDetailsListApi({}).then((res) => {
     menuTreeData.value = res.data.list
   })
 }

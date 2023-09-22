@@ -2,7 +2,7 @@ import Layout from "@/layout/index.vue"
 
 export default {
   path: "/article",
-  name: "article",
+  name: "article-management",
   component: Layout,
   redirect: "/article/publish",
   meta: {

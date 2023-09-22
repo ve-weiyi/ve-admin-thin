@@ -2,13 +2,13 @@ import Layout from "@/layout/index.vue"
 
 export default {
   path: "/talk",
-  name: "talk",
+  name: "talk-management",
   component: Layout,
   redirect: "/talk/publish",
   meta: {
     title: "说说管理",
     icon: "ChatDotSquare",
-    rank: 11,
+    rank: 30,
   },
   children: [
     {

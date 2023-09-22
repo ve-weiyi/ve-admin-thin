@@ -1,5 +1,5 @@
 import http from "@/utils/request"
-import { ChatMessage, ChatResponse } from './types'
+import { ChatMessage, ChatResponse } from "./types"
 
 /** 和Chatgpt聊天 */
 export function chatAIApi(data: ChatMessage[]): Promise<IApiResponseData<ChatResponse>> {

@@ -1,5 +1,5 @@
 import http from "@/utils/request"
-import { Comment } from './types'
+import { Comment } from "./types"
 
 /** 创建评论 */
 export function createCommentApi(data: Comment): Promise<IApiResponseData<Comment>> {
@@ -54,7 +54,7 @@ export function findCommentListApi(page: PageQuery): Promise<IApiResponseData<Pa
 }
 
 /** 分页获取评论列表 */
-export function findCommentListDetailsApi(page: PageQuery): Promise<IApiResponseData<PageResult<Comment>>> {
+export function findCommentDetailsListApi(page: PageQuery): Promise<IApiResponseData<PageResult<Comment>>> {
   return http.request<IApiResponseData<PageResult<Comment>>>({
     url: `/api/v1/comment/list/details`,
     method: "post",

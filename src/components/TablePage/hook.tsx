@@ -1,7 +1,7 @@
 // import { onMounted, reactive, ref, VNode } from "vue"
 // import { Column, ElMessage, ElMessageBox, FormInstance, FormRules, TableInstance } from "element-plus"
 // import { defaultPaginationData, Pagination, Sort, Condition, FormField, RenderType } from "@/utils/render"
-// import { createMenuApi, deleteMenuByIdsApi, deleteMenuApi, updateMenuApi, findMenuListDetailsApi } from "@/api/menu"
+// import { createMenuApi, deleteMenuByIdsApi, deleteMenuApi, updateMenuApi, findMenuDetailsListApi } from "@/api/menu"
 // import { MenuDetails } from "@/api/types"
 // import { Timer } from "@element-plus/icons-vue"
 // import { assign } from "xe-utils"
@@ -336,7 +336,7 @@
 //     }
 //
 //     loading.value = true
-//     findMenuListDetailsApi({
+//     findMenuDetailsListApi({
 //       // page: pagination.currentPage,
 //       // page_size: pagination.pageSize,
 //       sorts: sorts,

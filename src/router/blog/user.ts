@@ -2,10 +2,14 @@ import Layout from "@/layout/index.vue"
 
 export default {
   path: "/user",
-  name: "user",
+  name: "user-management",
   component: Layout,
   redirect: "/user/list",
-  meta: { title: "用户管理", icon: "user", rank: 1 },
+  meta: {
+    title: "用户管理",
+    icon: "user",
+    rank: 50,
+  },
   children: [
     {
       path: "/user/list",

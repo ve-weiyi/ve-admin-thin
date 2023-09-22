@@ -2,10 +2,14 @@ import Layout from "@/layout/index.vue"
 
 export default {
   path: "/log",
-  name: "log", // router.push
+  name: "log-management", // router.push
   component: Layout,
   redirect: "/log/operation",
-  meta: { title: "日志管理", icon: "document" },
+  meta: {
+    title: "日志管理",
+    icon: "document",
+    rank: 70,
+  },
   children: [
     {
       path: "/log/operation",

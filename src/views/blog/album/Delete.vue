@@ -41,10 +41,10 @@
                 <el-image
                   fit="cover"
                   class="photo-img"
-                  :src="item.photoSrc"
-                  :preview-src-list="tableData.map((photo) => photo.photoSrc)"
+                  :src="item.photo_src"
+                  :preview-src-list="tableData.map((photo) => photo.photo_src)"
                 />
-                <div class="photo-name">{{ item.photoName }}</div>
+                <div class="photo-name">{{ item.photo_name }}</div>
               </div>
             </el-checkbox>
           </el-col>
@@ -119,6 +119,37 @@ const dialogTitle = computed(() => {
     return "编辑友链"
   }
 })
+
+const isIndeterminate = computed(() => {
+  return selectionIds.length > 0 && selectionIds.length < tableData.value.length
+})
+
+const checkAll = ref(false)
+
+const handleCheckAllChange = (val) => {
+  // selectionIds.value = val ? tableData.value.map((photo) => photo.id) : []
+  checkAll.value = val
+}
+
+const handleCheckedPhotoChange = (val) => {
+  checkAll.value = val.length === tableData.value.length
+}
+
+const updatePhotoDelete = (item) => {
+  if (item) {
+    Object.assign(formData, JSON.parse(item))
+  } else {
+    Object.assign(formData, {
+      id: null,
+      photo_name: "",
+      photo_src: "",
+      photo_album_id: null,
+    })
+  }
+  addOrEditVisibility.value = true
+}
+
+const batchDeletePhoto = ref(false)
 
 onMounted(() => {
   loading.value = false

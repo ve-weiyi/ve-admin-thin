@@ -2,13 +2,13 @@ import Layout from "@/layout/index.vue"
 
 export default {
   path: "/authority",
-  name: "Authority",
+  name: "authority-management",
   component: Layout,
   redirect: "/authority/role",
   meta: {
     title: "权限管理",
     icon: "lock",
-    rank: 2,
+    rank: 60,
   },
   children: [
     {

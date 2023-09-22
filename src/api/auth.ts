@@ -1,5 +1,5 @@
 import http from "@/utils/request"
-import { User, Login, UserEmail, ResetPasswordReq, OauthLoginReq, OauthLoginUrl } from './types'
+import { User, Login, UserEmail, ResetPasswordReq, OauthLoginReq, OauthLoginUrl } from "./types"
 
 /** 登录 */
 export function loginApi(data: User): Promise<IApiResponseData<Login>> {

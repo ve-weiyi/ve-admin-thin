@@ -1,5 +1,5 @@
 import http from "@/utils/request"
-import { PhotoAlbum } from './types'
+import { PhotoAlbum } from "./types"
 
 /** 创建相册 */
 export function createPhotoAlbumApi(data: PhotoAlbum): Promise<IApiResponseData<PhotoAlbum>> {

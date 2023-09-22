@@ -1,5 +1,5 @@
 import http from "@/utils/request"
-import { Category, CategoryDTO } from './types'
+import { Category, CategoryDetailsDTO } from "./types"
 
 /** 创建文章分类 */
 export function createCategoryApi(data: Category): Promise<IApiResponseData<Category>> {
@@ -54,8 +54,8 @@ export function findCategoryListApi(page: PageQuery): Promise<IApiResponseData<P
 }
 
 /** 分页获取文章分类详情列表 */
-export function findCategoryListDetailsApi(page: PageQuery): Promise<IApiResponseData<PageResult<CategoryDTO>>> {
-  return http.request<IApiResponseData<PageResult<CategoryDTO>>>({
+export function findCategoryDetailsListApi(page: PageQuery): Promise<IApiResponseData<PageResult<CategoryDetailsDTO>>> {
+  return http.request<IApiResponseData<PageResult<CategoryDetailsDTO>>>({
     url: `/api/v1/category/list/details`,
     method: "post",
     data: page,

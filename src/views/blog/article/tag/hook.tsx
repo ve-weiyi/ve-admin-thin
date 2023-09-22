@@ -16,7 +16,7 @@ import {
   createTagApi,
   deleteTagByIdsApi,
   deleteTagApi,
-  findTagListApi,
+  findTagDetailsListApi,
   updateTagApi,
 } from "@/api/tag"
 import { Tag } from "@/api/types"
@@ -155,7 +155,7 @@ function handleApi(event: string, data: any) {
     case "deleteByIds":
       return deleteTagByIdsApi(data)
     case "list":
-      return findTagListApi(data)
+      return findTagDetailsListApi(data)
     default:
       return
   }

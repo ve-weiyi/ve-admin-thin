@@ -1,5 +1,5 @@
 import http from "@/utils/request"
-import { Page } from './types'
+import { Page } from "./types"
 
 /** 创建页面 */
 export function createPageApi(data: Page): Promise<IApiResponseData<Page>> {

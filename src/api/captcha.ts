@@ -1,5 +1,5 @@
 import http from "@/utils/request"
-import { CaptchaEmail, Captcha, CaptchaResp, CaptchaVerify } from './types'
+import { CaptchaEmail, Captcha, CaptchaResp, CaptchaVerify } from "./types"
 
 /** 发送验证码 */
 export function sendCaptchaEmailApi(data: CaptchaEmail): Promise<IApiResponseData<any>> {

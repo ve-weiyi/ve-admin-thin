@@ -16,7 +16,7 @@ import {
   createCategoryApi,
   deleteCategoryByIdsApi,
   deleteCategoryApi,
-  findCategoryListApi,
+  findCategoryDetailsListApi,
   updateCategoryApi,
 } from "@/api/category"
 import { Category } from "@/api/types"
@@ -148,7 +148,7 @@ function handleApi(event: string, data: any) {
     case "deleteByIds":
       return deleteCategoryByIdsApi(data)
     case "list":
-      return findCategoryListApi(data)
+      return findCategoryDetailsListApi(data)
     default:
       return
   }

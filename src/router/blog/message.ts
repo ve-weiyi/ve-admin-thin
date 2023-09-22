@@ -2,13 +2,13 @@ import Layout from "@/layout/index.vue"
 
 export default {
   path: "/message",
-  name: "message",
+  name: "message-management",
   component: Layout,
   redirect: "/message/comment",
   meta: {
     title: "消息管理",
     icon: "message",
-    rank: 13,
+    rank: 20,
   },
   children: [
     {
