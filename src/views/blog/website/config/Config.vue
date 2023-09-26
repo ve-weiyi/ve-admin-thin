@@ -11,31 +11,40 @@
               :show-file-list="false"
               @on-success="handleWebsiteAvatarSuccess"
             >
-              <img v-if="websiteConfigForm.websiteAvatar" :src="websiteConfigForm.websiteAvatar" class="avatar" />
+              <img
+                v-if="websiteConfigForm.website_avatar"
+                :src="websiteConfigForm.website_avatar"
+                class="avatar"
+                alt="img"
+              />
               <i v-else class="el-icon-plus avatar-uploader-icon" />
             </el-upload>
           </el-form-item>
           <el-form-item label="网站名称">
-            <el-input v-model="websiteConfigForm.websiteName" size="small" style="width: 400px" />
+            <el-input v-model="websiteConfigForm.website_name" size="small" style="width: 400px" />
           </el-form-item>
           <el-form-item label="网站作者">
-            <el-input v-model="websiteConfigForm.websiteAuthor" size="small" style="width: 400px" />
+            <el-input
+              v-model="websiteConfigForm.website_author"
+              size="small"
+              style="width: 400px"
+            />
           </el-form-item>
           <el-form-item label="网站简介">
-            <el-input v-model="websiteConfigForm.websiteIntro" size="small" style="width: 400px" />
+            <el-input v-model="websiteConfigForm.website_intro" size="small" style="width: 400px" />
           </el-form-item>
           <el-form-item label="网站创建日期">
             <el-date-picker
               style="width: 400px"
               value-format="yyyy-MM-dd"
-              v-model="websiteConfigForm.websiteCreateTime"
+              v-model="websiteConfigForm.website_create_time"
               type="date"
               placeholder="选择日期"
             />
           </el-form-item>
           <el-form-item label="网站公告">
             <el-input
-              v-model="websiteConfigForm.websiteNotice"
+              v-model="websiteConfigForm.website_notice"
               placeholder="请输入公告内容"
               style="width: 400px"
               type="textarea"
@@ -43,15 +52,24 @@
             />
           </el-form-item>
           <el-form-item label="备案号">
-            <el-input v-model="websiteConfigForm.websiteRecordNo" size="small" style="width: 400px" />
+            <el-input
+              v-model="websiteConfigForm.website_record_no"
+              size="small"
+              style="width: 400px"
+            />
           </el-form-item>
           <el-form-item label="第三方登录">
-            <el-checkbox-group v-model="websiteConfigForm.socialLoginList">
+            <el-checkbox-group v-model="websiteConfigForm.social_login_list">
               <el-checkbox label="qq">QQ</el-checkbox>
               <el-checkbox label="weibo">微博</el-checkbox>
             </el-checkbox-group>
           </el-form-item>
-          <el-button type="primary" size="default" style="margin-left: 6.3rem" @click="updateWebsiteConfig">
+          <el-button
+            type="primary"
+            size="default"
+            style="margin-left: 6.3rem"
+            @click="updateWebsiteConfig"
+          >
             修改
           </el-button>
         </el-form>
@@ -59,20 +77,37 @@
       <!-- 网站公告 -->
       <el-tab-pane label="社交信息" name="notice">
         <el-form label-width="70px" v-model="websiteConfigForm">
-          <el-checkbox-group v-model="websiteConfigForm.socialUrlList">
+          <el-checkbox-group v-model="websiteConfigForm.social_url_list">
             <el-form-item label="QQ">
-              <el-input v-model="websiteConfigForm.qq" size="small" style="width: 400px; margin-right: 1rem" />
+              <el-input
+                v-model="websiteConfigForm.qq"
+                size="small"
+                style="width: 400px; margin-right: 1rem"
+              />
               <el-checkbox label="qq">是否展示</el-checkbox>
             </el-form-item>
             <el-form-item label="Github">
-              <el-input v-model="websiteConfigForm.github" size="small" style="width: 400px; margin-right: 1rem" />
+              <el-input
+                v-model="websiteConfigForm.github"
+                size="small"
+                style="width: 400px; margin-right: 1rem"
+              />
               <el-checkbox label="github">是否展示</el-checkbox>
             </el-form-item>
             <el-form-item label="Gitee">
-              <el-input v-model="websiteConfigForm.gitee" size="small" style="width: 400px; margin-right: 1rem" />
+              <el-input
+                v-model="websiteConfigForm.gitee"
+                size="small"
+                style="width: 400px; margin-right: 1rem"
+              />
               <el-checkbox label="gitee">是否展示</el-checkbox>
             </el-form-item>
-            <el-button type="primary" size="default" style="margin-left: 4.375rem" @click="updateWebsiteConfig">
+            <el-button
+              type="primary"
+              size="default"
+              style="margin-left: 4.375rem"
+              @click="updateWebsiteConfig"
+            >
               修改
             </el-button>
           </el-checkbox-group>
@@ -90,7 +125,11 @@
                   :show-file-list="false"
                   @on-success="handleUserAvatarSuccess"
                 >
-                  <img v-if="websiteConfigForm.userAvatar" :src="websiteConfigForm.userAvatar" class="avatar" />
+                  <img
+                    v-if="websiteConfigForm.user_avatar"
+                    :src="websiteConfigForm.user_avatar"
+                    class="avatar"
+                  />
                   <i v-else class="el-icon-plus avatar-uploader-icon" />
                 </el-upload>
               </el-form-item>
@@ -103,37 +142,41 @@
                   :show-file-list="false"
                   @on-success="handleTouristAvatarSuccess"
                 >
-                  <img v-if="websiteConfigForm.touristAvatar" :src="websiteConfigForm.touristAvatar" class="avatar" />
+                  <img
+                    v-if="websiteConfigForm.tourist_avatar"
+                    :src="websiteConfigForm.tourist_avatar"
+                    class="avatar"
+                  />
                   <i v-else class="el-icon-plus avatar-uploader-icon" />
                 </el-upload>
               </el-form-item>
             </el-col>
           </el-row>
           <el-form-item label="邮箱通知">
-            <el-radio-group v-model="websiteConfigForm.isEmailNotice">
+            <el-radio-group v-model="websiteConfigForm.is_email_notice">
               <el-radio :label="0">关闭</el-radio>
               <el-radio :label="1">开启</el-radio>
             </el-radio-group>
           </el-form-item>
           <el-form-item label="评论审核">
-            <el-radio-group v-model="websiteConfigForm.isCommentReview">
+            <el-radio-group v-model="websiteConfigForm.is_comment_review">
               <el-radio :label="0">关闭</el-radio>
               <el-radio :label="1">开启</el-radio>
             </el-radio-group>
           </el-form-item>
           <el-form-item label="留言审核">
-            <el-radio-group v-model="websiteConfigForm.isMessageReview">
+            <el-radio-group v-model="websiteConfigForm.is_message_review">
               <el-radio :label="0">关闭</el-radio>
               <el-radio :label="1">开启</el-radio>
             </el-radio-group>
           </el-form-item>
           <el-form-item label="打赏状态">
-            <el-radio-group v-model="websiteConfigForm.isReward">
+            <el-radio-group v-model="websiteConfigForm.is_reward">
               <el-radio :label="0">关闭</el-radio>
               <el-radio :label="1">开启</el-radio>
             </el-radio-group>
           </el-form-item>
-          <el-row style="width: 600px" v-show="websiteConfigForm.isReward == 1">
+          <el-row style="width: 600px" v-show="websiteConfigForm.is_reward == 1">
             <el-col :md="12">
               <el-form-item label="微信收款码">
                 <el-upload
@@ -142,7 +185,11 @@
                   :show-file-list="false"
                   @on-success="handleWeiXinSuccess"
                 >
-                  <img v-if="websiteConfigForm.weiXinQRCode" :src="websiteConfigForm.weiXinQRCode" class="avatar" />
+                  <img
+                    v-if="websiteConfigForm.wei_xin_qr_code"
+                    :src="websiteConfigForm.wei_xin_qr_code"
+                    class="avatar"
+                  />
                   <i v-else class="el-icon-plus avatar-uploader-icon" />
                 </el-upload>
               </el-form-item>
@@ -155,28 +202,37 @@
                   :show-file-list="false"
                   @on-success="handleAlipaySuccess"
                 >
-                  <img v-if="websiteConfigForm.alipayQRCode" :src="websiteConfigForm.alipayQRCode" class="avatar" />
+                  <img
+                    v-if="websiteConfigForm.alipay_qr_code"
+                    :src="websiteConfigForm.alipay_qr_code"
+                    class="avatar"
+                  />
                   <i v-else class="el-icon-plus avatar-uploader-icon" />
                 </el-upload>
               </el-form-item>
             </el-col>
           </el-row>
           <el-form-item label="聊天室状态">
-            <el-radio-group v-model="websiteConfigForm.isChatRoom">
+            <el-radio-group v-model="websiteConfigForm.is_chat_room">
               <el-radio :label="0">关闭</el-radio>
               <el-radio :label="1">开启</el-radio>
             </el-radio-group>
           </el-form-item>
-          <el-form-item label="Websocket地址" v-show="websiteConfigForm.isChatRoom == 1">
-            <el-input v-model="websiteConfigForm.websocketUrl" size="small" style="width: 400px" />
+          <el-form-item label="Websocket地址" v-show="websiteConfigForm.is_chat_room == 1">
+            <el-input v-model="websiteConfigForm.websocket_url" size="small" style="width: 400px" />
           </el-form-item>
           <el-form-item label="音乐播放器状态">
-            <el-radio-group v-model="websiteConfigForm.isMusicPlayer">
+            <el-radio-group v-model="websiteConfigForm.is_music_player">
               <el-radio :label="0">关闭</el-radio>
               <el-radio :label="1">开启</el-radio>
             </el-radio-group>
           </el-form-item>
-          <el-button type="primary" size="default" style="margin-left: 6.3rem" @click="updateWebsiteConfig">
+          <el-button
+            type="primary"
+            size="default"
+            style="margin-left: 6.3rem"
+            @click="updateWebsiteConfig"
+          >
             修改
           </el-button>
         </el-form>
@@ -187,33 +243,33 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from "vue"
-import axios from "axios"
 import { ElMessage } from "element-plus"
+import { getWebsiteConfigApi, updateWebsiteConfigApi } from "@/api/blog"
 
 const websiteConfigForm = ref({
-  websiteAvatar: "",
-  websiteName: "",
-  websiteAuthor: "",
-  websiteIntro: "",
-  websiteNotice: "",
-  websiteCreateTime: null,
-  websiteRecordNo: "",
-  socialLoginList: [],
-  socialUrlList: [],
+  website_avatar: "",
+  website_name: "",
+  website_author: "",
+  website_intro: "",
+  website_notice: "",
+  website_create_time: null,
+  website_record_no: "",
+  social_login_list: [],
+  social_url_list: [],
   qq: "",
   github: "",
   gitee: "",
-  userAvatar: "",
-  touristAvatar: "",
-  isReward: 1,
-  weiXinQRCode: "",
-  alipayQRCode: "",
-  isChatRoom: 1,
-  websocketUrl: "",
-  isMusicPlayer: 1,
-  isEmailNotice: 1,
-  isCommentReview: 0,
-  isMessageReview: 0,
+  user_avatar: "",
+  tourist_avatar: "",
+  is_reward: 1,
+  wei_xin_qr_code: "",
+  alipay_qr_code: "",
+  is_chat_room: 1,
+  websocket_url: "",
+  is_music_player: 1,
+  is_email_notice: 1,
+  is_comment_review: 0,
+  is_message_review: 0,
 })
 
 const activeName = ref("info")
@@ -223,8 +279,20 @@ onMounted(() => {
 })
 
 function getWebsiteConfig() {
-  axios.get("/api/admin/website/config").then(({ data }) => {
-    websiteConfigForm.value = data.data
+  getWebsiteConfigApi({
+    key: "website_config",
+  }).then((res) => {
+    console.log("res", res)
+    websiteConfigForm.value = JSON.parse(res.data)
+  })
+}
+
+function updateWebsiteConfig() {
+  updateWebsiteConfigApi({
+    key: "website_config",
+    value: JSON.stringify(websiteConfigForm.value),
+  }).then((res) => {
+    ElMessage.success(res.message)
   })
 }
 
@@ -233,33 +301,23 @@ function handleClick(tab) {
 }
 
 function handleWebsiteAvatarSuccess(response) {
-  websiteConfigForm.value.websiteAvatar = response.data
+  websiteConfigForm.value.website_avatar = response.data
 }
 
 function handleUserAvatarSuccess(response) {
-  websiteConfigForm.value.userAvatar = response.data
+  websiteConfigForm.value.user_avatar = response.data
 }
 
 function handleTouristAvatarSuccess(response) {
-  websiteConfigForm.value.touristAvatar = response.data
+  websiteConfigForm.value.tourist_avatar = response.data
 }
 
 function handleWeiXinSuccess(response) {
-  websiteConfigForm.value.weiXinQRCode = response.data
+  websiteConfigForm.value.wei_xin_qr_code = response.data
 }
 
 function handleAlipaySuccess(response) {
-  websiteConfigForm.value.alipayQRCode = response.data
-}
-
-function updateWebsiteConfig() {
-  axios.put("/api/admin/website/config", websiteConfigForm.value).then(({ data }) => {
-    if (data.flag) {
-      ElMessage(data.message)
-    } else {
-      ElMessage(data.message)
-    }
-  })
+  websiteConfigForm.value.alipay_qr_code = response.data
 }
 </script>
 
@@ -271,9 +329,11 @@ function updateWebsiteConfig() {
   position: relative;
   overflow: hidden;
 }
+
 .avatar-uploader .el-upload:hover {
   border-color: #409eff;
 }
+
 .avatar-uploader-icon {
   font-size: 28px;
   color: #8c939d;
@@ -282,6 +342,7 @@ function updateWebsiteConfig() {
   line-height: 120px;
   text-align: center;
 }
+
 .avatar {
   width: 120px;
   height: 120px;
