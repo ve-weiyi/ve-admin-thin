@@ -1,5 +1,5 @@
 import http from "@/utils/request"
-import { Tag, TagDetailsDTO } from "./types"
+import { Tag, BatchResult, TagDetailsDTO } from "./types"
 
 /** 创建文章标签 */
 export function createTagApi(data: Tag): Promise<IApiResponseData<Tag>> {
@@ -36,8 +36,8 @@ export function findTagApi(id: number): Promise<IApiResponseData<Tag>> {
 }
 
 /** 批量删除文章标签 */
-export function deleteTagByIdsApi(data: number[]): Promise<IApiResponseData<any>> {
-  return http.request<IApiResponseData<any>>({
+export function deleteTagByIdsApi(data: number[]): Promise<IApiResponseData<BatchResult>> {
+  return http.request<IApiResponseData<BatchResult>>({
     url: `/api/v1/tag/batch_delete`,
     method: "delete",
     data: data,

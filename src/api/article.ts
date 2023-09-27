@@ -1,5 +1,5 @@
 import http from "@/utils/request"
-import { Article, ArticleDetails } from "./types"
+import { Article, BatchResult, ArticleDetails } from "./types"
 
 /** 创建文章 */
 export function createArticleApi(data: Article): Promise<IApiResponseData<Article>> {
@@ -36,8 +36,8 @@ export function findArticleApi(id: number): Promise<IApiResponseData<Article>> {
 }
 
 /** 批量删除文章 */
-export function deleteArticleByIdsApi(data: number[]): Promise<IApiResponseData<any>> {
-  return http.request<IApiResponseData<any>>({
+export function deleteArticleByIdsApi(data: number[]): Promise<IApiResponseData<BatchResult>> {
+  return http.request<IApiResponseData<BatchResult>>({
     url: `/api/v1/article/batch_delete`,
     method: "delete",
     data: data,

@@ -20,11 +20,20 @@ export function findUserListAreasApi(page: PageQuery): Promise<IApiResponseData<
 }
 
 /** 获取用户登录历史 */
-export function findUserLoginHistoryApi(page: PageQuery): Promise<IApiResponseData<PageResult<LoginHistory>>> {
+export function findUserLoginHistoryListApi(page: PageQuery): Promise<IApiResponseData<PageResult<LoginHistory>>> {
   return http.request<IApiResponseData<PageResult<LoginHistory>>>({
     url: `/api/v1/user/login_history`,
     method: "post",
     data: page,
+  })
+}
+
+/** 批量删除登录历史 */
+export function deleteUserLoginHistoryByIdsApi(data: number[]): Promise<IApiResponseData<any>> {
+  return http.request<IApiResponseData<any>>({
+    url: `/api/v1/user/login_history/batch_delete`,
+    method: "delete",
+    data: data,
   })
 }
 

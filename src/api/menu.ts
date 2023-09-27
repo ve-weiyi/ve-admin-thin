@@ -1,5 +1,5 @@
 import http from "@/utils/request"
-import { Menu, MenuDetails } from "./types"
+import { Menu, BatchResult, MenuDetails } from "./types"
 
 /** 创建菜单 */
 export function createMenuApi(data: Menu): Promise<IApiResponseData<Menu>> {
@@ -36,8 +36,8 @@ export function findMenuApi(id: number): Promise<IApiResponseData<Menu>> {
 }
 
 /** 批量删除菜单 */
-export function deleteMenuByIdsApi(data: number[]): Promise<IApiResponseData<any>> {
-  return http.request<IApiResponseData<any>>({
+export function deleteMenuByIdsApi(data: number[]): Promise<IApiResponseData<BatchResult>> {
+  return http.request<IApiResponseData<BatchResult>>({
     url: `/api/v1/menu/batch_delete`,
     method: "delete",
     data: data,

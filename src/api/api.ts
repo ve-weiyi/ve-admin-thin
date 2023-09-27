@@ -1,5 +1,5 @@
 import http from "@/utils/request"
-import { Api, ApiDetails } from "./types"
+import { Api, BatchResult, ApiDetails } from "./types"
 
 /** 创建接口 */
 export function createApiApi(data: Api): Promise<IApiResponseData<Api>> {
@@ -36,8 +36,8 @@ export function findApiApi(id: number): Promise<IApiResponseData<Api>> {
 }
 
 /** 批量删除接口 */
-export function deleteApiByIdsApi(data: number[]): Promise<IApiResponseData<any>> {
-  return http.request<IApiResponseData<any>>({
+export function deleteApiByIdsApi(data: number[]): Promise<IApiResponseData<BatchResult>> {
+  return http.request<IApiResponseData<BatchResult>>({
     url: `/api/v1/api/batch_delete`,
     method: "delete",
     data: data,

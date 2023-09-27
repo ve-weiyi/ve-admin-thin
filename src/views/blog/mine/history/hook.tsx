@@ -5,7 +5,7 @@ import { FixedDir } from "element-plus/es/components/table-v2/src/constants"
 import { ElTag } from "element-plus"
 import { Timer } from "@element-plus/icons-vue"
 
-import { findUserLoginHistoryApi } from "@/api/user"
+import { findUserLoginHistoryListApi, deleteUserLoginHistoryByIdsApi } from "@/api/user"
 import { LoginHistory } from "@/api/types"
 
 const align = "center"
@@ -41,7 +41,6 @@ function getColumnFields(): Column[] {
       title: "批量操作",
       width: 60,
       align: align,
-      hidden: true,
     },
     // {
     //   key: "id",
@@ -127,8 +126,11 @@ function handleApi(event: string, data: any) {
   console.log("event", event)
   switch (event) {
     case "list":
-      return findUserLoginHistoryApi(data)
+      return findUserLoginHistoryListApi(data)
+    case "deleteByIds":
+      return deleteUserLoginHistoryByIdsApi(data)
     default:
+      ElMessage.error("未知事件")
       return
   }
 }

@@ -352,20 +352,6 @@ export interface UpdateRoleResources {
   resource_ids?: number[]
 }
 
-export interface spanContext {
-  trace_id?: string // TraceID 表示tracer的全局唯一ID
-  span_id?: string // SpanId 标示单个trace中某一个span的唯一ID，在trace中唯一
-}
-
-export interface Span {
-  ctx?: spanContext // 传递的上下文
-  service_name?: string // 服务名
-  operation_name?: string // 操作
-  start_time?: string // 开始时间戳
-  flag?: string // 标记开启trace是 server 还是 client
-  children?: number // 本 span fork出来的 childsnums
-}
-
 export interface WebsiteConfigRequest {
   key?: string
   value?: string
@@ -575,6 +561,7 @@ export interface UserInfo {
 }
 
 export interface LoginHistory {
+  id?: number
   login_type?: string // 登录类型
   agent?: string // 代理
   ip_address?: string // ip host
@@ -595,6 +582,12 @@ export interface UserMenu {
   rank?: number
   is_hidden?: boolean
   children?: UserMenu[]
+}
+
+export interface BatchResult {
+  total_count?: number // 总数量
+  success_count?: number // 成功数量
+  fail_count?: number // 失败数量
 }
 
 export interface ApiDetails extends Api {

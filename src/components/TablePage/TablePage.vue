@@ -461,7 +461,7 @@ function onDeleteByIds(ids: number[]) {
   console.log("onDeleteByIds", ids)
   props.handleApi("deleteByIds", ids).then((res) => {
     ElMessage.success("批量删除成功")
-    hiddenForm()
+    removeVisibility.value = false
     onSearchList()
   })
 }
