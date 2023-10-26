@@ -25,21 +25,35 @@
               <el-form-item label="个人网站">
                 <el-input v-model="infoForm.webSite" size="default" />
               </el-form-item>
-              <el-button @click="updateInfo" type="primary" size="default" style="margin-left: 4.375rem">
+              <el-button
+                @click="updateInfo"
+                type="primary"
+                size="default"
+                style="margin-left: 4.375rem"
+              >
                 修改
               </el-button>
             </el-form>
           </div>
-          <Identity/>
         </el-tab-pane>
         <!-- 修改密码 -->
         <el-tab-pane label="修改密码" name="password">
           <el-form label-width="70px" :model="passwordForm" style="width: 320px">
             <el-form-item label="旧密码">
-              <el-input @keyup.enter="updatePassword" v-model="passwordForm.oldPassword" size="small" show-password />
+              <el-input
+                @keyup.enter="updatePassword"
+                v-model="passwordForm.oldPassword"
+                size="small"
+                show-password
+              />
             </el-form-item>
             <el-form-item label="新密码">
-              <el-input @keyup.enter="updatePassword" v-model="passwordForm.newPassword" size="small" show-password />
+              <el-input
+                @keyup.enter="updatePassword"
+                v-model="passwordForm.newPassword"
+                size="small"
+                show-password
+              />
             </el-form-item>
             <el-form-item label="确认密码">
               <el-input
@@ -49,7 +63,12 @@
                 show-password
               />
             </el-form-item>
-            <el-button type="primary" size="default" style="margin-left: 4.4rem" @click="updatePassword">
+            <el-button
+              type="primary"
+              size="default"
+              style="margin-left: 4.4rem"
+              @click="updatePassword"
+            >
               修改
             </el-button>
           </el-form>
@@ -61,12 +80,20 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from "vue"
-import { ElTabs, ElTabPane, ElUpload, ElForm, ElFormItem, ElInput, ElButton, UploadRequestOptions } from "element-plus"
+import {
+  ElTabs,
+  ElTabPane,
+  ElUpload,
+  ElForm,
+  ElFormItem,
+  ElInput,
+  ElButton,
+  UploadRequestOptions,
+} from "element-plus"
 import { ElMessage } from "element-plus"
 import axios from "axios"
 import { useAdminStore } from "@/store/modules/admin"
 import { updateUserAvatarApi } from "@/api/user"
-import Identity from "./components/Identity.vue"
 
 // 获取缓存信息
 const store = useAdminStore()

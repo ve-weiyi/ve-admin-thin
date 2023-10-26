@@ -4,12 +4,13 @@
       <!-- 标题 -->
       <div class="table-title">{{ $route.meta.title }}</div>
       <div class="operation-container">
-        <el-button type="primary" size="default" icon="plus" @click="onSave(null)">
+        <el-button type="primary" size="default" icon="plus" @click="handleFormVisibility(null)">
           新建相册
         </el-button>
         <div style="margin-left: auto">
           <el-button
-            type="text"
+            text
+            type="primary"
             size="default"
             icon="delete"
             style="margin-right: 1rem"
@@ -18,7 +19,7 @@
             回收站
           </el-button>
           <el-input
-            v-model="keywords"
+            v-model="searchData.albumName"
             prefix-icon="search"
             size="default"
             placeholder="请输入相册名"
@@ -57,11 +58,11 @@
               </el-dropdown>
             </div>
             <div class="album-photo-count">
-              <div>{{ item.photoCount }}</div>
-              <i v-if="item.status === 2" class="iconfont el-icon-mymima" />
+              <div>{{ item.photo_count }}</div>
+              <el-icon v-if="item.status === 2"><Lock /></el-icon>
             </div>
-            <el-image fit="cover" class="album-cover" :src="item.albumCover" />
-            <div class="album-name">{{ item.albumName }}</div>
+            <el-image fit="cover" class="album-cover" :src="item.album_cover" />
+            <div class="album-name">{{ item.album_name }}</div>
           </div>
         </el-col>
       </el-row>
@@ -79,7 +80,7 @@
         @current-change="handleCurrentChange"
       />
       <!-- 新增模态框 -->
-      <el-dialog v-model="addOrEditVisibility" width="35%" top="10vh">
+      <el-dialog v-model="formVisibility" width="35%" top="10vh">
         <template #header>
           <div class="dialog-title-container">
             <el-icon>
@@ -88,7 +89,7 @@
             {{ dialogTitle }}}
           </div>
         </template>
-        <el-form label-width="80px" size="default" :model="formData">
+        <el-form ref="formRef" :model="formData" label-width="80px" size="default">
           <el-form-item label="相册名称">
             <el-input style="width: 220px" v-model="formData.albumName" />
           </el-form-item>
@@ -99,10 +100,10 @@
             <el-upload
               class="upload-cover"
               drag
+              multiple
               :show-file-list="false"
               :before-upload="beforeUpload"
-              action="/api/admin/photos/albums/cover"
-              multiple
+              :http-request="uploadAvatar"
               :on-success="uploadCover"
             >
               <i class="el-icon-upload" v-if="!formData.albumCover" />
@@ -120,8 +121,8 @@
           </el-form-item>
         </el-form>
         <template #footer>
-          <el-button @click="addOrEditVisibility = false">取 消</el-button>
-          <el-button type="primary" @click="onSave(formData)"> 确 定 </el-button>
+          <el-button @click="closeForm">取 消</el-button>
+          <el-button type="primary" @click="submitForm(formData)"> 确 定</el-button>
         </template>
       </el-dialog>
       <!-- 删除对话框 -->
@@ -137,7 +138,7 @@
         <div style="font-size: 1rem">是否删除该相册？</div>
         <template #footer>
           <el-button @click="removeVisibility = false">取 消</el-button>
-          <el-button type="primary" @click="onDelete(formData)"> 确 定 </el-button>
+          <el-button type="primary" @click="onDelete(formData)"> 确 定</el-button>
         </template>
       </el-dialog>
     </el-card>
@@ -149,30 +150,35 @@ import { ref, reactive, computed, onMounted } from "vue"
 import { useTableHook } from "./album"
 import { useRouter } from "vue-router"
 import * as imageConversion from "image-conversion"
+import { UploadRequestOptions } from "element-plus"
+import { uploadFileApi } from "@/api/file"
 
 const {
-  loading,
-  removeVisibility,
-  addOrEditVisibility,
-  formRef,
-  formData,
-  formRules,
-  searchFormRef,
-  searchData,
-  tableData,
-  selectionIds,
-  pagination,
-  resetForm,
-  resetSearch,
-  onSearchList,
-  onSave,
   onDelete,
   onDeleteByIds,
-  onChange,
-  handleAddOrEdit,
+  onSearchList,
+  handleSortChange,
+  handleDragChange,
+  handleCheckAllChange,
+  handleCheckedColumnFieldsChange,
+  handleCheckedColumnChange,
+  handleSelectionChange,
   handleSizeChange,
   handleCurrentChange,
-  handleSelectionChange,
+  handleFormVisibility,
+  closeForm,
+  submitForm,
+  resetForm,
+  resetSearch,
+  resetTable,
+  loading,
+  removeVisibility,
+  formVisibility,
+  searchData,
+  tableData,
+  formData,
+  pagination,
+  formRef,
 } = useTableHook()
 
 // 路由
@@ -185,6 +191,23 @@ const dialogTitle = computed(() => {
     return "编辑友链"
   }
 })
+
+const handleCommand = (command) => {
+  if (command.includes("update")) {
+    handleFormVisibility(command.slice(6))
+  } else if (command.includes("delete")) {
+    onDelete(command.slice(6))
+  }
+}
+
+function uploadAvatar(options: UploadRequestOptions) {
+  return uploadFileApi("album", options.file)
+}
+
+function uploadCover(res) {
+  console.log("uploadCover", res)
+  formData.value.albumCover = res.data.file_url
+}
 
 const beforeUpload = (rawFile) => {
   if (rawFile.size / 1024 < 200) {
@@ -201,10 +224,6 @@ const beforeUpload = (rawFile) => {
 const checkPhoto = (item) => {
   router.push({ path: "/albums/" + item.id })
 }
-
-onMounted(() => {
-  onSearchList()
-})
 </script>
 
 <style scoped>
@@ -214,6 +233,7 @@ onMounted(() => {
   width: 100%;
   height: 170px;
 }
+
 .album-cover::before {
   content: "";
   position: absolute;
@@ -223,6 +243,7 @@ onMounted(() => {
   bottom: 0;
   background: rgba(0, 0, 0, 0.5);
 }
+
 .album-photo-count {
   display: flex;
   align-items: center;
@@ -236,16 +257,19 @@ onMounted(() => {
   bottom: 2.6rem;
   color: #fff;
 }
+
 .album-name {
   text-align: center;
   margin-top: 0.5rem;
 }
+
 .album-item {
   position: relative;
   cursor: pointer;
   margin-bottom: 1rem;
 }
-.album-opreation {
+
+.album-operation {
   position: absolute;
   z-index: 1000;
   top: 0.5rem;

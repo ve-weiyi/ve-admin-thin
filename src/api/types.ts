@@ -1,4 +1,3 @@
-
 export interface Api {
   id?: number // 主键id
   name?: string // api名称
@@ -148,7 +147,7 @@ export interface PhotoAlbum {
   album_desc?: string // 相册描述
   album_cover?: string // 相册封面
   is_delete?: boolean // 是否删除
-  status?: boolean // 状态值 1公开 2私密
+  status?: number // 状态值 1公开 2私密
   created_at?: string // 创建时间
   updated_at?: string // 更新时间
 }
@@ -598,6 +597,10 @@ export interface UserMenu {
   children?: UserMenu[]
 }
 
+export interface PhotoAlbumDetails extends PhotoAlbum {
+  photo_count?: number
+}
+
 export interface BatchResult {
   total_count?: number // 总数量
   success_count?: number // 成功数量
@@ -671,3 +674,4 @@ export interface ChatRole {
   act?: string
   prompt?: string
 }
+

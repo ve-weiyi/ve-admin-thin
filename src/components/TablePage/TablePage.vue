@@ -25,17 +25,9 @@
 
     <!-- 表格 -->
     <el-card v-loading="loading" shadow="never" class="main-card">
-      <div class="table-title">{{ tableTitle }}</div>
       <div class="operation-container">
-        <!-- 表格菜单 -->
-        <div class="status-menu" v-if="tabList.length !== 0">
-          <span>状态</span>
-          <template v-for="item of tabList" :key="item.count">
-            <span @click="checkTabType(item.count)" :class="isActive(item.count)">
-              {{ item.label }}
-            </span>
-          </template>
-        </div>
+        <!-- 标题 -->
+        <div class="table-title">{{ tableTitle }}</div>
 
         <!-- 表格操作 -->
         <div class="flex-between align-right">
@@ -163,6 +155,16 @@
         </div>
       </div>
 
+      <!-- 表格菜单 -->
+      <div class="status-menu" v-if="tabList.length !== 0">
+        <span>状态</span>
+        <template v-for="item of tabList" :key="item.count">
+          <span @click="checkTabType(item.count)" :class="isActive(item.count)">
+            {{ item.label }}
+          </span>
+        </template>
+      </div>
+
       <!-- 表格展示 -->
       <el-table
         border
@@ -179,7 +181,7 @@
           v-for="item of columnFields.filter((item) => item.hidden !== true)"
           :type="item.type"
           :key="item.key"
-          :prop="item.dataKey"
+          :prop="item.dataKey as string"
           :label="item.title"
           :align="item.align"
           :width="item.width"
@@ -256,7 +258,7 @@
         </el-form-item>
       </el-form>
       <template #footer v-if="showEditButton">
-        <el-button @click="hiddenForm">取消</el-button>
+        <el-button @click="closeForm">取消</el-button>
         <el-button type="primary" @click="submitForm(formData)">确定</el-button>
       </template>
     </el-dialog>
@@ -265,13 +267,15 @@
 
 <script setup lang="ts">
 import { computed, defineComponent, getCurrentInstance, onMounted, reactive, ref } from "vue"
+import { builderFormRender, defaultPaginationData, FormField, Pagination } from "@/utils/render"
 import {
-  builderFormRender,
-  defaultPaginationData,
-  FormField,
-  Pagination,
-} from "@/utils/render"
-import { Column, ElMessage, FormInstance, FormRules, TableInstance } from "element-plus"
+  CheckboxValueType,
+  Column,
+  ElMessage,
+  FormInstance,
+  FormRules,
+  TableInstance,
+} from "element-plus"
 import { MenuDetails } from "@/api/types"
 import draggable from "vuedraggable/src/vuedraggable"
 import { useRoute } from "vue-router"
@@ -312,7 +316,7 @@ const props = defineProps({
     default: "",
   },
   tabList: {
-    type: Array,
+    type: Array<Tag>,
     default: () => {
       return []
     },
@@ -331,7 +335,11 @@ const emit = defineEmits([
   // 'eventName',
 ])
 
-const tabList = reactive(props.tabList)
+type Tag = {
+  label: string
+  count: number
+}
+const tabList = reactive<Tag[]>(props.tabList)
 
 const type = ref(null)
 const checkTabType = (count: number) => {
@@ -347,7 +355,7 @@ const tableTitle = props.tableTitle ? props.tableTitle : useRoute().meta.title
 const tableName = props.modelName ? props.modelName : useRoute().meta.title
 
 const buttonRef = ref()
-const size = ref("default")
+const size = ref<"" | "default" | "small" | "large">("default")
 
 const getDropdownItemStyle = computed(() => {
   return (s) => {
@@ -435,7 +443,7 @@ function onCreate(row) {
   console.log("onCreate", row)
   props.handleApi(row, "create").then((res) => {
     ElMessage.success("创建成功")
-    hiddenForm()
+    closeForm()
     onSearchList()
   })
 }
@@ -444,7 +452,7 @@ function onUpdate(row) {
   console.log("onUpdate", row)
   props.handleApi("update", row).then((res) => {
     ElMessage.success("更新成功")
-    hiddenForm()
+    closeForm()
     onSearchList()
   })
 }
@@ -539,7 +547,7 @@ function handleCheckedColumnFieldsChange(element: any[]) {
 }
 
 // 当前选择的列
-function handleCheckedColumnChange(val: boolean, element: any) {
+function handleCheckedColumnChange(val: CheckboxValueType, element: any) {
   console.log("handleCheckedColumnChange ", val, element)
   columnFields.value.filter((item) => item.title === element.title)[0].hidden = !val
 }
@@ -575,7 +583,7 @@ function handleFormVisibility(row: any) {
 }
 
 // 隐藏表单
-function hiddenForm() {
+function closeForm() {
   formVisibility.value = false
   resetForm(null)
 }
@@ -643,7 +651,7 @@ defineExpose({
   handleSizeChange,
   handleCurrentChange,
   handleFormVisibility,
-  hiddenForm,
+  closeForm,
   submitForm,
   resetForm,
   resetSearch,

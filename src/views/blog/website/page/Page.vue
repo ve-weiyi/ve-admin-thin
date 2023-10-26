@@ -11,30 +11,23 @@
       <el-col v-for="item of pageList" :key="item.id" :md="6">
         <div class="page-item">
           <div class="page-operation">
-            <el-dropdown @command="handleCommand">
-              <el-icon style="color: #fff">
-                <More />
-              </el-icon>
+            <!-- 操作 -->
+            <el-dropdown trigger="click" @command="handleCommand">
+              <el-icon style="color: #fff; cursor: pointer"><MoreFilled /></el-icon>
               <template #dropdown>
                 <el-dropdown-menu>
                   <el-dropdown-item :command="'update' + JSON.stringify(item)">
-                    <el-icon>
-                      <Edit />
-                    </el-icon>
-                    编辑
+                    <el-icon><Edit /></el-icon>编辑
                   </el-dropdown-item>
                   <el-dropdown-item :command="'delete' + item.id">
-                    <el-icon>
-                      <Delete />
-                    </el-icon>
-                    删除
+                    <el-icon><Delete /></el-icon>删除
                   </el-dropdown-item>
                 </el-dropdown-menu>
               </template>
             </el-dropdown>
           </div>
           <el-image fit="cover" class="page-cover" :src="item.page_cover" />
-          <div class="page-name">{{ item.name }}</div>
+          <div class="page-name">{{ item.page_name }}</div>
         </div>
       </el-col>
     </el-row>
@@ -53,9 +46,9 @@
           <el-upload
             class="upload-cover"
             drag
-            :show-file-list="false"
-            action="/api/admin/config/images"
             multiple
+            :show-file-list="false"
+            :http-request="uploadImage"
             :before-upload="beforeUpload"
             :on-success="uploadCover"
           >
@@ -63,7 +56,14 @@
             <div class="el-upload__text" v-if="pageForum.page_cover == ''">
               将文件拖到此处，或<em>点击上传</em>
             </div>
-            <img v-else :src="pageForum.page_cover" width="360px" height="180px" />
+            <el-image
+              fit="cover"
+              class="page-cover"
+              v-else
+              :src="pageForum.page_cover"
+              width="360px"
+              height="180px"
+            />
           </el-upload>
         </el-form-item>
       </el-form>
@@ -93,10 +93,11 @@
 import { ref, reactive, onMounted } from "vue"
 import * as imageConversion from "image-conversion"
 import axios from "axios"
-import { ElMessage, ElNotification } from "element-plus"
+import { ElMessage, ElNotification, UploadRequestOptions } from "element-plus"
 import { findPageListApi } from "@/api/page"
 import "@/style/table.scss"
-import Delete from "@/views/blog/album/Delete.vue"
+import { Page } from "@/api/types"
+import { uploadFileApi } from "@/api/file"
 
 const keywords = ref("")
 const loading = ref(true)
@@ -111,7 +112,7 @@ const pageForum = reactive({
   page_label: "",
   page_cover: "",
 })
-const pageList = ref([])
+const pageList = ref<Page[]>([])
 const pageTitle = ref()
 
 const openModel = (item) => {
@@ -155,6 +156,10 @@ const addOrEditPage = () => {
     pageList.value = res.data.list
   })
   addOrEdit.value = false
+}
+
+function uploadImage(options: UploadRequestOptions) {
+  return uploadFileApi("page", options.file)
 }
 
 const uploadCover = (response) => {
@@ -228,7 +233,7 @@ onMounted(() => {
   margin-bottom: 1rem;
 }
 
-.page-opreation {
+.page-operation {
   position: absolute;
   z-index: 1000;
   top: 0.5rem;

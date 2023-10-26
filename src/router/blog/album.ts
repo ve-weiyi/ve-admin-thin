@@ -4,7 +4,7 @@ export default {
   path: "/albums",
   name: "album-management",
   component: Layout,
-  redirect: "/album/albums",
+  redirect: "/albums/list",
   meta: {
     title: "相册管理",
     icon: "picture",

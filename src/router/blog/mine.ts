@@ -18,6 +18,12 @@ export default {
       meta: { title: "个人信息", keepAlive: true },
     },
     {
+      path: "/mine/identity",
+      component: () => import("@/views/blog/mine/Identity.vue"),
+      name: "identity",
+      meta: { title: "身份认证", keepAlive: true },
+    },
+    {
       path: "/mine/history",
       component: () => import("@/views/blog/mine/history/History.vue"),
       name: "history",

@@ -1,5 +1,5 @@
 import http from "@/utils/request"
-import { Article, BatchResult, ArticleDetails } from "./types"
+import { Article, BatchResult, ArticleDetails, ArticleCondition, ArticleConditionDTO } from "./types"
 
 /** 创建文章 */
 export function createArticleApi(data: Article): Promise<IApiResponseData<Article>> {
@@ -88,8 +88,8 @@ export function findArticleDetailsListApi(page: PageQuery): Promise<IApiResponse
 }
 
 /** 通过标签或者id获取文章列表 */
-export function findArticleListByConditionApi(page: PageQuery): Promise<IApiResponseData<PageResult<Article>>> {
-  return http.request<IApiResponseData<PageResult<Article>>>({
+export function findArticleListByConditionApi(page: ArticleCondition): Promise<IApiResponseData<ArticleConditionDTO>> {
+  return http.request<IApiResponseData<ArticleConditionDTO>>({
     url: `/api/v1/article/list/condition`,
     method: "post",
     data: page,
