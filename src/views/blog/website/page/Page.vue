@@ -34,7 +34,7 @@
             </el-dropdown>
           </div>
           <el-image fit="cover" class="page-cover" :src="item.page_cover" />
-          <div class="page-name">{{ item.page_name }}</div>
+          <div class="page-name">{{ item.name }}</div>
         </div>
       </el-col>
     </el-row>
@@ -161,16 +161,16 @@ const uploadCover = (response) => {
   pageForum.page_cover = response.data
 }
 
-const beforeUpload = (file) => {
-  return new Promise((resolve) => {
-    if (file.size / 1024 < 200) {
-      resolve(file)
-    }
-    // 压缩到200KB,这里的200就是要压缩的大小,可自定义
-    imageConversion.compressAccurately(file, 200).then((res) => {
-      resolve(res)
-    })
+const beforeUpload = (rawFile) => {
+  if (rawFile.size / 1024 < 200) {
+    return true
+  }
+
+  // 压缩到200KB,这里的200就是要压缩的大小,可自定义
+  imageConversion.compressAccurately(rawFile, 200).then((res) => {
+    rawFile = res
   })
+  return true
 }
 
 const handleCommand = (command) => {

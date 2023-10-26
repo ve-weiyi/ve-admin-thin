@@ -17,7 +17,9 @@
         @onUploadImg="onUploadImg"
       >
       </MdEditor>
-      <el-button type="danger" size="default" class="edit-btn" @click="updateAbout"> 修改 </el-button>
+      <el-button type="danger" size="default" class="edit-btn" @click="updateAbout">
+        修改
+      </el-button>
     </el-card>
   </div>
 </template>
@@ -29,7 +31,7 @@ import { ElNotification } from "element-plus"
 import { MdEditor, MdPreview, MdCatalog } from "md-editor-v3"
 import "md-editor-v3/lib/style.css"
 import { uploadFileApi } from "@/api/file"
-import { getAboutMeApi, updateAboutMeApi } from "@/api/blog"
+import { getAboutMeApi, updateAboutMeApi } from "@/api/website"
 
 const mdRef = ref(null)
 const aboutContent = ref("")
@@ -40,7 +42,7 @@ const getAbout = () => {
   })
 }
 
-const onUploadImg = async(files, callback) => {
+const onUploadImg = async (files, callback) => {
   const res = await Promise.all(
     files.map((file) => {
       return new Promise((rev, rej) => {

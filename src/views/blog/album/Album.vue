@@ -4,7 +4,9 @@
       <!-- 标题 -->
       <div class="table-title">{{ $route.meta.title }}</div>
       <div class="operation-container">
-        <el-button type="primary" size="default" icon="plus" @click="onSave(null)"> 新建相册 </el-button>
+        <el-button type="primary" size="default" icon="plus" @click="onSave(null)">
+          新建相册
+        </el-button>
         <div style="margin-left: auto">
           <el-button
             type="text"
@@ -48,7 +50,9 @@
                   <el-dropdown-item :command="'update' + JSON.stringify(item)">
                     <i class="el-icon-edit" />编辑
                   </el-dropdown-item>
-                  <el-dropdown-item :command="'delete' + item.id"> <i class="delete" />删除 </el-dropdown-item>
+                  <el-dropdown-item :command="'delete' + item.id">
+                    <i class="delete" />删除
+                  </el-dropdown-item>
                 </el-dropdown-menu>
               </el-dropdown>
             </div>
@@ -102,7 +106,9 @@
               :on-success="uploadCover"
             >
               <i class="el-icon-upload" v-if="!formData.albumCover" />
-              <div class="el-upload__text" v-if="!formData.albumCover">将文件拖到此处，或<em>点击上传</em></div>
+              <div class="el-upload__text" v-if="!formData.albumCover">
+                将文件拖到此处，或<em>点击上传</em>
+              </div>
               <img v-else :src="formData.albumCover" width="360px" height="180px" />
             </el-upload>
           </el-form-item>
@@ -142,6 +148,7 @@
 import { ref, reactive, computed, onMounted } from "vue"
 import { useTableHook } from "./album"
 import { useRouter } from "vue-router"
+import * as imageConversion from "image-conversion"
 
 const {
   loading,
@@ -178,6 +185,18 @@ const dialogTitle = computed(() => {
     return "编辑友链"
   }
 })
+
+const beforeUpload = (rawFile) => {
+  if (rawFile.size / 1024 < 200) {
+    return true
+  }
+
+  // 压缩到200KB,这里的200就是要压缩的大小,可自定义
+  imageConversion.compressAccurately(rawFile, 200).then((res) => {
+    rawFile = res
+  })
+  return true
+}
 
 const checkPhoto = (item) => {
   router.push({ path: "/albums/" + item.id })

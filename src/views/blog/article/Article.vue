@@ -14,7 +14,9 @@
         >
           保存草稿
         </el-button>
-        <el-button type="danger" size="default" @click="openModel" style="margin-left: 10px"> 发布文章 </el-button>
+        <el-button type="danger" size="default" @click="openModel" style="margin-left: 10px">
+          发布文章
+        </el-button>
       </div>
       <!-- 文章内容 -->
       <!--      <mavon-editor-->
@@ -51,7 +53,12 @@
               {{ article.categoryName }}
             </el-tag>
             <!-- 分类选项 -->
-            <el-popover placement="bottom-start" width="460" trigger="click" v-if="!article.categoryName">
+            <el-popover
+              placement="bottom-start"
+              width="460"
+              trigger="click"
+              v-if="!article.categoryName"
+            >
               <div class="popover-title">分类</div>
               <!-- 搜索框 -->
               <el-autocomplete
@@ -64,13 +71,18 @@
                 @select="handleSelectCategories"
               >
                 <template #default="{ item }">
-                  <div>{{ item.categoryName }}</div>
+                  <div>{{ item.category_name }}</div>
                 </template>
               </el-autocomplete>
               <!-- 分类 -->
               <div class="popover-container">
-                <div v-for="item of categoryList" :key="item.id" class="category-item" @click="addCategory(item)">
-                  {{ item.categoryName }}
+                <div
+                  v-for="item of categoryList"
+                  :key="item.id"
+                  class="category-item"
+                  @click="addCategory(item)"
+                >
+                  {{ item.category_name }}
                 </div>
               </div>
               <template #reference>
@@ -90,7 +102,12 @@
               {{ item }}
             </el-tag>
             <!-- 标签选项 -->
-            <el-popover placement="bottom-start" width="460" trigger="click" v-if="article.tagNameList.length < 3">
+            <el-popover
+              placement="bottom-start"
+              width="460"
+              trigger="click"
+              v-if="article.tagNameList.length < 3"
+            >
               <div class="popover-title">标签</div>
               <!-- 搜索框 -->
               <el-autocomplete
@@ -109,7 +126,12 @@
               <!-- 标签 -->
               <div class="popover-container">
                 <div style="margin-bottom: 1rem">添加标签</div>
-                <el-tag v-for="(item, index) of tagList" :key="index" :class="tagClass(item)" @click="addTag(item)">
+                <el-tag
+                  v-for="(item, index) of tagList"
+                  :key="index"
+                  :class="tagClass(item)"
+                  @click="addTag(item)"
+                >
                   {{ item.tagName }}
                 </el-tag>
               </div>
@@ -120,7 +142,12 @@
           </el-form-item>
           <el-form-item label="文章类型">
             <el-select v-model="article.type" placeholder="请选择类型">
-              <el-option v-for="item in typeList" :key="item.type" :label="item.label" :value="item.type" />
+              <el-option
+                v-for="item in typeList"
+                :key="item.type"
+                :label="item.label"
+                :value="item.type"
+              />
             </el-select>
           </el-form-item>
           <!-- 文章类型 -->
@@ -137,7 +164,9 @@
               :on-success="uploadCover"
             >
               <i class="el-icon-upload" v-if="article.articleCover == ''" />
-              <div class="el-upload__text" v-if="article.articleCover == ''">将文件拖到此处，或<em>点击上传</em></div>
+              <div class="el-upload__text" v-if="article.articleCover == ''">
+                将文件拖到此处，或<em>点击上传</em>
+              </div>
               <img v-else :src="article.articleCover" width="360px" height="180px" />
             </el-upload>
           </el-form-item>
@@ -176,6 +205,7 @@ import { findCategoryListApi } from "@/api/category"
 import { findTagListApi } from "@/api/tag"
 import { createArticleApi, findArticleApi } from "@/api/article"
 import { uploadFileApi } from "@/api/file"
+import { Category } from "@/api/types"
 
 const route = useRoute()
 const router = useRouter()
@@ -198,7 +228,7 @@ const addOrEdit = ref(false)
 const autoSave = ref(true)
 const categoryName = ref("")
 const tagName = ref("")
-const categoryList = ref([])
+const categoryList = ref<Category[]>([])
 const tagList = ref([])
 const typeList = ref([
   {
@@ -245,15 +275,16 @@ function uploadCover(response) {
   article.value.articleCover = response.data
 }
 
-function beforeUpload(file) {
-  return new Promise((resolve) => {
-    if (file.size / 1024 < 200) {
-      resolve(file)
-    }
-    imageConversion.compressAccurately(file, 200).then((res) => {
-      resolve(res)
-    })
+const beforeUpload = (rawFile) => {
+  if (rawFile.size / 1024 < 200) {
+    return true
+  }
+
+  // 压缩到200KB,这里的200就是要压缩的大小,可自定义
+  imageConversion.compressAccurately(rawFile, 200).then((res) => {
+    rawFile = res
   })
+  return true
 }
 
 function uploadImg(pos, file) {
@@ -281,7 +312,7 @@ function saveArticleDraft() {
   }
   article.value.status = 3
   createArticleApi(article.value).then((res) => {
-    if (res.data.code == 200) {
+    if (res.code == 200) {
       if (article.value.id === null) {
         // store.commit("removeTab", "发布文章")
       } else {
@@ -320,7 +351,7 @@ function saveOrUpdateArticle() {
     return
   }
   createArticleApi(article.value).then((res) => {
-    if (res.data.code === 200) {
+    if (res.code === 200) {
       if (article.value.id === null) {
         // store.commit("removeTab", "发布文章")
       } else {
@@ -346,7 +377,7 @@ function autoSaveArticle() {
     article.value.id !== null
   ) {
     createArticleApi(article.value).then((res) => {
-      if (res.data.code === 200) {
+      if (res.code === 200) {
         alert("自动保存成功")
       } else {
         alert("自动保存失败")
@@ -437,12 +468,12 @@ onBeforeUnmount(() => {
 })
 
 const getArticle = (articleId: number) => {
-  findArticleApi({ id: articleId }).then((res) => {
-    article.value = res.data.data
+  findArticleApi(articleId).then((res) => {
+    article.value = res.data
   })
 }
 
-const articleId = route.params.articleId ? parseInt(route.params.articleId as string) : 0  // 获取路由参数
+const articleId = route.params.articleId ? parseInt(route.params.articleId as string) : 0 // 获取路由参数
 
 if (articleId) {
   getArticle(Number(articleId))

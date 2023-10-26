@@ -352,6 +352,20 @@ export interface UpdateRoleResources {
   resource_ids?: number[]
 }
 
+export interface spanContext {
+  trace_id?: string // TraceID 表示tracer的全局唯一ID
+  span_id?: string // SpanId 标示单个trace中某一个span的唯一ID，在trace中唯一
+}
+
+export interface Span {
+  ctx?: spanContext // 传递的上下文
+  service_name?: string // 服务名
+  operation_name?: string // 操作
+  start_time?: string // 开始时间戳
+  flag?: string // 标记开启trace是 server 还是 client
+  children?: number // 本 span fork出来的 childsnums
+}
+
 export interface WebsiteConfigRequest {
   key?: string
   value?: string
@@ -429,7 +443,7 @@ export interface ArticleArchivesDTO {
   created_at?: string // 创建时间
 }
 
-export interface BlogHomeInfoDTO {
+export interface WebsiteHomeInfoDTO {
   article_count?: number // 文章数量
   category_count?: number // 分类数量
   tag_count?: number // 标签数量
@@ -444,7 +458,7 @@ export interface WebsiteConfigVO {
 export interface PageVO {
 }
 
-export interface BlogBackInfoDTO {
+export interface WebsiteAdminHomeInfo {
   views_count?: number // 访问量
   message_count?: number // 留言量
   user_count?: number // 用户量

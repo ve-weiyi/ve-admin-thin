@@ -244,7 +244,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from "vue"
 import { ElMessage } from "element-plus"
-import { getWebsiteConfigApi, updateWebsiteConfigApi } from "@/api/blog"
+import { getWebsiteConfigApi, updateWebsiteConfigApi } from "@/api/website"
 
 const websiteConfigForm = ref({
   website_avatar: "",

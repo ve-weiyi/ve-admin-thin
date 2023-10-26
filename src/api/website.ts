@@ -1,5 +1,5 @@
 import http from "@/utils/request"
-import { WebsiteConfigRequest, BlogBackInfoDTO, ChatRecord } from "./types"
+import { WebsiteConfigRequest, WebsiteAdminHomeInfo, ChatRecord } from "./types"
 
 /** 查询聊天记录 */
 export function webSocketApi(): Promise<any> {
@@ -12,7 +12,7 @@ export function webSocketApi(): Promise<any> {
 /** 关于我 */
 export function getAboutMeApi(): Promise<IApiResponseData<any>> {
   return http.request<IApiResponseData<any>>({
-    url: `/api/v1/about`,
+    url: `/api/v1/about/me`,
     method: "get",
   })
 }
@@ -20,7 +20,7 @@ export function getAboutMeApi(): Promise<IApiResponseData<any>> {
 /** 更新我的信息 */
 export function updateAboutMeApi(data: string): Promise<IApiResponseData<any>> {
   return http.request<IApiResponseData<any>>({
-    url: `/api/v1/about`,
+    url: `/api/v1/admin/about/me`,
     method: "post",
     data: data,
   })
@@ -45,9 +45,9 @@ export function updateWebsiteConfigApi(data: WebsiteConfigRequest): Promise<IApi
 }
 
 /** 获取后台首页信息 */
-export function getHomeInfoApi(): Promise<IApiResponseData<BlogBackInfoDTO>> {
-  return http.request<IApiResponseData<BlogBackInfoDTO>>({
-    url: `/api/v1/home`,
+export function getAdminHomeInfoApi(): Promise<IApiResponseData<WebsiteAdminHomeInfo>> {
+  return http.request<IApiResponseData<WebsiteAdminHomeInfo>>({
+    url: `/api/v1/admin/home`,
     method: "get",
   })
 }
@@ -58,5 +58,13 @@ export function findChatRecordsApi(page: PageQuery): Promise<IApiResponseData<Ch
     url: `/api/v1/chat/records`,
     method: "post",
     data: page,
+  })
+}
+
+/** 获取服务器信息 */
+export function getSystemStateApi(): Promise<IApiResponseData<WebsiteAdminHomeInfo>> {
+  return http.request<IApiResponseData<WebsiteAdminHomeInfo>>({
+    url: `/api/v1/admin/system/state`,
+    method: "get",
   })
 }

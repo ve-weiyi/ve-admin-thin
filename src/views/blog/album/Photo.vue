@@ -23,7 +23,11 @@
         <!-- 相册操作 -->
         <div class="operation">
           <div class="all-check">
-            <el-checkbox :indeterminate="isIndeterminate" v-model="checkAll" @change="handleCheckAllChange">
+            <el-checkbox
+              :indeterminate="isIndeterminate"
+              v-model="checkAll"
+              @change="handleCheckAllChange"
+            >
               全选
             </el-checkbox>
             <div class="check-count">已选择{{ selectionIds.length }}张</div>
@@ -136,7 +140,9 @@
             <div class="upload-count">共上传{{ uploadList.length }}张照片</div>
             <div style="margin-left: auto">
               <el-button @click="uploadPhoto = false">取 消</el-button>
-              <el-button @click="savePhotos" type="primary" :disabled="uploadList.length === 0"> 开始上传</el-button>
+              <el-button @click="savePhotos" type="primary" :disabled="uploadList.length === 0">
+                开始上传</el-button
+              >
             </div>
           </div>
         </template>
@@ -185,7 +191,12 @@
           <el-radio-group v-model="albumId">
             <div class="album-check-item">
               <template v-for="item in albumList">
-                <el-radio v-if="item.id !== albumInfo.id" :key="item.id" :label="item.id" style="margin-bottom: 1rem">
+                <el-radio
+                  v-if="item.id !== albumInfo.id"
+                  :key="item.id"
+                  :label="item.id"
+                  style="margin-bottom: 1rem"
+                >
                   <div class="album-check">
                     <el-image fit="cover" class="album-check-cover" :src="item.albumCover" />
                     <div style="margin-left: 0.5rem">{{ item.albumName }}</div>
@@ -197,7 +208,9 @@
         </el-form>
         <template #footer>
           <el-button @click="movePhoto = false">取 消</el-button>
-          <el-button :disabled="albumId === null" type="primary" @click="updatePhotoAlbum"> 确 定</el-button>
+          <el-button :disabled="albumId === null" type="primary" @click="updatePhotoAlbum">
+            确 定</el-button
+          >
         </template>
       </el-dialog>
     </el-card>
@@ -208,6 +221,7 @@
 import { ref, reactive, computed, onMounted } from "vue"
 import { useTableHook } from "./photo"
 import { useRoute } from "vue-router"
+import * as imageConversion from "image-conversion"
 
 const {
   loading,
@@ -235,6 +249,18 @@ const {
   albumInfo,
   getAlbumInfo,
 } = useTableHook()
+
+const beforeUpload = (rawFile) => {
+  if (rawFile.size / 1024 < 200) {
+    return true
+  }
+
+  // 压缩到200KB,这里的200就是要压缩的大小,可自定义
+  imageConversion.compressAccurately(rawFile, 200).then((res) => {
+    rawFile = res
+  })
+  return true
+}
 
 const dialogTitle = computed(() => {
   if (formData.value.id == 0) {
