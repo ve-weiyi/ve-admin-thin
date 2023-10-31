@@ -1,4 +1,12 @@
-import { onMounted, reactive, ref, VNode } from "vue"
+import {
+  onMounted,
+  reactive,
+  ref,
+  VNode,
+  getCurrentInstance,
+  resolveDynamicComponent,
+  h,
+} from "vue"
 import { Column, ElMessage, ElMessageBox } from "element-plus"
 import { defaultPaginationData, FormField, RenderType } from "@/utils/render"
 import {
@@ -8,8 +16,8 @@ import {
   updateMenuApi,
   findMenuDetailsListApi,
 } from "@/api/menu"
-
 import { Timer } from "@element-plus/icons-vue"
+import * as Icons from "@element-plus/icons-vue"
 
 const align = "center"
 
@@ -61,6 +69,7 @@ function getSearchFields(): FormField[] {
 }
 
 function getColumnFields(): Column[] {
+  const instance = getCurrentInstance()
   return [
     {
       key: "selection",
@@ -90,12 +99,13 @@ function getColumnFields(): Column[] {
       title: "图标",
       dataKey: "icon",
       width: 0,
-      align: align,
+      align: "left",
       cellRenderer: (scope: any) => {
         return (
           <div>
-            <el-icon>
-              <component is={scope.row.icon} />
+            <el-icon class="table-icon">
+              {" "}
+              {h(resolveDynamicComponent(scope.row.icon) as string)}{" "}
             </el-icon>
             {scope.row.icon}
           </div>
@@ -134,7 +144,9 @@ function getColumnFields(): Column[] {
             inactive-color="#F4F4F5"
             active-value={true}
             inactive-value={false}
-            onClick={() => {}}
+            onClick={() => {
+              instance.exposed.onUpdate(scope.row)
+            }}
           />
         )
       },
@@ -149,7 +161,7 @@ function getColumnFields(): Column[] {
       cellRenderer: (scope: any) => {
         return (
           <div>
-            <el-icon style={"margin-right: 2px"}>
+            <el-icon class="table-icon">
               <Timer />
             </el-icon>
             <span>{new Date(scope.row.created_at).toLocaleDateString()}</span>
@@ -161,35 +173,50 @@ function getColumnFields(): Column[] {
       key: "operation",
       title: "操作",
       dataKey: "operation",
-      width: 150,
+      width: 160,
       align: align,
       cellRenderer: (scope: any) => {
         return (
           <div>
             <el-button
-              class="operation-button"
               text
+              class="table-text-button"
               type="primary"
               size="small"
               icon="Plus"
-              onClick={() => {}}
+              onClick={() => {
+                instance.exposed.openForm(null)
+              }}
             >
               新增
             </el-button>
             <el-button
-              class="operation-button"
               text
+              class="table-text-button"
               type="primary"
               size="small"
               icon="editPen"
-              onClick={() => {}}
+              onClick={() => {
+                instance.exposed.openForm(scope.row)
+              }}
             >
               修改
             </el-button>
-            <el-popconfirm title="确定删除吗？" onConfirm={() => {}}>
+            <el-popconfirm
+              title="确定删除吗？"
+              onConfirm={() => {
+                instance.exposed.confirmDelete(scope.row.id)
+              }}
+            >
               {{
                 reference: () => (
-                  <el-button text type="danger" size="small" class="operation-button" icon="delete">
+                  <el-button
+                    text
+                    type="danger"
+                    size="small"
+                    class="table-text-button"
+                    icon="delete"
+                  >
                     删除
                   </el-button>
                 ),

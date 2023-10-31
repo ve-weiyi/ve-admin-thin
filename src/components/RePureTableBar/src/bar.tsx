@@ -1,12 +1,6 @@
 import { useEpThemeStoreHook } from "@/store/modules/epTheme"
 import { defineComponent, ref, computed, type PropType, nextTick } from "vue"
-import {
-  delay,
-  cloneDeep,
-  isBoolean,
-  isFunction,
-  getKeyList,
-} from "@pureadmin/utils"
+import { delay, cloneDeep, isBoolean, isFunction, getKeyList } from "@pureadmin/utils"
 
 import Sortable from "sortablejs"
 import DragIcon from "./svg/drag.svg?component"
@@ -44,9 +38,7 @@ export default defineComponent({
     const checkAll = ref(true)
     const isIndeterminate = ref(false)
     const filterColumns = cloneDeep(props?.columns).filter((column) =>
-      isBoolean(column?.hide)
-        ? !column.hide
-        : !(isFunction(column?.hide) && column?.hide())
+      isBoolean(column?.hide) ? !column.hide : !(isFunction(column?.hide) && column?.hide())
     )
     let checkColumnList = getKeyList(cloneDeep(props?.columns), "label")
     const checkedColumns = ref(getKeyList(cloneDeep(filterColumns), "label"))
@@ -55,8 +47,7 @@ export default defineComponent({
     const getDropdownItemStyle = computed(() => {
       return (s) => {
         return {
-          background:
-            s === size.value ? useEpThemeStoreHook().epThemeColor : "",
+          background: s === size.value ? useEpThemeStoreHook().epThemeColor : "",
           color: s === size.value ? "#fff" : "var(--el-text-color-primary)",
         }
       }
@@ -106,19 +97,16 @@ export default defineComponent({
       })
     }
 
-    function handleCheckAllChange(val: boolean) {
+    function handleCheckAllFieldChange(val: boolean) {
       checkedColumns.value = val ? checkColumnList : []
       isIndeterminate.value = false
-      dynamicColumns.value.map((column) =>
-        val ? (column.hide = false) : (column.hide = true)
-      )
+      dynamicColumns.value.map((column) => (val ? (column.hide = false) : (column.hide = true)))
     }
 
     function handleCheckedColumnsChange(value: string[]) {
       const checkedCount = value.length
       checkAll.value = checkedCount === checkColumnList.length
-      isIndeterminate.value =
-        checkedCount > 0 && checkedCount < checkColumnList.length
+      isIndeterminate.value = checkedCount > 0 && checkedCount < checkColumnList.length
     }
 
     function handleCheckColumnListChange(val: boolean, label: string) {
@@ -163,9 +151,7 @@ export default defineComponent({
     const rowDrop = (event: { preventDefault: () => void }) => {
       event.preventDefault()
       nextTick(() => {
-        const wrapper: HTMLElement = document.querySelector(
-          ".el-checkbox-group>div"
-        )
+        const wrapper: HTMLElement = document.querySelector(".el-checkbox-group>div")
         Sortable.create(wrapper, {
           animation: 300,
           handle: ".drag-btn",
@@ -195,10 +181,7 @@ export default defineComponent({
     }
 
     const isFixedColumn = (label: string) => {
-      return dynamicColumns.value.filter((item) => item.label === label)[0]
-        .fixed
-        ? true
-        : false
+      return dynamicColumns.value.filter((item) => item.label === label)[0].fixed ? true : false
     }
 
     const reference = {
@@ -214,15 +197,9 @@ export default defineComponent({
       <>
         <div {...attrs} class="w-[99/100] mt-2 px-2 pb-2 bg-bg_color">
           <div class="flex justify-between w-full h-[60px] p-4">
-            {slots?.title ? (
-              slots.title()
-            ) : (
-              <p class="font-bold truncate">{props.title}</p>
-            )}
+            {slots?.title ? slots.title() : <p class="font-bold truncate">{props.title}</p>}
             <div class="flex items-center justify-around">
-              {slots?.buttons ? (
-                <div class="flex mr-4">{slots.buttons()}</div>
-              ) : null}
+              {slots?.buttons ? <div class="flex mr-4">{slots.buttons()}</div> : null}
               {props.tableRef?.size ? (
                 <>
                   <el-tooltip
@@ -233,9 +210,7 @@ export default defineComponent({
                     <ExpandIcon
                       class={["w-[16px]", iconClass.value]}
                       style={{
-                        transform: isExpandAll.value
-                          ? "none"
-                          : "rotate(-90deg)",
+                        transform: isExpandAll.value ? "none" : "rotate(-90deg)",
                       }}
                       onClick={() => onExpand()}
                     />
@@ -245,11 +220,7 @@ export default defineComponent({
               ) : null}
               <el-tooltip effect="dark" content="刷新" placement="top">
                 <RefreshIcon
-                  class={[
-                    "w-[16px]",
-                    iconClass.value,
-                    loading.value ? "animate-spin" : "",
-                  ]}
+                  class={["w-[16px]", iconClass.value, loading.value ? "animate-spin" : ""]}
                   onClick={() => onReFresh()}
                 />
               </el-tooltip>
@@ -274,7 +245,7 @@ export default defineComponent({
                     label="列展示"
                     v-model={checkAll.value}
                     indeterminate={isIndeterminate.value}
-                    onChange={(value) => handleCheckAllChange(value)}
+                    onChange={(value) => handleCheckAllFieldChange(value)}
                   />
                   <el-button type="primary" link onClick={() => onReset()}>
                     重置
@@ -286,31 +257,23 @@ export default defineComponent({
                     v-model={checkedColumns.value}
                     onChange={(value) => handleCheckedColumnsChange(value)}
                   >
-                    <el-space
-                      direction="vertical"
-                      alignment="flex-start"
-                      size={0}
-                    >
+                    <el-space direction="vertical" alignment="flex-start" size={0}>
                       {checkColumnList.map((item) => {
                         return (
                           <div class="flex items-center">
                             <DragIcon
                               class={[
                                 "drag-btn w-[16px] mr-2",
-                                isFixedColumn(item)
-                                  ? "!cursor-no-drop"
-                                  : "!cursor-grab",
+                                isFixedColumn(item) ? "!cursor-no-drop" : "!cursor-grab",
                               ]}
-                              onMouseenter={(event: {
-                                preventDefault: () => void
-                              }) => rowDrop(event)}
+                              onMouseenter={(event: { preventDefault: () => void }) =>
+                                rowDrop(event)
+                              }
                             />
                             <el-checkbox
                               key={item}
                               label={item}
-                              onChange={(value) =>
-                                handleCheckColumnListChange(value, item)
-                              }
+                              onChange={(value) => handleCheckColumnListChange(value, item)}
                             >
                               <span
                                 title={item}

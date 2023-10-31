@@ -25,7 +25,7 @@
           <div class="all-check">
             <el-checkbox
               :indeterminate="isIndeterminate"
-              v-model="checkAllColumns"
+              v-model="checkAll"
               @change="handleCheckAllChange"
             >
               全选
@@ -43,7 +43,7 @@
           </el-button>
           <el-button
             type="danger"
-            @click="removeVisibility = true"
+            @click="batchDeleteVisibility = true"
             :disabled="selectionIds.length === 0"
             size="default"
             icon="deleteItem"
@@ -56,35 +56,39 @@
       <el-row class="photo-container" :gutter="10" v-loading="loading">
         <!-- 空状态 -->
         <el-empty v-if="tableData.length === 0" description="暂无照片" />
-        <!--        <el-checkbox-group v-model="selectionIds" @change="handleSelectionChange">-->
-        <el-col :md="4" v-for="item in tableData" :key="item.id">
-          <el-checkbox :label="item.id">
-            <div class="photo-item">
-              <!-- 照片操作 -->
-              <div class="photo-operation">
-                <el-dropdown @command="handleCommand">
-                  <el-icon style="color: #fff"><More /></el-icon>
-                  <template #dropdown>
-                    <el-dropdown-menu>
-                      <el-dropdown-item :command="JSON.stringify(item)">
-                        <el-icon style="color: #fff"><Edit /></el-icon>
-                        编辑
-                      </el-dropdown-item>
-                    </el-dropdown-menu>
-                  </template>
-                </el-dropdown>
+        <el-checkbox-group v-model="selectionIds" @change="handleCheckedPhotoChange">
+          <el-col :md="4" v-for="item in tableData" :key="item.id">
+            <el-checkbox :label="item.id">
+              <div class="photo-item">
+                <!-- 照片操作 -->
+                <div class="photo-operation">
+                  <el-dropdown @command="handleCommand">
+                    <el-icon style="color: #fff">
+                      <More />
+                    </el-icon>
+                    <template #dropdown>
+                      <el-dropdown-menu>
+                        <el-dropdown-item :command="JSON.stringify(item)">
+                          <el-icon style="color: #fff">
+                            <Edit />
+                          </el-icon>
+                          编辑
+                        </el-dropdown-item>
+                      </el-dropdown-menu>
+                    </template>
+                  </el-dropdown>
+                </div>
+                <el-image
+                  fit="cover"
+                  class="photo-img"
+                  :src="item.photo_src"
+                  :preview-src-list="tableData.map((photo) => photo.photo_src)"
+                />
+                <div class="photo-name">{{ item.photo_name }}</div>
               </div>
-              <el-image
-                fit="cover"
-                class="photo-img"
-                :src="item.photo_src"
-                :preview-src-list="tableData.map((photo) => photo.photo_src)"
-              />
-              <div class="photo-name">{{ item.photo_name }}</div>
-            </div>
-          </el-checkbox>
-        </el-col>
-        <!--        </el-checkbox-group>-->
+            </el-checkbox>
+          </el-col>
+        </el-checkbox-group>
       </el-row>
       <!-- 分页 -->
       <el-pagination
@@ -115,7 +119,9 @@
             :on-success="uploadCover"
             :on-remove="handleRemove"
           >
-            <el-icon><plus /></el-icon>
+            <el-icon>
+              <plus />
+            </el-icon>
           </el-upload>
           <div class="upload">
             <el-upload
@@ -166,7 +172,7 @@
         </template>
       </el-dialog>
       <!-- 批量删除对话框 -->
-      <el-dialog v-model="removeVisibility" width="30%">
+      <el-dialog v-model="batchDeleteVisibility" width="30%">
         <template #header>
           <div class="dialog-title-container">
             <el-icon style="color: #ff9900">
@@ -177,7 +183,7 @@
         </template>
         <div style="font-size: 1rem">是否删除选中照片？</div>
         <template #footer>
-          <el-button @click="removeVisibility = false">取 消</el-button>
+          <el-button @click="batchDeleteVisibility = false">取 消</el-button>
           <el-button type="primary" @click="updatePhotoDelete(null)"> 确 定</el-button>
         </template>
       </el-dialog>
@@ -224,36 +230,65 @@ import { useRoute } from "vue-router"
 import * as imageConversion from "image-conversion"
 import { findPhotoAlbumDetailsApi } from "@/api/photo_album"
 import { PhotoAlbum, PhotoAlbumDetails } from "@/api/types"
+import { CheckboxValueType } from "element-plus"
 
 const {
+  onFindList,
+  onCreate,
+  onUpdate,
   onDelete,
   onDeleteByIds,
-  onSearchList,
+  resetSearch,
+  resetTable,
+  refreshList,
   handleSortChange,
-  handleDragChange,
-  handleCheckAllChange,
-  handleCheckedColumnFieldsChange,
-  handleCheckedColumnChange,
   handleSelectionChange,
   handleSizeChange,
   handleCurrentChange,
-  handleFormVisibility,
+  resetForm,
+  openForm,
   closeForm,
   submitForm,
-  resetForm,
-  resetSearch,
-  resetTable,
-  loading,
-  removeVisibility,
-  formVisibility,
-  searchData,
-  tableData,
-  formData,
+  confirmDelete,
+  cancelBatchDelete,
+  confirmBatchDelete,
   pagination,
-  isIndeterminate,
+  loading,
+  batchDeleteVisibility,
+  formVisibility,
+  searchRef,
+  searchData,
+  tableRef,
+  tableData,
+  formRef,
+  formData,
   selectionIds,
-  checkAllColumns,
 } = useTableHook()
+
+const isIndeterminate = computed(() => {
+  return selectionIds.length > 0 && selectionIds.length < tableData.value.length
+})
+
+const checkAll = ref(false)
+function handleCheckAllChange(value: boolean) {
+  checkAll.value = value
+  selectionIds.length = 0
+  if (value) {
+    tableData.value.forEach((item) => {
+      selectionIds.push(item.id)
+    })
+  }
+  console.log("handleCheckAllChange", value, selectionIds)
+}
+
+function handleCheckedPhotoChange(value: CheckboxValueType[]) {
+  checkAll.value = value.length === tableData.value.length
+  selectionIds.length = 0
+  value.forEach((item) => {
+    selectionIds.push(item as number)
+  })
+  console.log("handleCheckedPhotoChange", value, selectionIds)
+}
 
 const beforeUpload = (rawFile) => {
   if (rawFile.size / 1024 < 200) {
@@ -287,6 +322,7 @@ const albumList = ref<PhotoAlbum[]>([])
 const movePhoto = ref(false)
 const uploadPhoto = ref(false)
 const uploadList = ref([])
+
 function savePhotos() {
   console.log("savePhotos")
 }
@@ -301,7 +337,7 @@ function getAlbumInfo(id: number) {
 
 function handleCommand(command) {
   if (command.includes("update")) {
-    handleFormVisibility(command.slice(6))
+    openForm(command.slice(6))
   } else if (command.includes("delete")) {
     onDelete(command.slice(6))
   }
@@ -324,7 +360,7 @@ onMounted(() => {
   resetForm(null)
   resetSearch()
   resetTable()
-  onSearchList()
+  refreshList()
 })
 </script>
 

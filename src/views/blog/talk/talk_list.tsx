@@ -1,7 +1,13 @@
 import { reactive, ref, computed, onMounted } from "vue"
 import { Column, ElMessageBox, FormInstance, FormRules } from "element-plus"
 import { ElTag, ElMessage } from "element-plus"
-import { createTalkApi, deleteTalkByIdsApi, deleteTalkApi, findTalkListApi, updateTalkApi } from "@/api/talk"
+import {
+  createTalkApi,
+  deleteTalkByIdsApi,
+  deleteTalkApi,
+  findTalkListApi,
+  updateTalkApi,
+} from "@/api/talk"
 
 interface Pagination {
   total?: number
@@ -23,7 +29,7 @@ const align = "center"
 
 export function useTableHook() {
   // 数据绑定
-  const removeVisibility = ref(false)
+  const batchDeleteVisibility = ref(false)
   const addOrEditVisibility = ref(false)
 
   // 表格加载状态
@@ -63,7 +69,7 @@ export function useTableHook() {
   const resetSearch = () => {
     searchData.linkName = ""
     searchData.isReview = null
-    onSearchList()
+    refreshList()
   }
 
   const applySearch = () => {
@@ -88,7 +94,7 @@ export function useTableHook() {
   }
 
   // eslint-disable-next-line no-undef
-  function onSearchList() {
+  function refreshList() {
     applySearch()
 
     loading.value = true
@@ -124,7 +130,7 @@ export function useTableHook() {
     createTalkApi(row).then((res) => {
       ElMessage.success("创建成功")
       addOrEditVisibility.value = false
-      onSearchList()
+      refreshList()
     })
   }
 
@@ -133,7 +139,7 @@ export function useTableHook() {
     updateTalkApi(row).then((res) => {
       ElMessage.success("更新成功")
       addOrEditVisibility.value = false
-      onSearchList()
+      refreshList()
     })
   }
 
@@ -141,8 +147,8 @@ export function useTableHook() {
     console.log("onDelete", row)
     deleteTalkApi(row).then((res) => {
       ElMessage.success("删除成功")
-      removeVisibility.value = false
-      onSearchList()
+      batchDeleteVisibility.value = false
+      refreshList()
     })
   }
 
@@ -150,8 +156,8 @@ export function useTableHook() {
     console.log("onDeleteByIds", ids)
     deleteTalkByIdsApi(ids).then((res) => {
       ElMessage.success("批量删除成功")
-      removeVisibility.value = false
-      onSearchList()
+      batchDeleteVisibility.value = false
+      refreshList()
     })
   }
 
@@ -159,14 +165,14 @@ export function useTableHook() {
   function handleSizeChange(val: number) {
     console.log(`${val} items per page`)
     pagination.pageSize = val
-    onSearchList()
+    refreshList()
   }
 
   // 分页回调
   function handleCurrentChange(val: number) {
     console.log(`current page: ${val}`)
     pagination.currentPage = val
-    onSearchList()
+    refreshList()
   }
 
   // 批量选择回调
@@ -181,9 +187,9 @@ export function useTableHook() {
   // 行数据状态改变回调
   function onChange({ row, index }) {
     ElMessageBox.confirm(
-      `确认要<strong>${row.status === 0 ? "停用" : "启用"}</strong><strong style='color:var(--el-color-primary)'>${
-        row.username
-      }</strong>用户吗?`,
+      `确认要<strong>${
+        row.status === 0 ? "停用" : "启用"
+      }</strong><strong style='color:var(--el-color-primary)'>${row.username}</strong>用户吗?`,
       "系统提示",
       {
         confirmButtonText: "确定",
@@ -211,7 +217,7 @@ export function useTableHook() {
 
   return {
     loading,
-    removeVisibility,
+    batchDeleteVisibility,
     addOrEditVisibility,
     formRef,
     formData,
@@ -223,7 +229,7 @@ export function useTableHook() {
     pagination,
     resetForm,
     resetSearch,
-    onSearchList,
+    refreshList,
     onSave,
     onCreate,
     onUpdate,

@@ -68,11 +68,9 @@ function getColumnFields(): Column[] {
       align: align,
       cellRenderer: (scope: any) => {
         return (
-          <div style={"display: flex;flex-wrap: wrap;"}>
+          <div>
             {scope.row.article_tag_list.map((item: any) => {
-              return (
-                <el-tag style={"margin-right:0.2rem;margin-top:0.2rem"}>{item.tag_name}</el-tag>
-              )
+              return <el-tag class="table-tag">{item.tag_name}</el-tag>
             })}
           </div>
         )
@@ -115,7 +113,7 @@ function getColumnFields(): Column[] {
             active-value={true}
             inactive-value={false}
             active-color="#13ce66"
-            inactive-color="#F4F4F5"
+            inactive-color="#888888"
             active-text="置顶"
             inactive-text="普通"
             inline-prompt
@@ -138,7 +136,7 @@ function getColumnFields(): Column[] {
       cellRenderer: (scope: any) => {
         return (
           <div>
-            <el-icon style={"margin-right: 2px"}>
+            <el-icon class="table-icon">
               <Timer />
             </el-icon>
             <span>{new Date(scope.row.created_at).toLocaleDateString()}</span>
@@ -150,35 +148,44 @@ function getColumnFields(): Column[] {
       key: "operation",
       title: "操作",
       dataKey: "operation",
-      width: 150,
+      width: 170,
       align: align,
       cellRenderer: (scope: any) => {
         return (
           <div>
             <el-button
-              class="operation-button"
+              class="table-text-button"
               text
               type="primary"
               size="small"
               icon="Plus"
-              onClick={() => exposed.handleFormVisibility(scope.row, "add")}
+              onClick={() => exposed.openForm(scope.row, "add")}
             >
               新增
             </el-button>
             <el-button
-              class="operation-button"
+              class="table-text-button"
               text
               type="primary"
               size="small"
               icon="editPen"
-              onClick={() => exposed.handleFormVisibility(scope.row, "edit")}
+              onClick={() => exposed.openForm(scope.row, "edit")}
             >
               修改
             </el-button>
-            <el-popconfirm title="确定删除吗？" onConfirm={() => exposed.onDelete(scope.row)}>
+            <el-popconfirm
+              title="确定删除吗？"
+              onConfirm={() => exposed.confirmDelete(scope.row.id)}
+            >
               {{
                 reference: () => (
-                  <el-button text type="danger" size="small" class="operation-button" icon="delete">
+                  <el-button
+                    text
+                    type="danger"
+                    size="small"
+                    class="table-text-button"
+                    icon="delete"
+                  >
                     删除
                   </el-button>
                 ),

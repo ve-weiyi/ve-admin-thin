@@ -20,18 +20,9 @@ import { onMounted } from "vue"
 
 const defaultOrder = { id: "desc" }
 
-const {
-  getSearchFields,
-  getColumnFields,
-  getFormFields,
-  handleApi,
-} = useTableHook()
+const { getSearchFields, getColumnFields, getFormFields, handleApi } = useTableHook()
 
-onMounted(() => {
-
-})
+onMounted(() => {})
 </script>
 
-<style lang="scss" scoped>
-
-</style>
+<style lang="scss" scoped></style>

@@ -11,12 +11,12 @@
       :tab-list="tabList"
       model-name="留言管理"
     >
-      <template #operation="{ selectionIds, checkedColumnFields }">
+      <template #operation="{ selectionIds, columnFieldsVisibility }">
         <el-button
           type="success"
           size="default"
           icon="CircleCheck"
-          v-if="checkedColumnFields.filter((item) => item.type === 'selection').length > 0"
+          v-if="columnFieldsVisibility.filter((item) => item === 'selection').length > 0"
           :disabled="selectionIds.length === 0"
           @click="1"
         >

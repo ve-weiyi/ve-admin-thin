@@ -36,8 +36,12 @@
             <!-- 发表时间 -->
             <div class="time">
               {{ item.created_at }}
-              <span class="top" v-if="item.isTop === 1"> <i class="iconfont icon-upload-fill" /> 置顶 </span>
-              <span class="secret" v-if="item.status === 2"> <i class="iconfont icon-password-fill" /> 私密 </span>
+              <span class="top" v-if="item.isTop === 1">
+                <i class="iconfont icon-upload-fill" /> 置顶
+              </span>
+              <span class="secret" v-if="item.status === 2">
+                <i class="iconfont icon-password-fill" /> 私密
+              </span>
             </div>
             <!-- 说说信息 -->
             <div class="talk-content" v-html="item.content" />
@@ -89,7 +93,7 @@ import { useTableHook } from "./talk_list"
 
 const {
   loading,
-  removeVisibility,
+  batchDeleteVisibility,
   addOrEditVisibility,
   formRef,
   formData,
@@ -101,7 +105,7 @@ const {
   pagination,
   resetForm,
   resetSearch,
-  onSearchList,
+  refreshList,
   onSave,
   onDelete,
   onDeleteByIds,
@@ -118,7 +122,7 @@ const previewList = ref([])
 const talkId = ref(null)
 
 onMounted(() => {
-  onSearchList()
+  refreshList()
 })
 
 function handleCommand(command) {
@@ -136,7 +140,7 @@ function handleCommand(command) {
 
 function changeStatus(status) {
   searchData.status = status
-  onSearchList()
+  refreshList()
 }
 
 const isActive = computed(() => {

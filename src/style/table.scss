@@ -11,7 +11,7 @@
 
 // table-v2 表头背景
 .el-table-v2__header-cell {
-    background-color: var(--el-fill-color-light) !important;
+  background-color: var(--el-fill-color-light) !important;
 }
 
 // 分页
@@ -44,7 +44,7 @@
 }
 
 .table-title::before {
-  content: '';
+  content: "";
   width: 24px;
   height: 16px;
   border-left: 3px solid #0081ff;
@@ -72,28 +72,25 @@
   margin-bottom: 0.5rem;
   margin-top: 0.1rem;
 }
-.operation-button {
-  font-size: 12px;
-  font-weight: bold;
-  margin-left: 0px;
-  padding: 2px;
-}
 
 .pagination-container {
   float: right;
   margin-top: 1.25rem;
   margin-bottom: 1.25rem;
 }
+
 .dialog-container {
   align-items: center;
   font-weight: bold;
-  width:40%;
+  width: 40%;
 }
+
 .dialog-title-container {
   display: flex;
   align-items: center;
   font-weight: bold;
 }
+
 .dialog-title-container i {
   font-size: 1.5rem;
   margin-right: 0.5rem;
@@ -134,6 +131,7 @@
 .el-form-item__label {
   font-weight: bold;
 }
+
 .el-form-item__content {
   font-weight: bold;
 }
@@ -143,7 +141,7 @@
   margin-left: 2px !important;
 }
 
-.el-button--small{
+.el-button--small {
   margin-left: 0px;
   padding: 3px;
 }
@@ -151,8 +149,9 @@
 .el-button + .el-button {
   margin-left: 4px;
 }
+
 /* 重置 el-button 中 icon 的 margin */
-.reset-margin [class*='el-icon'] + span {
+.reset-margin [class*="el-icon"] + span {
   margin-left: 2px !important;
 }
 
@@ -176,3 +175,20 @@
   margin-right: auto;
 }
 
+.table-text-button {
+  font-size: 12px;
+  font-weight: bold;
+  margin-left: 2px !important;
+  padding: 2px !important;
+}
+.table-tag {
+  margin-right: 0.2rem;
+  margin-top: 0.2rem;
+}
+.table-icon {
+  display: flex;
+  justify-content: center; /* 可选，根据需要调整对齐方式 */
+  align-items: center; /* 可选，根据需要调整对齐方式 */
+  vertical-align: -15%;
+  margin-right: 4px;
+}

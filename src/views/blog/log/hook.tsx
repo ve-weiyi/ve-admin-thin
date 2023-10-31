@@ -15,7 +15,7 @@ import { OperationLog } from "@/api/types"
 
 const align = "center"
 
-const tagType = (type) => {
+const tagType = (type: string) => {
   switch (type) {
     case "GET":
       return ""
@@ -26,7 +26,7 @@ const tagType = (type) => {
     case "DELETE":
       return "danger"
     default:
-      return ""
+      return "info"
   }
 }
 
@@ -134,7 +134,7 @@ function getColumnFields(): Column[] {
       cellRenderer: (scope: any) => {
         return (
           <div>
-            <el-icon style="margin-right: 2px">
+            <el-icon class="table-icon">
               <Timer />
             </el-icon>
             <span>{new Date(scope.row.created_at).toLocaleString()}</span>
@@ -145,7 +145,7 @@ function getColumnFields(): Column[] {
     {
       key: "operation",
       title: "操作",
-      width: 150,
+      width: 160,
       align: align,
       fixed: FixedDir.RIGHT,
       cellRenderer: (scope: any) => {
@@ -153,20 +153,27 @@ function getColumnFields(): Column[] {
           <div>
             <el-button
               text
+              class="table-text-button"
               type="primary"
               size="small"
               icon="view"
-              onClick={() => instance.exposed.handleFormVisibility(scope.row)}
+              onClick={() => instance.exposed.openForm(scope.row)}
             >
               查看
             </el-button>
             <el-popconfirm
               title="确定删除吗？"
-              onConfirm={() => instance.exposed.onDelete(scope.row)}
+              onConfirm={() => instance.exposed.confirmDelete(scope.row.id)}
             >
               {{
                 reference: () => (
-                  <el-button text type="danger" size="small" icon="delete">
+                  <el-button
+                    text
+                    class="table-text-button"
+                    type="danger"
+                    size="small"
+                    icon="delete"
+                  >
                     删除
                   </el-button>
                 ),

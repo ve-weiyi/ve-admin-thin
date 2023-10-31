@@ -4,55 +4,9 @@ import { FormField, RenderType } from "@/utils/render"
 import { FixedDir } from "element-plus/es/components/table-v2/src/constants"
 import { Timer } from "@element-plus/icons-vue"
 
-import {
-  createOperationLogApi,
-  deleteOperationLogByIdsApi,
-  deleteOperationLogApi,
-  updateOperationLogApi,
-} from "@/api/operation_log"
-
 import { findUserListApi, updateUserStatusApi } from "@/api/user"
-import { OperationLog } from "@/api/types"
 
 const align = "center"
-
-const tagType = (type) => {
-  switch (type) {
-    case "GET":
-      return ""
-    case "POST":
-      return "success"
-    case "PUT":
-      return "warning"
-    case "DELETE":
-      return "danger"
-    default:
-      return ""
-  }
-}
-
-const options = [
-  {
-    value: "新增",
-    label: "新增",
-  },
-  {
-    value: "修改",
-    label: "修改",
-  },
-  {
-    value: "删除",
-    label: "删除",
-  },
-  {
-    value: "查询",
-    label: "查询",
-  },
-  {
-    value: "新增或修改",
-    label: "新增或修改",
-  },
-]
 
 // 表格展示列信息
 function getColumnFields(): Column[] {
@@ -102,11 +56,9 @@ function getColumnFields(): Column[] {
       align: align,
       cellRenderer: (scope: any) => {
         return (
-          <div style={"display: flex;flex-wrap: wrap;"}>
+          <div>
             {scope.row.roles.map((item: any) => {
-              return (
-                <el-tag style={"margin-right:0.2rem;margin-top:0.2rem"}>{item.role_comment}</el-tag>
-              )
+              return <el-tag class="table-tag">{item.role_comment}</el-tag>
             })}
           </div>
         )
@@ -162,7 +114,7 @@ function getColumnFields(): Column[] {
       cellRenderer: (scope: any) => {
         return (
           <div>
-            <el-icon style="margin-right: 2px">
+            <el-icon class="table-icon">
               <Timer />
             </el-icon>
             <span>{new Date(scope.row.created_at).toLocaleString()}</span>
@@ -181,20 +133,27 @@ function getColumnFields(): Column[] {
           <div>
             <el-button
               text
+              class="table-text-button"
               type="primary"
               size="small"
               icon="view"
-              onClick={() => instance.exposed.handleFormVisibility(scope.row)}
+              onClick={() => instance.exposed.openForm(scope.row)}
             >
               查看
             </el-button>
             <el-popconfirm
               title="确定删除吗？"
-              onConfirm={() => instance.exposed.onDelete(scope.row)}
+              onConfirm={() => instance.exposed.confirmDelete(scope.row.id)}
             >
               {{
                 reference: () => (
-                  <el-button text type="danger" size="small" icon="delete">
+                  <el-button
+                    text
+                    class="table-text-button"
+                    type="danger"
+                    size="small"
+                    icon="delete"
+                  >
                     删除
                   </el-button>
                 ),
@@ -220,22 +179,11 @@ function getSearchFields(): FormField[] {
         rule: "like",
       },
     },
-    {
-      type: RenderType.Select,
-      label: "操作类型",
-      field: "opt_type",
-
-      options: options,
-      searchRules: {
-        flag: "and",
-        rule: "=",
-      },
-    },
   ]
 }
 
 // 表单字段
-function getFormFields(model: OperationLog): FormField[] {
+function getFormFields(): FormField[] {
   return [
     {
       field: "roles",
@@ -248,13 +196,13 @@ function handleApi(event: string, data: any) {
   console.log("event", event)
   switch (event) {
     case "create":
-      return createOperationLogApi(data)
+      return null
     case "update":
-      return updateOperationLogApi(data)
+      return null
     case "delete":
-      return deleteOperationLogApi(data)
+      return null
     case "deleteByIds":
-      return deleteOperationLogByIdsApi(data)
+      return null
     case "list":
       return findUserListApi(data)
     default:

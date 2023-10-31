@@ -111,7 +111,7 @@ function getColumnFields(): Column[] {
       cellRenderer: (scope: any) => {
         return (
           <div>
-            <el-icon style="margin-right: 2px">
+            <el-icon class="table-icon">
               <Timer />
             </el-icon>
             <span>{new Date(scope.row.created_at).toLocaleString()}</span>
@@ -122,7 +122,7 @@ function getColumnFields(): Column[] {
     {
       key: "operation",
       title: "操作",
-      width: 140,
+      width: 160,
       align: align,
       cellRenderer: (scope: any) => {
         return (
@@ -131,14 +131,14 @@ function getColumnFields(): Column[] {
               <el-button
                 type="success"
                 size="default"
-                onClick={() => instance.exposed.handleFormVisibility(scope.row)}
+                onClick={() => instance.exposed.openForm(scope.row)}
               >
                 通过
               </el-button>
             )}
             <el-popconfirm
               title="确定删除吗？"
-              onConfirm={() => instance.exposed.onDelete(scope.row)}
+              onConfirm={() => instance.exposed.confirmDelete(scope.row.id)}
             >
               {{
                 reference: () => (

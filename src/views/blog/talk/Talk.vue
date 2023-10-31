@@ -21,13 +21,7 @@
                 :key="index"
                 @click="addEmoji(key, item.normal)"
               >
-                <img
-                  :src="item.normal"
-                  :title="item.key"
-                  class="emoji"
-                  width="24"
-                  height="24"
-                />
+                <img :src="item.normal" :title="item.key" class="emoji" width="24" height="24" />
               </span>
               <template #reference>
                 <i class="iconfont icon-smile operation-btn" />
@@ -48,20 +42,15 @@
             <!-- 是否置顶 -->
             <el-switch
               style="margin-right: 16px"
-              v-model="talk.isTop"
+              v-model="talk.is_top"
               inactive-text="置顶"
               :active-value="1"
               :inactive-value="0"
             />
             <!-- 说说状态 -->
-            <el-dropdown
-              trigger="click"
-              @command="handleCommand"
-              style="margin-right: 16px"
-            >
+            <el-dropdown trigger="click" @command="handleCommand" style="margin-right: 16px">
               <span class="talk-status">
-                {{ dropdownTitle
-                }}<i class="el-icon-arrow-down el-icon--right" />
+                {{ dropdownTitle }}<i class="el-icon-arrow-down el-icon--right" />
               </span>
               <template #dropdown>
                 <el-dropdown-menu>
@@ -114,7 +103,7 @@ import { findTalkApi } from "@/api/talk"
 import { Talk } from "@/api/types"
 
 const route = useRoute()
-const emojiList = ref(EmojiList)
+const emojiList = ref<any>(EmojiList)
 const talk = ref<Talk>({
   id: null,
   content: "",
@@ -163,19 +152,16 @@ function upload(response) {
   uploadList.value.push({ url: response.data })
 }
 
-function beforeUpload(file) {
-  return new Promise((resolve) => {
-    if (file.size / 1024 < this.config.UPLOAD_SIZE) {
-      resolve(file)
-    } else {
-      // 压缩到200KB，这里的200就是要压缩的大小，可自定义
-      imageConversion
-        .compressAccurately(file, this.config.UPLOAD_SIZE)
-        .then((res) => {
-          resolve(res)
-        })
-    }
+const beforeUpload = (rawFile) => {
+  if (rawFile.size / 1024 < 200) {
+    return true
+  }
+
+  // 压缩到200KB,这里的200就是要压缩的大小,可自定义
+  imageConversion.compressAccurately(rawFile, 200).then((res) => {
+    rawFile = res
   })
+  return true
 }
 
 function saveOrUpdateTalk() {

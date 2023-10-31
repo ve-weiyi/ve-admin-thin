@@ -13,7 +13,7 @@ import {
 
 const align = "center"
 
-const tagType = (type) => {
+const tagType = (type: string) => {
   switch (type) {
     case "GET":
       return "info"
@@ -157,7 +157,7 @@ function getColumnFields(): Column[] {
       cellRenderer: (scope: any) => {
         return (
           <div>
-            <el-icon style="margin-right: 2px">
+            <el-icon class="table-icon">
               <Timer />
             </el-icon>
             <span>{new Date(scope.row.created_at).toLocaleString()}</span>
@@ -169,28 +169,28 @@ function getColumnFields(): Column[] {
       key: "operation",
       title: "操作",
       dataKey: "operation",
-      width: 150,
+      width: 160,
       align: align,
       cellRenderer: (scope: any) => {
         return (
           <div>
             <el-button
-              class="operation-button"
               text
+              class="table-text-button"
               type="primary"
               size="small"
               icon="Plus"
-              onClick={() => instance.exposed.handleFormVisibility({ parent_id: scope.row.id })}
+              onClick={() => instance.exposed.openForm({ parent_id: scope.row.id })}
             >
               新增
             </el-button>
             <el-button
-              class="operation-button"
               text
+              class="table-text-button"
               type="primary"
               size="small"
               icon="editPen"
-              onClick={() => instance.exposed.handleFormVisibility(scope.row)}
+              onClick={() => instance.exposed.openForm(scope.row)}
             >
               修改
             </el-button>
@@ -204,7 +204,13 @@ function getColumnFields(): Column[] {
             >
               {{
                 reference: () => (
-                  <el-button text type="danger" size="small" class="operation-button" icon="delete">
+                  <el-button
+                    text
+                    class="table-text-button"
+                    type="danger"
+                    size="small"
+                    icon="delete"
+                  >
                     删除
                   </el-button>
                 ),

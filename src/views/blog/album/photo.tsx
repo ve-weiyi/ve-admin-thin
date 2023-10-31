@@ -1,5 +1,6 @@
 import { reactive, ref, computed, onMounted } from "vue"
 import {
+  CheckboxGroupValueType,
   CheckboxValueType,
   Column,
   ElMessageBox,
@@ -8,6 +9,7 @@ import {
   TableInstance,
 } from "element-plus"
 import { ElTag, ElMessage } from "element-plus"
+import { builderFormRender, defaultPaginationData, FormField, Pagination } from "@/utils/render"
 import {
   createPhotoApi,
   deletePhotoByIdsApi,
@@ -17,17 +19,14 @@ import {
 } from "@/api/photo"
 
 import { Photo } from "@/api/types"
-import { FormField } from "@/utils/render"
 
-interface Pagination {
-  total?: number
-  currentPage?: number
-  pageSizes?: number[]
-  pageSize?: number
-  layout?: string
-}
+const align = "center"
 
 const defaultOrder = { id: "desc" }
+
+function getSearchFields(): FormField[] {
+  return []
+}
 
 function getColumnFields(): Column[] {
   return []
@@ -55,25 +54,12 @@ function handleApi(event: string, data: any) {
   }
 }
 
-/** 默认的分页参数 */
-const defaultPaginationData: Pagination = {
-  total: 0,
-  currentPage: 1,
-  pageSizes: [10, 20, 50],
-  pageSize: 10,
-  layout: "total, sizes, prev, pager, next, jumper",
-}
-const align = "center"
-
 export function useTableHook() {
   // 表格加载状态
   const loading = ref(true)
 
   // 表格结构定义
   const columnFields = ref<Column[]>([])
-  const checkedColumnFields = ref<Column[]>([])
-  const checkAllColumns = ref(true)
-  const isIndeterminate = ref(false)
 
   // 表格数据定义
   const tableRef = ref<TableInstance | null>(null)
@@ -83,18 +69,82 @@ export function useTableHook() {
 
   // 表搜素条件定义
   const searchRef = ref<FormInstance | null>(null)
-  const searchFields = ref<FormField[]>()
+  const searchFields = ref<FormField[]>(getSearchFields())
   // 搜索条件,{k:v}
   const searchData = ref<any>({})
   // 排序条件,{k:v}
   const orderData = ref<any>({})
   // 条件查询 (key,value)
+  // eslint-disable-next-line no-undef
   const conditions = reactive<Condition[]>([])
+  // eslint-disable-next-line no-undef
   const sorts = reactive<Sort[]>([])
 
-  function onSearchList() {
-    // console.log("onSearchList", searchData.value, orderData.value)
+  // eslint-disable-next-line no-undef
+  function onFindList(page: PageQuery) {
+    console.log("onFindList", page)
+    handleApi("list", page).then((res) => {
+      if (res.data.page_size !== pagination.pageSize) {
+        pagination.currentPage = res.data.page
+        pagination.pageSize = res.data.page_size
+      }
 
+      tableData.value = res.data.list
+      pagination.total = res.data.total
+      loading.value = false
+    })
+  }
+
+  function onCreate(row: any) {
+    console.log("onCreate", row)
+    handleApi(row, "create").then((res) => {
+      ElMessage.success("创建成功")
+      closeForm()
+      refreshList()
+    })
+  }
+
+  function onUpdate(row: any) {
+    console.log("onUpdate", row)
+    handleApi("update", row).then((res) => {
+      ElMessage.success("更新成功")
+      closeForm()
+      refreshList()
+    })
+  }
+
+  function onDelete(id: number) {
+    console.log("onDelete", id)
+    handleApi("delete", id).then((res) => {
+      ElMessage.success("删除成功")
+      refreshList()
+    })
+  }
+
+  function onDeleteByIds(ids: number[]) {
+    console.log("onDeleteByIds", ids)
+    handleApi("deleteByIds", ids).then((res) => {
+      ElMessage.success("批量删除成功")
+      batchDeleteVisibility.value = false
+      refreshList()
+    })
+  }
+
+  // 分页大小改变回调
+  function handleSizeChange(val: number) {
+    console.log(`${val} items per page`)
+    pagination.pageSize = val
+    refreshList()
+  }
+
+  // 分页回调
+  function handleCurrentChange(val: number) {
+    console.log(`current page: ${val}`)
+    pagination.currentPage = val
+    refreshList()
+  }
+
+  function refreshList() {
     conditions.length = 0
     sorts.length = 0
 
@@ -120,84 +170,24 @@ export function useTableHook() {
     }
 
     loading.value = true
-    handleApi("list", {
+    onFindList({
       page: pagination.currentPage,
       page_size: pagination.pageSize,
       sorts: sorts,
       conditions: conditions,
-    }).then((res) => {
-      if (res.data.page_size !== pagination.pageSize) {
-        pagination.currentPage = res.data.page
-        pagination.pageSize = res.data.page_size
-      }
-
-      tableData.value = res.data.list
-      pagination.total = res.data.total
-      loading.value = false
     })
   }
 
-  function onCreate(row) {
-    console.log("onCreate", row)
-    handleApi(row, "create").then((res) => {
-      ElMessage.success("创建成功")
-      closeForm()
-      onSearchList()
-    })
+  function resetSearch() {
+    searchData.value = {}
+    orderData.value = defaultOrder
+    tableRef.value?.clearSort()
+    tableRef.value?.clearSelection()
   }
 
-  function onUpdate(row) {
-    console.log("onUpdate", row)
-    handleApi("update", row).then((res) => {
-      ElMessage.success("更新成功")
-      closeForm()
-      onSearchList()
-    })
-  }
-
-  function onDelete(row) {
-    console.log("onDelete", row)
-    handleApi("delete", row.id).then((res) => {
-      ElMessage.success("删除成功")
-      onSearchList()
-    })
-  }
-
-  function onDeleteByIds(ids: number[]) {
-    console.log("onDeleteByIds", ids)
-    handleApi("deleteByIds", ids).then((res) => {
-      ElMessage.success("批量删除成功")
-      removeVisibility.value = false
-      onSearchList()
-    })
-  }
-
-  // 表格点击事件 查看、新增、编辑、删除、启用、停用
-  type actionEvent = "add" | "edit" | "view" | "delete" | "enable" | "disable" | "submitForm"
-
-  // function onClickAction(event: actionEvent, data: any) {
-  //   console.log("onClickAction", event, data)
-  //   switch (event) {
-  //     case "submitForm":
-  //       submitForm(data)
-  //       break
-  //     default:
-  //       break
-  //   }
-  // }
-
-  // 分页大小改变回调
-  function handleSizeChange(val: number) {
-    console.log(`${val} items per page`)
-    pagination.pageSize = val
-    onSearchList()
-  }
-
-  // 分页回调
-  function handleCurrentChange(val: number) {
-    console.log(`current page: ${val}`)
-    pagination.currentPage = val
-    onSearchList()
+  // 重置表格
+  function resetTable() {
+    columnFields.value = getColumnFields()
   }
 
   // 批量选择回调
@@ -221,35 +211,10 @@ export function useTableHook() {
     const value = order === "ascending" ? "asc" : "desc"
     orderData.value = Object.assign({ [prop]: value }, orderData.value)
     orderData.value[prop] = value
-    onSearchList()
+    refreshList()
   }
 
-  // 拖拽排序
-  function handleDragChange(evt): void {
-    console.log("handleDragItemChange: ", evt)
-  }
-
-  // 选择所有的列
-  function handleCheckAllChange(val: boolean) {
-    console.log("handleCheckAllChange ", val, columnFields.value)
-    isIndeterminate.value = false
-    checkedColumnFields.value = val ? columnFields.value : []
-    columnFields.value.map((column) => (val ? (column.hidden = false) : (column.hidden = true)))
-  }
-
-  // 已选列表发送变化
-  function handleCheckedColumnFieldsChange(element: any[]) {
-    console.log("handleCheckedColumnFieldsChange ", element)
-    checkAllColumns.value = element.length === columnFields.value.length
-    isIndeterminate.value = element.length > 0 && !checkAllColumns.value
-  }
-
-  // 当前选择的列
-  function handleCheckedColumnChange(val: CheckboxValueType, element: any) {
-    console.log("handleCheckedColumnChange ", val, element)
-    columnFields.value.filter((item) => item.title === element.title)[0].hidden = !val
-  }
-
+  /** ******** start 新增、修改 **********/
   // 表单数据定义
   const formFields = ref<FormField[]>([])
   const formVisibility = ref(false)
@@ -260,23 +225,33 @@ export function useTableHook() {
   const formData = ref<any>({})
   const formRules: FormRules = reactive({})
 
-  // 批量移除提示框
-  const removeVisibility = ref(false)
+  // 重置表单
+  function resetForm(row: any) {
+    if (row != null) {
+      formData.value = row
+    } else {
+      formData.value = {}
+    }
 
-  // 显示表单
-  function handleFormVisibility(row: any) {
+    // console.log("resetForm", formData.value)
+    formFields.value = getFormFields(formData.value)
+  }
+
+  // 打开表单
+  function openForm(row: any) {
     formVisibility.value = true
     resetForm(row)
   }
 
-  // 隐藏表单
+  // 关闭表单
   function closeForm() {
     formVisibility.value = false
     resetForm(null)
   }
 
   // 提交表单
-  function submitForm(row) {
+  function submitForm(row: any) {
+    console.log("submitForm", formRef.value)
     formRef.value?.validate((valid: boolean, fields: any) => {
       if (valid) {
         if (row.id === 0) {
@@ -290,61 +265,65 @@ export function useTableHook() {
     })
   }
 
-  // 重置表单
-  function resetForm(row) {
-    if (row != null) {
-      formData.value = row
-    } else {
-      formData.value = {}
-    }
+  /** ******** end 新增、修改 **********/
 
-    // console.log("resetForm", formData.value)
-    formFields.value = getFormFields(formData.value)
+  /** ******** start 批量删除 **********/
+  // 批量移除提示框
+  const batchDeleteVisibility = ref(false)
+
+  // 取消批量删除
+  function cancelBatchDelete() {
+    batchDeleteVisibility.value = false
   }
 
-  function resetSearch() {
-    searchData.value = {}
-    orderData.value = defaultOrder
-    tableRef.value?.clearSort()
-    tableRef.value?.clearSelection()
+  // 确认批量删除
+  function confirmBatchDelete(ids: number[]) {
+    batchDeleteVisibility.value = false
+    onDeleteByIds(ids)
   }
 
-  function resetTable() {
-    checkAllColumns.value = true
-    isIndeterminate.value = false
-    columnFields.value = getColumnFields()
-    checkedColumnFields.value = columnFields.value.filter((column) => column.hidden != true)
-    // console.log("columnFields", columnFields.value)
-    // console.log("checkedColumnFields", checkedColumnFields.value)
+  function confirmDelete(id: number) {
+    onDelete(id)
   }
+
+  /** ******** end 批量删除 **********/
+  onMounted(() => {
+    resetForm(null)
+    resetSearch()
+    resetTable()
+    refreshList()
+  })
 
   return {
+    onFindList,
+    onCreate,
+    onUpdate,
     onDelete,
     onDeleteByIds,
-    onSearchList,
+    resetSearch,
+    resetTable,
+    refreshList,
     handleSortChange,
-    handleDragChange,
-    handleCheckAllChange,
-    handleCheckedColumnFieldsChange,
-    handleCheckedColumnChange,
     handleSelectionChange,
     handleSizeChange,
     handleCurrentChange,
-    handleFormVisibility,
+    resetForm,
+    openForm,
     closeForm,
     submitForm,
-    resetForm,
-    resetSearch,
-    resetTable,
-    loading,
-    removeVisibility,
-    formVisibility,
-    searchData,
-    tableData,
-    formData,
+    confirmDelete,
+    cancelBatchDelete,
+    confirmBatchDelete,
     pagination,
-    isIndeterminate,
+    loading,
+    batchDeleteVisibility,
+    formVisibility,
+    searchRef,
+    searchData,
+    tableRef,
+    tableData,
+    formRef,
+    formData,
     selectionIds,
-    checkAllColumns,
   }
 }

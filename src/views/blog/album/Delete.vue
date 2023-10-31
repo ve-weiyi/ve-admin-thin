@@ -6,7 +6,11 @@
       <!-- 相册操作 -->
       <div class="operation">
         <div class="all-check">
-          <el-checkbox :indeterminate="isIndeterminate" v-model="checkAll" @change="handleCheckAllChange">
+          <el-checkbox
+            :indeterminate="isIndeterminate"
+            v-model="checkAll"
+            @change="handleCheckAllPhotoChange"
+          >
             全选
           </el-checkbox>
           <div class="check-count">已选择{{ selectionIds.length }}张</div>
@@ -64,7 +68,7 @@
         @current-change="handleCurrentChange"
       />
       <!-- 批量删除对话框 -->
-      <el-dialog v-model="removeVisibility" width="30%">
+      <el-dialog v-model="batchDeleteVisibility" width="30%">
         <template #header>
           <div class="dialog-title-container">
             <el-icon style="color: #ff9900">
@@ -75,8 +79,8 @@
         </template>
         <div style="font-size: 1rem">是否删除选中照片？</div>
         <template #footer>
-          <el-button @click="removeVisibility = false">取 消</el-button>
-          <el-button type="primary" @click="onDeleteByIds(selectionIds)"> 确 定</el-button>
+          <el-button @click="cancelBatchDelete">取 消</el-button>
+          <el-button type="primary" @click="confirmBatchDelete(selectionIds)"> 确 定</el-button>
         </template>
       </el-dialog>
     </el-card>
@@ -88,28 +92,36 @@ import { ref, reactive, computed, onMounted } from "vue"
 import { useTableHook } from "./delete"
 
 const {
-  loading,
-  removeVisibility,
-  addOrEditVisibility,
-  formRef,
-  formData,
-  formRules,
-  searchFormRef,
-  searchData,
-  tableData,
-  selectionIds,
-  pagination,
-  resetForm,
-  resetSearch,
-  onSearchList,
-  onSave,
+  onFindList,
+  onCreate,
+  onUpdate,
   onDelete,
   onDeleteByIds,
-  onChange,
-  handleAddOrEdit,
+  resetSearch,
+  resetTable,
+  refreshList,
+  handleSortChange,
+  handleSelectionChange,
   handleSizeChange,
   handleCurrentChange,
-  handleSelectionChange,
+  resetForm,
+  openForm,
+  closeForm,
+  submitForm,
+  confirmDelete,
+  cancelBatchDelete,
+  confirmBatchDelete,
+  pagination,
+  loading,
+  batchDeleteVisibility,
+  formVisibility,
+  searchRef,
+  searchData,
+  tableRef,
+  tableData,
+  formRef,
+  formData,
+  selectionIds,
 } = useTableHook()
 
 const dialogTitle = computed(() => {
@@ -126,7 +138,7 @@ const isIndeterminate = computed(() => {
 
 const checkAll = ref(false)
 
-const handleCheckAllChange = (val) => {
+const handleCheckAllPhotoChange = (val) => {
   // selectionIds.value = val ? tableData.value.map((photo) => photo.id) : []
   checkAll.value = val
 }
@@ -146,14 +158,13 @@ const updatePhotoDelete = (item) => {
       photo_album_id: null,
     })
   }
-  addOrEditVisibility.value = true
 }
 
 const batchDeletePhoto = ref(false)
 
 onMounted(() => {
   loading.value = false
-  // onSearchList()
+  // refreshList()
 })
 </script>
 

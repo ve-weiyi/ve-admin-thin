@@ -58,7 +58,12 @@
     <el-card style="margin-top: 1.25rem">
       <div class="e-title">文章贡献统计</div>
       <div v-loading="loading">
-        <Calender v-loading="loading" start-date="2022-01-01" end-date="2023-01-01" :data="articleStatisticsList" />
+        <Calender
+          v-loading="loading"
+          start-date="2022-01-01"
+          end-date="2023-01-01"
+          :data="articleStatisticsList"
+        />
       </div>
     </el-card>
     <el-row :gutter="20" style="margin-top: 1.25rem">

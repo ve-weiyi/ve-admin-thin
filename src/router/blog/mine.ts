@@ -14,19 +14,19 @@ export default {
     {
       path: "/mine/userinfo",
       component: () => import("@/views/blog/mine/me/Me.vue"),
-      name: "userinfo",
+      name: "/mine/userinfo",
       meta: { title: "个人信息", keepAlive: true },
     },
     {
       path: "/mine/identity",
-      component: () => import("@/views/blog/mine/Identity.vue"),
-      name: "identity",
+      component: () => import("@/views/blog/mine/identity/Identity.vue"),
+      name: "/mine/identity",
       meta: { title: "身份认证", keepAlive: true },
     },
     {
       path: "/mine/history",
       component: () => import("@/views/blog/mine/history/History.vue"),
-      name: "history",
+      name: "/mine/history",
       meta: { title: "登录历史", keepAlive: true },
     },
   ],

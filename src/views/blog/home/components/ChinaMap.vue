@@ -1,5 +1,9 @@
 <template>
-  <div ref="container" :class="props.className" :style="{ height: props.height, width: props.width }" />
+  <div
+    ref="container"
+    :class="props.className"
+    :style="{ height: props.height, width: props.width }"
+  />
 </template>
 
 <script setup lang="ts">
@@ -110,7 +114,7 @@ option.value = {
         label: {
           color: "red",
           fontSize: 10,
-          show: true, //省份名称
+          show: true, // 省份名称
         },
         itemStyle: {
           areaColor: "#0FB8F0",

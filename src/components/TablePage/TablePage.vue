@@ -17,7 +17,7 @@
           </template>
         </el-form-item>
         <el-form-item class="align-right">
-          <el-button type="primary" icon="Search" @click="onSearchList"> 搜索</el-button>
+          <el-button type="primary" icon="Search" @click="refreshList"> 搜索</el-button>
           <el-button icon="Refresh" @click="resetSearch">重置</el-button>
         </el-form-item>
       </el-form>
@@ -36,31 +36,31 @@
             <slot
               name="operation"
               :selectionIds="selectionIds"
-              :checkedColumnFields="checkedColumnFields"
+              :columnFieldsVisibility="columnFieldsVisibility"
             ></slot>
             <el-button
               v-if="props.showAddButton"
               type="primary"
               size="default"
               icon="plus"
-              @click="handleFormVisibility(null)"
+              @click="openForm(null)"
             >
               新增{{ tableName }}
             </el-button>
             <el-button
-              v-if="checkedColumnFields.filter((item) => item.type === 'selection').length > 0"
+              v-if="columnFieldsVisibility.filter((item) => item === 'selection').length > 0"
               type="danger"
               size="default"
               icon="Delete"
               :disabled="selectionIds.length === 0"
-              @click="removeVisibility = true"
+              @click="batchDeleteVisibility = true"
             >
               批量删除
             </el-button>
           </div>
           <div style="margin-left: 0.5rem; margin-right: 0.5rem">
             <el-tooltip content="刷新表格" placement="top">
-              <el-button type="primary" icon="RefreshRight" circle @click="onSearchList" />
+              <el-button type="primary" icon="RefreshRight" circle @click="refreshList" />
             </el-tooltip>
 
             <el-tooltip content="表格密度" placement="top">
@@ -108,22 +108,22 @@
                   label="列展示"
                   v-model="checkAllColumns"
                   :indeterminate="isIndeterminate"
-                  @change="handleCheckAllChange"
+                  @change="handleCheckAllFieldChange"
                 />
                 <el-button type="primary" link @click="resetTable"> 重置</el-button>
               </div>
 
               <el-divider direction="horizontal" style="margin-top: 0; margin-bottom: 5px" />
               <el-checkbox-group
-                v-model="checkedColumnFields"
-                @change="handleCheckedColumnFieldsChange"
+                v-model="columnFieldsVisibility"
+                @change="handleFieldsVisibilityChange"
               >
                 <el-space direction="vertical" alignment="stretch">
                   <!-- 单列拖拽 -->
                   <draggable
                     v-model="columnFields"
                     item-key="key"
-                    @change="handleDragChange"
+                    @change="handleDragFieldChange"
                     force-fallback="true"
                     animation="300"
                     draggable=".item-single"
@@ -135,11 +135,10 @@
                         </el-icon>
                         <el-checkbox
                           v-if="element"
-                          :label="element"
-                          @change="(value) => handleCheckedColumnChange(value, element)"
+                          :label="element.title"
+                          @change="(value) => handleCheckFieldChange(value, element)"
                         >
                           <span
-                            :title="element"
                             class="inline-block w-[120px] truncate hover:text-text_color_primary"
                           >
                             {{ element.title }}
@@ -190,10 +189,7 @@
         >
           <template #default="scope">
             <template v-if="item.cellRenderer">
-              <component
-                style="display: flex; justify-content: center; align-items: center"
-                :is="item.cellRenderer(scope)"
-              />
+              <component :is="item.cellRenderer(scope)" />
             </template>
             <template v-else-if="item.type !== 'selection'">
               {{ scope.row[item.dataKey] }}
@@ -216,7 +212,7 @@
     </el-card>
 
     <!-- 批量彻底删除对话框 -->
-    <el-dialog v-model="removeVisibility" class="dialog-container">
+    <el-dialog v-model="batchDeleteVisibility" class="dialog-container">
       <template #header>
         <div class="dialog-title-container">
           <el-icon style="color: #ff9900">
@@ -227,8 +223,8 @@
       </template>
       <div style="font-size: 1rem">是否彻底删除选中项？</div>
       <template #footer>
-        <el-button @click="removeVisibility = false">取 消</el-button>
-        <el-button type="primary" @click="onDeleteByIds(selectionIds)"> 确 定</el-button>
+        <el-button @click="cancelBatchDelete">取 消</el-button>
+        <el-button type="primary" @click="confirmBatchDelete(selectionIds)"> 确 定</el-button>
       </template>
     </el-dialog>
 
@@ -269,6 +265,7 @@
 import { computed, defineComponent, getCurrentInstance, onMounted, reactive, ref } from "vue"
 import { builderFormRender, defaultPaginationData, FormField, Pagination } from "@/utils/render"
 import {
+  CheckboxGroupValueType,
   CheckboxValueType,
   Column,
   ElMessage,
@@ -276,10 +273,14 @@ import {
   FormRules,
   TableInstance,
 } from "element-plus"
-import { MenuDetails } from "@/api/types"
 import draggable from "vuedraggable/src/vuedraggable"
 import { useRoute } from "vue-router"
 import "@/style/table.scss"
+
+type Tag = {
+  label: string
+  count: number
+}
 
 // 父组件向子组件传输的数据
 const props = defineProps({
@@ -295,6 +296,26 @@ const props = defineProps({
     type: Function,
     required: true,
   },
+  // listApi: {
+  //   type: Function,
+  //   required: true,
+  // },
+  // addApi: {
+  //   type: Function,
+  //   required: true,
+  // },
+  // updateApi: {
+  //   type: Function,
+  //   required: true,
+  // },
+  // deleteApi: {
+  //   type: Function,
+  //   required: true,
+  // },
+  // batchDeleteApi: {
+  //   type: Function,
+  //   required: true,
+  // },
   handleApi: {
     type: Function,
     required: true,
@@ -335,22 +356,6 @@ const emit = defineEmits([
   // 'eventName',
 ])
 
-type Tag = {
-  label: string
-  count: number
-}
-const tabList = reactive<Tag[]>(props.tabList)
-
-const type = ref(null)
-const checkTabType = (count: number) => {
-  type.value = count
-  // searchData.value.type = count
-  onSearchList()
-}
-const isActive = (status) => {
-  return status === type.value ? "status-menu-active" : "status-menu-normal"
-}
-
 const tableTitle = props.tableTitle ? props.tableTitle : useRoute().meta.title
 const tableName = props.modelName ? props.modelName : useRoute().meta.title
 
@@ -366,18 +371,31 @@ const getDropdownItemStyle = computed(() => {
   }
 })
 
+/** ******** start status menu **********/
+const tabList = reactive<Tag[]>(props.tabList)
+
+const type = ref<number>(0)
+const checkTabType = (count: number) => {
+  type.value = count
+  refreshList()
+}
+const isActive = (status: number) => {
+  return status === type.value ? "status-menu-active" : "status-menu-normal"
+}
+/** ******** start status menu **********/
+
 // 表格加载状态
 const loading = ref(true)
 
 // 表格结构定义
 const columnFields = ref<Column[]>([])
-const checkedColumnFields = ref<Column[]>([])
+const columnFieldsVisibility = ref<CheckboxGroupValueType>([])
 const checkAllColumns = ref(true)
 const isIndeterminate = ref(false)
 
 // 表格数据定义
 const tableRef = ref<TableInstance | null>(null)
-const tableData = ref<MenuDetails[]>([])
+const tableData = ref<any[]>([])
 const pagination = reactive<Pagination>({ ...defaultPaginationData })
 const selectionIds = reactive<number[]>([])
 
@@ -392,9 +410,70 @@ const orderData = ref<any>({})
 const conditions = reactive<Condition[]>([])
 const sorts = reactive<Sort[]>([])
 
-function onSearchList() {
-  // console.log("onSearchList", searchData.value, orderData.value)
+function onFindList(page: PageQuery) {
+  console.log("onFindList", page)
+  props.handleApi("list", page).then((res) => {
+    if (res.data.page_size !== pagination.pageSize) {
+      pagination.currentPage = res.data.page
+      pagination.pageSize = res.data.page_size
+    }
 
+    tableData.value = res.data.list
+    pagination.total = res.data.total
+    loading.value = false
+  })
+}
+
+function onCreate(row: any) {
+  console.log("onCreate", row)
+  props.handleApi(row, "create").then((res) => {
+    ElMessage.success("创建成功")
+    closeForm()
+    refreshList()
+  })
+}
+
+function onUpdate(row: any) {
+  console.log("onUpdate", row)
+  props.handleApi("update", row).then((res) => {
+    ElMessage.success("更新成功")
+    closeForm()
+    refreshList()
+  })
+}
+
+function onDelete(id: number) {
+  console.log("onDelete", id)
+  props.handleApi("delete", id).then((res) => {
+    ElMessage.success("删除成功")
+    refreshList()
+  })
+}
+
+function onDeleteByIds(ids: number[]) {
+  console.log("onDeleteByIds", ids)
+  props.handleApi("deleteByIds", ids).then((res) => {
+    ElMessage.success("批量删除成功")
+    batchDeleteVisibility.value = false
+    refreshList()
+  })
+}
+
+// 分页大小改变回调
+function handleSizeChange(val: number) {
+  console.log(`${val} items per page`)
+  pagination.pageSize = val
+  refreshList()
+}
+
+// 分页回调
+function handleCurrentChange(val: number) {
+  console.log(`current page: ${val}`)
+  pagination.currentPage = val
+  refreshList()
+}
+
+function refreshList() {
   conditions.length = 0
   sorts.length = 0
 
@@ -420,86 +499,31 @@ function onSearchList() {
   }
 
   loading.value = true
-  props
-    .handleApi("list", {
-      page: pagination.currentPage,
-      page_size: pagination.pageSize,
-      sorts: sorts,
-      conditions: conditions,
-    })
-    .then((res) => {
-      if (res.data.page_size !== pagination.pageSize) {
-        pagination.currentPage = res.data.page
-        pagination.pageSize = res.data.page_size
-      }
-
-      tableData.value = res.data.list
-      pagination.total = res.data.total
-      loading.value = false
-    })
-}
-
-function onCreate(row) {
-  console.log("onCreate", row)
-  props.handleApi(row, "create").then((res) => {
-    ElMessage.success("创建成功")
-    closeForm()
-    onSearchList()
+  onFindList({
+    page: pagination.currentPage,
+    page_size: pagination.pageSize,
+    sorts: sorts,
+    conditions: conditions,
   })
 }
 
-function onUpdate(row) {
-  console.log("onUpdate", row)
-  props.handleApi("update", row).then((res) => {
-    ElMessage.success("更新成功")
-    closeForm()
-    onSearchList()
-  })
+function resetSearch() {
+  searchData.value = {}
+  orderData.value = props.defaultOrder
+  tableRef.value?.clearSort()
+  tableRef.value?.clearSelection()
 }
 
-function onDelete(row) {
-  console.log("onDelete", row)
-  props.handleApi("delete", row.id).then((res) => {
-    ElMessage.success("删除成功")
-    onSearchList()
-  })
-}
-
-function onDeleteByIds(ids: number[]) {
-  console.log("onDeleteByIds", ids)
-  props.handleApi("deleteByIds", ids).then((res) => {
-    ElMessage.success("批量删除成功")
-    removeVisibility.value = false
-    onSearchList()
-  })
-}
-
-// 表格点击事件 查看、新增、编辑、删除、启用、停用
-type actionEvent = "add" | "edit" | "view" | "delete" | "enable" | "disable" | "submitForm"
-
-// function onClickAction(event: actionEvent, data: any) {
-//   console.log("onClickAction", event, data)
-//   switch (event) {
-//     case "submitForm":
-//       submitForm(data)
-//       break
-//     default:
-//       break
-//   }
-// }
-
-// 分页大小改变回调
-function handleSizeChange(val: number) {
-  console.log(`${val} items per page`)
-  pagination.pageSize = val
-  onSearchList()
-}
-
-// 分页回调
-function handleCurrentChange(val: number) {
-  console.log(`current page: ${val}`)
-  pagination.currentPage = val
-  onSearchList()
+// 重置表格
+function resetTable() {
+  checkAllColumns.value = true
+  isIndeterminate.value = false
+  columnFields.value = props.getColumnFields()
+  columnFieldsVisibility.value = columnFields.value
+    .filter((column) => column.hidden != true)
+    .map((column) => column.title)
+  // console.log("columnFields", columnFields.value)
+  // console.log("columnFieldsVisibility", columnFieldsVisibility.value)
 }
 
 // 批量选择回调
@@ -523,46 +547,48 @@ function handleSortChange({ column, prop, order }) {
   const value = order === "ascending" ? "asc" : "desc"
   orderData.value = Object.assign({ [prop]: value }, orderData.value)
   orderData.value[prop] = value
-  onSearchList()
+  refreshList()
 }
 
-// 拖拽排序
-function handleDragChange(evt): void {
+// 拖拽列显示排序
+function handleDragFieldChange(evt: any): void {
   console.log("handleDragItemChange: ", evt)
 }
 
 // 选择所有的列
-function handleCheckAllChange(val: boolean) {
-  console.log("handleCheckAllChange ", val, columnFields.value)
+function handleCheckAllFieldChange(val: boolean) {
   isIndeterminate.value = false
-  checkedColumnFields.value = val ? columnFields.value : []
+  // 改变按钮状态
+  columnFieldsVisibility.value = val ? columnFields.value.map((column) => column.title) : []
+  // 改变列显示状态
   columnFields.value.map((column) => (val ? (column.hidden = false) : (column.hidden = true)))
+  console.log("handleCheckAllFieldChange ", val, columnFieldsVisibility.value)
+}
+
+// 选择当前的列
+function handleCheckFieldChange(val: CheckboxValueType, element: any) {
+  columnFields.value.filter((item) => item.title === element.title)[0].hidden = !val
+  console.log("handleCheckFieldChange ", val, element)
 }
 
 // 已选列表发送变化
-function handleCheckedColumnFieldsChange(element: any[]) {
-  console.log("handleCheckedColumnFieldsChange ", element)
+function handleFieldsVisibilityChange(element: any[]) {
   checkAllColumns.value = element.length === columnFields.value.length
   isIndeterminate.value = element.length > 0 && !checkAllColumns.value
+  console.log("handleFieldsVisibilityChange ", element)
 }
 
-// 当前选择的列
-function handleCheckedColumnChange(val: CheckboxValueType, element: any) {
-  console.log("handleCheckedColumnChange ", val, element)
-  columnFields.value.filter((item) => item.title === element.title)[0].hidden = !val
-}
-
+/** ******** start 新增、修改 **********/
 const formTitle = computed(() => {
   if (formData.value.id) {
-    if (!props.showAddButton) {
-      return `查看${tableName}`
+    if (props.showEditButton) {
+      return `编辑${tableName}`
     }
-    return `编辑${tableName}`
+    return `查看${tableName}`
   } else {
     return `新增${tableName}`
   }
 })
-
 // 表单数据定义
 const formFields = ref<FormField[]>([])
 const formVisibility = ref(false)
@@ -573,23 +599,33 @@ const formRef = ref<FormInstance | null>(null)
 const formData = ref<any>({})
 const formRules: FormRules = reactive({})
 
-// 批量移除提示框
-const removeVisibility = ref(false)
+// 重置表单
+function resetForm(row: any) {
+  if (row != null) {
+    formData.value = row
+  } else {
+    formData.value = {}
+  }
 
-// 显示表单
-function handleFormVisibility(row: any) {
+  // console.log("resetForm", formData.value)
+  formFields.value = props.getFormFields(formData.value)
+}
+
+// 打开表单
+function openForm(row: any) {
   formVisibility.value = true
   resetForm(row)
 }
 
-// 隐藏表单
+// 关闭表单
 function closeForm() {
   formVisibility.value = false
   resetForm(null)
 }
 
 // 提交表单
-function submitForm(row) {
+function submitForm(row: any) {
+  console.log("submitForm", formRef.value)
   formRef.value?.validate((valid: boolean, fields: any) => {
     if (valid) {
       if (row.id === 0) {
@@ -603,59 +639,59 @@ function submitForm(row) {
   })
 }
 
-// 重置表单
-function resetForm(row) {
-  if (row != null) {
-    formData.value = row
-  } else {
-    formData.value = {}
-  }
+/** ******** end 新增、修改 **********/
 
-  // console.log("resetForm", formData.value)
-  formFields.value = props.getFormFields(formData.value)
+/** ******** start 批量删除 **********/
+// 批量移除提示框
+const batchDeleteVisibility = ref(false)
+
+// 取消批量删除
+function cancelBatchDelete() {
+  batchDeleteVisibility.value = false
 }
 
-function resetSearch() {
-  searchData.value = {}
-  orderData.value = props.defaultOrder
-  tableRef.value?.clearSort()
-  tableRef.value?.clearSelection()
+// 确认批量删除
+function confirmBatchDelete(ids: number[]) {
+  batchDeleteVisibility.value = false
+  onDeleteByIds(ids)
 }
 
-function resetTable() {
-  checkAllColumns.value = true
-  isIndeterminate.value = false
-  columnFields.value = props.getColumnFields()
-  checkedColumnFields.value = columnFields.value.filter((column) => column.hidden != true)
-  // console.log("columnFields", columnFields.value)
-  // console.log("checkedColumnFields", checkedColumnFields.value)
+function confirmDelete(id: number) {
+  onDelete(id)
 }
 
+/** ******** end 批量删除 **********/
 onMounted(() => {
   resetForm(null)
   resetSearch()
   resetTable()
-  onSearchList()
+  refreshList()
 })
 
 defineExpose({
+  onFindList,
+  onCreate,
+  onUpdate,
   onDelete,
   onDeleteByIds,
-  onSearchList,
+  resetSearch,
+  resetTable,
+  refreshList,
   handleSortChange,
-  handleDragChange,
-  handleCheckAllChange,
-  handleCheckedColumnFieldsChange,
-  handleCheckedColumnChange,
+  handleDragFieldChange,
+  handleCheckAllFieldChange,
+  handleFieldsVisibilityChange,
+  handleCheckFieldChange,
   handleSelectionChange,
   handleSizeChange,
   handleCurrentChange,
-  handleFormVisibility,
+  resetForm,
+  openForm,
   closeForm,
   submitForm,
-  resetForm,
-  resetSearch,
-  resetTable,
+  confirmDelete,
+  cancelBatchDelete,
+  confirmBatchDelete,
 })
 </script>
 

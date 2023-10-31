@@ -36,7 +36,7 @@ const props = defineProps({
   row: {
     type: Array,
     required: false,
-    default: function() {
+    default: function () {
       return []
     },
   },
@@ -51,7 +51,7 @@ const resourceTreeData = ref([])
 const defaultCheckIds = ref([])
 const resourceDefaultProps = ref({
   children: "children",
-  label: function(data) {
+  label: function (data) {
     return data.name
   },
 })

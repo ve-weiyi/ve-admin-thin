@@ -1,5 +1,9 @@
 <template>
-  <div ref="container" :class="props.className" :style="{ height: props.height, width: props.width }" />
+  <div
+    ref="container"
+    :class="props.className"
+    :style="{ height: props.height, width: props.width }"
+  />
 </template>
 
 <script setup lang="ts">
@@ -51,7 +55,6 @@ const initChart = () => {
 }
 
 const updateCharts = () => {
-
   option.value = {
     tooltip: {
       trigger: "axis",

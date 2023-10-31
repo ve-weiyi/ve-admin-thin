@@ -140,7 +140,7 @@ function getColumnFields(onChange: (row: any, event: string) => void): Column[] 
       cellRenderer: (row: any) => {
         return (
           <div>
-            <el-icon style={"margin-right: 2px"}>
+            <el-icon class="table-icon">
               <Timer />
             </el-icon>
             <span>{new Date(row.created_at).toLocaleDateString()}</span>
@@ -152,13 +152,13 @@ function getColumnFields(onChange: (row: any, event: string) => void): Column[] 
       key: "operation",
       title: "操作",
       dataKey: "operation",
-      width: 150,
+      width: 160,
       align: align,
       cellRenderer: (row: any) => {
         return (
           <div>
             <el-button
-              class="operation-button"
+              class="table-text-button"
               text
               type="primary"
               size="small"
@@ -168,7 +168,7 @@ function getColumnFields(onChange: (row: any, event: string) => void): Column[] 
               新增
             </el-button>
             <el-button
-              class="operation-button"
+              class="table-text-button"
               text
               type="primary"
               size="small"
@@ -180,7 +180,13 @@ function getColumnFields(onChange: (row: any, event: string) => void): Column[] 
             <el-popconfirm title="确定删除吗？" onConfirm={() => onChange(row, "delete")}>
               {{
                 reference: () => (
-                  <el-button text type="danger" size="small" class="operation-button" icon="delete">
+                  <el-button
+                    text
+                    type="danger"
+                    size="small"
+                    class="table-text-button"
+                    icon="delete"
+                  >
                     删除
                   </el-button>
                 ),

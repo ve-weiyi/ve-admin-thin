@@ -4,7 +4,7 @@
       <!-- 标题 -->
       <div class="table-title">{{ $route.meta.title }}</div>
       <div class="operation-container">
-        <el-button type="primary" size="default" icon="plus" @click="handleFormVisibility(null)">
+        <el-button type="primary" size="default" icon="plus" @click="openForm(null)">
           新建相册
         </el-button>
         <div style="margin-left: auto">
@@ -14,7 +14,7 @@
             size="default"
             icon="delete"
             style="margin-right: 1rem"
-            @click="removeVisibility == true"
+            @click="batchDeleteVisibility == true"
           >
             回收站
           </el-button>
@@ -24,14 +24,14 @@
             size="default"
             placeholder="请输入相册名"
             style="width: 200px"
-            @keyup.enter="onSearchList"
+            @keyup.enter="refreshList"
           />
           <el-button
             type="primary"
             size="default"
             icon="search"
             style="margin-left: 1rem"
-            @click="onSearchList"
+            @click="refreshList"
           >
             搜索
           </el-button>
@@ -126,7 +126,7 @@
         </template>
       </el-dialog>
       <!-- 删除对话框 -->
-      <el-dialog v-model="removeVisibility" width="30%">
+      <el-dialog v-model="batchDeleteVisibility" width="30%">
         <template #header>
           <div class="dialog-title-container">
             <el-icon style="color: #ff9900">
@@ -137,7 +137,7 @@
         </template>
         <div style="font-size: 1rem">是否删除该相册？</div>
         <template #footer>
-          <el-button @click="removeVisibility = false">取 消</el-button>
+          <el-button @click="batchDeleteVisibility = false">取 消</el-button>
           <el-button type="primary" @click="onDelete(formData)"> 确 定</el-button>
         </template>
       </el-dialog>
@@ -156,29 +156,28 @@ import { uploadFileApi } from "@/api/file"
 const {
   onDelete,
   onDeleteByIds,
-  onSearchList,
+  refreshList,
   handleSortChange,
-  handleDragChange,
-  handleCheckAllChange,
-  handleCheckedColumnFieldsChange,
-  handleCheckedColumnChange,
   handleSelectionChange,
   handleSizeChange,
   handleCurrentChange,
-  handleFormVisibility,
+  openForm,
   closeForm,
   submitForm,
   resetForm,
   resetSearch,
   resetTable,
-  loading,
-  removeVisibility,
-  formVisibility,
-  searchData,
-  tableData,
-  formData,
   pagination,
+  loading,
+  batchDeleteVisibility,
+  formVisibility,
+  searchRef,
+  searchData,
+  tableRef,
+  tableData,
   formRef,
+  formData,
+  selectionIds,
 } = useTableHook()
 
 // 路由
@@ -194,7 +193,7 @@ const dialogTitle = computed(() => {
 
 const handleCommand = (command) => {
   if (command.includes("update")) {
-    handleFormVisibility(command.slice(6))
+    openForm(command.slice(6))
   } else if (command.includes("delete")) {
     onDelete(command.slice(6))
   }

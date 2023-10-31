@@ -1,110 +1,256 @@
 import { reactive, ref, computed, onMounted } from "vue"
-import { Column, ElMessageBox, FormInstance, FormRules } from "element-plus"
 import { ElTag, ElMessage } from "element-plus"
-import { createPhotoApi, deletePhotoByIdsApi, deletePhotoApi, findPhotoListApi, updatePhotoApi } from "@/api/photo"
+import {
+  CheckboxGroupValueType,
+  CheckboxValueType,
+  Column,
+  ElMessageBox,
+  FormInstance,
+  FormRules,
+  TableInstance,
+} from "element-plus"
+import { builderFormRender, defaultPaginationData, FormField, Pagination } from "@/utils/render"
+import {
+  createPhotoApi,
+  deletePhotoByIdsApi,
+  deletePhotoApi,
+  findPhotoListApi,
+  updatePhotoApi,
+} from "@/api/photo"
+import { Photo } from "@/api/types"
 
-interface Pagination {
-  total?: number
-  currentPage?: number
-  pageSizes?: number[]
-  pageSize?: number
-  layout?: string
-}
-
-/** 默认的分页参数 */
-const defaultPaginationData: Pagination = {
-  total: 0,
-  currentPage: 1,
-  pageSizes: [10, 20, 50],
-  pageSize: 10,
-  layout: "total, sizes, prev, pager, next, jumper",
-}
 const align = "center"
 
-export function useTableHook() {
-  // 数据绑定
-  const removeVisibility = ref(false)
-  const addOrEditVisibility = ref(false)
+function getSearchFields(): FormField[] {
+  return []
+}
 
+function getColumnFields(): Column[] {
+  return []
+}
+
+function getFormFields(formData: any): FormField[] {
+  return []
+}
+
+function handleApi(event: string, data: any) {
+  console.log("event", event)
+  switch (event) {
+    case "create":
+      return createPhotoApi(data)
+    case "update":
+      return updatePhotoApi(data)
+    case "delete":
+      return deletePhotoApi(data)
+    case "deleteByIds":
+      return deletePhotoByIdsApi(data)
+    case "list":
+      return findPhotoListApi(data)
+    default:
+      return
+  }
+}
+
+const defaultOrder = { id: "desc" }
+
+export function useTableHook() {
   // 表格加载状态
   const loading = ref(true)
-  // 表单数据定义
-  const formRef = ref<FormInstance | null>(null)
-  const formData = ref<any>({})
-  const formRules: FormRules = reactive({})
 
-  // 搜索表单数据定义
-  const searchFormRef = ref<FormInstance | null>(null)
-  const searchData = reactive({
-    linkName: "",
-    isReview: null,
-  })
+  // 表格结构定义
+  const columnFields = ref<Column[]>([])
 
   // 表格数据定义
-  const tableData = ref([])
-  const selectionIds = reactive([])
-  const pagination = reactive({ ...defaultPaginationData })
+  const tableRef = ref<TableInstance | null>(null)
+  const tableData = ref<Photo[]>([])
+  const pagination = reactive<Pagination>({ ...defaultPaginationData })
+  const selectionIds = reactive<number[]>([])
 
+  // 表搜素条件定义
+  const searchRef = ref<FormInstance | null>(null)
+  const searchFields = ref<FormField[]>(getSearchFields())
+  // 搜索条件,{k:v}
+  const searchData = ref<any>({})
+  // 排序条件,{k:v}
+  const orderData = ref<any>({})
+  // 条件查询 (key,value)
   // eslint-disable-next-line no-undef
   const conditions = reactive<Condition[]>([])
   // eslint-disable-next-line no-undef
   const sorts = reactive<Sort[]>([])
 
-  const resetForm = (row) => {
+  // eslint-disable-next-line no-undef
+  function onFindList(page: PageQuery) {
+    console.log("onFindList", page)
+    handleApi("list", page).then((res) => {
+      if (res.data.page_size !== pagination.pageSize) {
+        pagination.currentPage = res.data.page
+        pagination.pageSize = res.data.page_size
+      }
+
+      tableData.value = res.data.list
+      pagination.total = res.data.total
+      loading.value = false
+    })
+  }
+
+  function onCreate(row: any) {
+    console.log("onCreate", row)
+    handleApi(row, "create").then((res) => {
+      ElMessage.success("创建成功")
+      closeForm()
+      refreshList()
+    })
+  }
+
+  function onUpdate(row: any) {
+    console.log("onUpdate", row)
+    handleApi("update", row).then((res) => {
+      ElMessage.success("更新成功")
+      closeForm()
+      refreshList()
+    })
+  }
+
+  function onDelete(id: number) {
+    console.log("onDelete", id)
+    handleApi("delete", id).then((res) => {
+      ElMessage.success("删除成功")
+      refreshList()
+    })
+  }
+
+  function onDeleteByIds(ids: number[]) {
+    console.log("onDeleteByIds", ids)
+    handleApi("deleteByIds", ids).then((res) => {
+      ElMessage.success("批量删除成功")
+      batchDeleteVisibility.value = false
+      refreshList()
+    })
+  }
+
+  // 分页大小改变回调
+  function handleSizeChange(val: number) {
+    console.log(`${val} items per page`)
+    pagination.pageSize = val
+    refreshList()
+  }
+
+  // 分页回调
+  function handleCurrentChange(val: number) {
+    console.log(`current page: ${val}`)
+    pagination.currentPage = val
+    refreshList()
+  }
+
+  function refreshList() {
+    conditions.length = 0
+    sorts.length = 0
+
+    // 搜索条件
+    for (const key in searchData.value) {
+      const item = searchFields.value.find((v) => v.field === key)
+      const value = searchData.value[key]
+      conditions.push({
+        flag: item?.searchRules.flag || "and",
+        field: key,
+        value: value,
+        rule: item?.searchRules.rule || "=",
+      })
+    }
+
+    // 排序条件
+    for (const key in orderData.value) {
+      const value = orderData.value[key]
+      sorts.push({
+        field: key,
+        order: value,
+      })
+    }
+
+    loading.value = true
+    onFindList({
+      page: pagination.currentPage,
+      page_size: pagination.pageSize,
+      sorts: sorts,
+      conditions: conditions,
+    })
+  }
+
+  function resetSearch() {
+    searchData.value = {}
+    orderData.value = defaultOrder
+    tableRef.value?.clearSort()
+    tableRef.value?.clearSelection()
+  }
+
+  // 重置表格
+  function resetTable() {
+    columnFields.value = getColumnFields()
+  }
+
+  // 批量选择回调
+  function handleSelectionChange(rows: any[]) {
+    console.log("handleSelectionChange", rows)
+    selectionIds.length = 0
+    rows.forEach((item) => {
+      selectionIds.push(item.id)
+    })
+  }
+
+  /** *
+   * 批量排序回调
+   * column是发生排序变化的列。
+   * order是排序方式，有三个选项 ascending 升序、descending 降序、 null 默认排序
+   * prop就是该列的prop。
+   * */
+  function handleSortChange({ column, prop, order }) {
+    console.log("handleSortChange", prop, order)
+
+    const value = order === "ascending" ? "asc" : "desc"
+    orderData.value = Object.assign({ [prop]: value }, orderData.value)
+    orderData.value[prop] = value
+    refreshList()
+  }
+
+  /** ******** start 新增、修改 **********/
+  // 表单数据定义
+  const formFields = ref<FormField[]>([])
+  const formVisibility = ref(false)
+  const formStatus = ref("")
+
+  // 表单规则定义
+  const formRef = ref<FormInstance | null>(null)
+  const formData = ref<any>({})
+  const formRules: FormRules = reactive({})
+
+  // 重置表单
+  function resetForm(row: any) {
     if (row != null) {
       formData.value = row
     } else {
       formData.value = {}
     }
-    formRef.value?.resetFields()
+
+    // console.log("resetForm", formData.value)
+    formFields.value = getFormFields(formData.value)
   }
 
-  const resetSearch = () => {
-    searchData.linkName = ""
-    searchData.isReview = null
-    onSearchList()
+  // 打开表单
+  function openForm(row: any) {
+    formVisibility.value = true
+    resetForm(row)
   }
 
-  const applySearch = () => {
-    conditions.length = 0
-    sorts.length = 0
-    if (searchData.linkName != "") {
-      conditions.push({
-        flag: "AND",
-        field: "link_name",
-        value: searchData.linkName,
-        rule: "like",
-      })
-    }
-    if (searchData.isReview != null) {
-      conditions.push({
-        flag: "AND",
-        field: "is_review",
-        value: searchData.isReview,
-        rule: "=",
-      })
-    }
+  // 关闭表单
+  function closeForm() {
+    formVisibility.value = false
+    resetForm(null)
   }
 
-  // eslint-disable-next-line no-undef
-  function onSearchList() {
-    applySearch()
-
-    loading.value = true
-    findPhotoListApi({
-      page: pagination.currentPage,
-      page_size: pagination.pageSize,
-      sorts: sorts,
-      conditions: conditions,
-    }).then((res) => {
-      tableData.value = res.data.list
-      pagination.total = res.data.total
-      pagination.currentPage = res.data.page
-      loading.value = false
-    })
-  }
-
-  function onSave(row) {
+  // 提交表单
+  function submitForm(row: any) {
+    console.log("submitForm", formRef.value)
     formRef.value?.validate((valid: boolean, fields: any) => {
       if (valid) {
         if (row.id === 0) {
@@ -118,120 +264,65 @@ export function useTableHook() {
     })
   }
 
-  function onCreate(row) {
-    console.log("onCreate", row)
-    createPhotoApi(row).then((res) => {
-      ElMessage.success("创建成功")
-      addOrEditVisibility.value = false
-      onSearchList()
-    })
+  /** ******** end 新增、修改 **********/
+
+  /** ******** start 批量删除 **********/
+  // 批量移除提示框
+  const batchDeleteVisibility = ref(false)
+
+  // 取消批量删除
+  function cancelBatchDelete() {
+    batchDeleteVisibility.value = false
   }
 
-  function onUpdate(row) {
-    console.log("onUpdate", row)
-    updatePhotoApi(row).then((res) => {
-      ElMessage.success("更新成功")
-      addOrEditVisibility.value = false
-      onSearchList()
-    })
+  // 确认批量删除
+  function confirmBatchDelete(ids: number[]) {
+    batchDeleteVisibility.value = false
+    onDeleteByIds(ids)
   }
 
-  function onDelete(row) {
-    console.log("onDelete", row)
-    deletePhotoApi(row).then((res) => {
-      ElMessage.success("删除成功")
-      removeVisibility.value = false
-      onSearchList()
-    })
+  function confirmDelete(id: number) {
+    onDelete(id)
   }
 
-  function onDeleteByIds(ids: number[]) {
-    console.log("onDeleteByIds", ids)
-    deletePhotoByIdsApi(ids).then((res) => {
-      ElMessage.success("批量删除成功")
-      removeVisibility.value = false
-      onSearchList()
-    })
-  }
-
-  // 分页大小改变回调
-  function handleSizeChange(val: number) {
-    console.log(`${val} items per page`)
-    pagination.pageSize = val
-    onSearchList()
-  }
-
-  // 分页回调
-  function handleCurrentChange(val: number) {
-    console.log(`current page: ${val}`)
-    pagination.currentPage = val
-    onSearchList()
-  }
-
-  // 批量选择回调
-  function handleSelectionChange(rows: any[]) {
-    console.log("handleSelectionChange", rows)
-    selectionIds.length = 0
-    rows.forEach((item) => {
-      selectionIds.push(item.id)
-    })
-  }
-
-  // 行数据状态改变回调
-  function onChange({ row, index }) {
-    ElMessageBox.confirm(
-      `确认要<strong>${row.status === 0 ? "停用" : "启用"}</strong><strong style='color:var(--el-color-primary)'>${
-        row.username
-      }</strong>用户吗?`,
-      "系统提示",
-      {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning",
-        dangerouslyUseHTMLString: true,
-        draggable: true,
-      }
-    )
-      .then(() => {
-        ElMessage({
-          message: "已成功修改用户状态",
-          type: "success",
-        })
-      })
-      .catch(() => {
-        row.status === 0 ? (row.status = 1) : (row.status = 0)
-      })
-  }
-
-  const handleAddOrEdit = (row: any) => {
-    addOrEditVisibility.value = true
-    resetForm(row)
-  }
+  /** ******** end 批量删除 **********/
+  onMounted(() => {
+    resetForm(null)
+    resetSearch()
+    resetTable()
+    refreshList()
+  })
 
   return {
-    loading,
-    removeVisibility,
-    addOrEditVisibility,
-    formRef,
-    formData,
-    formRules,
-    searchFormRef,
-    searchData,
-    tableData,
-    selectionIds,
-    pagination,
-    resetForm,
-    resetSearch,
-    onSearchList,
-    onSave,
+    onFindList,
     onCreate,
     onUpdate,
     onDelete,
     onDeleteByIds,
-    onChange,
-    handleAddOrEdit,
+    resetSearch,
+    resetTable,
+    refreshList,
+    handleSortChange,
+    handleSelectionChange,
     handleSizeChange,
     handleCurrentChange,
-    handleSelectionChange,
+    resetForm,
+    openForm,
+    closeForm,
+    submitForm,
+    confirmDelete,
+    cancelBatchDelete,
+    confirmBatchDelete,
+    pagination,
+    loading,
+    batchDeleteVisibility,
+    formVisibility,
+    searchRef,
+    searchData,
+    tableRef,
+    tableData,
+    formRef,
+    formData,
+    selectionIds,
   }
 }
