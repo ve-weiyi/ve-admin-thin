@@ -123,8 +123,8 @@ function getColumnFields(onChange: (row: any, event: string) => void): Column[] 
             v-model={row.is_hidden}
             active-color="#13ce66"
             inactive-color="#F4F4F5"
-            active-value={true}
-            inactive-value={false}
+            active-value={1}
+            inactive-value={0}
             onClick={() => onChange(row, "is_hidden")}
           />
         )

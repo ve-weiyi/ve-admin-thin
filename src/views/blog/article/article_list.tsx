@@ -4,12 +4,10 @@ import { Timer } from "@element-plus/icons-vue"
 import {
   createArticleApi,
   deleteArticleApi,
-  findArticleListApi,
-  updateArticleApi,
   findArticleDetailsListApi,
+  updateArticleApi,
 } from "@/api/article"
 import { getCurrentInstance } from "vue"
-import { updateUserStatusApi } from "@/api/user"
 
 const align = "center"
 
@@ -110,8 +108,8 @@ function getColumnFields(): Column[] {
         return (
           <el-switch
             v-model={scope.row.is_top}
-            active-value={true}
-            inactive-value={false}
+            active-value={1}
+            inactive-value={0}
             active-color="#13ce66"
             inactive-color="#888888"
             active-text="置顶"

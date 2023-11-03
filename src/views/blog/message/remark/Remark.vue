@@ -1,23 +1,23 @@
 <template>
   <div>
     <TablePage
+      :default-order="defaultOrder"
       :get-column-fields="getColumnFields"
-      :get-search-fields="getSearchFields"
       :get-form-fields="getFormFields"
+      :get-search-fields="getSearchFields"
       :handle-api="handleApi"
       :show-add-button="false"
       :show-edit-button="false"
-      :default-order="defaultOrder"
       :tab-list="tabList"
       model-name="留言管理"
     >
       <template #operation="{ selectionIds, columnFieldsVisibility }">
         <el-button
-          type="success"
-          size="default"
-          icon="CircleCheck"
           v-if="columnFieldsVisibility.filter((item) => item === 'selection').length > 0"
           :disabled="selectionIds.length === 0"
+          icon="CircleCheck"
+          size="default"
+          type="success"
           @click="1"
         >
           批量通过
@@ -27,7 +27,7 @@
   </div>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import TablePage from "@/components/TablePage/TablePage.vue"
 import { useTableHook } from "./hook"
 import { onMounted } from "vue"

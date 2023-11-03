@@ -53,8 +53,8 @@ export function getAdminHomeInfoApi(): Promise<IApiResponseData<WebsiteAdminHome
 }
 
 /** 查询聊天记录 */
-export function findChatRecordsApi(page: PageQuery): Promise<IApiResponseData<ChatRecord>> {
-  return http.request<IApiResponseData<ChatRecord>>({
+export function findChatRecordsApi(page: PageQuery): Promise<IApiResponseData<PageResult<ChatRecord>>> {
+  return http.request<IApiResponseData<PageResult<ChatRecord>>>({
     url: `/api/v1/chat/records`,
     method: "post",
     data: page,

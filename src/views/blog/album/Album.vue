@@ -4,33 +4,33 @@
       <!-- 标题 -->
       <div class="table-title">{{ $route.meta.title }}</div>
       <div class="operation-container">
-        <el-button type="primary" size="default" icon="plus" @click="openForm(null)">
+        <el-button icon="plus" size="default" type="primary" @click="openForm(null)">
           新建相册
         </el-button>
         <div style="margin-left: auto">
           <el-button
+            icon="delete"
+            size="default"
+            style="margin-right: 1rem"
             text
             type="primary"
-            size="default"
-            icon="delete"
-            style="margin-right: 1rem"
             @click="batchDeleteVisibility == true"
           >
             回收站
           </el-button>
           <el-input
             v-model="searchData.albumName"
+            placeholder="请输入相册名"
             prefix-icon="search"
             size="default"
-            placeholder="请输入相册名"
             style="width: 200px"
             @keyup.enter="refreshList"
           />
           <el-button
-            type="primary"
-            size="default"
             icon="search"
+            size="default"
             style="margin-left: 1rem"
+            type="primary"
             @click="refreshList"
           >
             搜索
@@ -38,7 +38,7 @@
         </div>
       </div>
       <!-- 相册列表 -->
-      <el-row class="album-container" :gutter="12" v-loading="loading">
+      <el-row v-loading="loading" :gutter="12" class="album-container">
         <!-- 空状态 -->
         <el-empty v-if="!tableData" description="暂无相册" />
         <el-col v-for="item in tableData" :key="item.id" :md="6">
@@ -59,28 +59,30 @@
             </div>
             <div class="album-photo-count">
               <div>{{ item.photo_count }}</div>
-              <el-icon v-if="item.status === 2"><Lock /></el-icon>
+              <el-icon v-if="item.status === 2">
+                <Lock />
+              </el-icon>
             </div>
-            <el-image fit="cover" class="album-cover" :src="item.album_cover" />
+            <el-image :src="item.album_cover" class="album-cover" fit="cover" />
             <div class="album-name">{{ item.album_name }}</div>
           </div>
         </el-col>
       </el-row>
       <!-- 分页 -->
       <el-pagination
-        :hide-on-single-page="true"
-        class="pagination-container"
-        background
         :current-page="pagination.currentPage"
-        :page-size="pagination.pageSize"
-        :total="pagination.total"
-        :page-sizes="pagination.pageSizes"
+        :hide-on-single-page="true"
         :layout="pagination.layout"
+        :page-size="pagination.pageSize"
+        :page-sizes="pagination.pageSizes"
+        :total="pagination.total"
+        background
+        class="pagination-container"
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
       />
       <!-- 新增模态框 -->
-      <el-dialog v-model="formVisibility" width="35%" top="10vh">
+      <el-dialog v-model="formVisibility" top="10vh" width="35%">
         <template #header>
           <div class="dialog-title-container">
             <el-icon>
@@ -91,26 +93,26 @@
         </template>
         <el-form ref="formRef" :model="formData" label-width="80px" size="default">
           <el-form-item label="相册名称">
-            <el-input style="width: 220px" v-model="formData.albumName" />
+            <el-input v-model="formData.albumName" style="width: 220px" />
           </el-form-item>
           <el-form-item label="相册描述">
-            <el-input style="width: 220px" v-model="formData.albumDesc" />
+            <el-input v-model="formData.albumDesc" style="width: 220px" />
           </el-form-item>
           <el-form-item label="相册封面">
             <el-upload
-              class="upload-cover"
-              drag
-              multiple
-              :show-file-list="false"
               :before-upload="beforeUpload"
               :http-request="uploadAvatar"
               :on-success="uploadCover"
+              :show-file-list="false"
+              class="upload-cover"
+              drag
+              multiple
             >
-              <i class="el-icon-upload" v-if="!formData.albumCover" />
-              <div class="el-upload__text" v-if="!formData.albumCover">
+              <i v-if="!formData.albumCover" class="el-icon-upload" />
+              <div v-if="!formData.albumCover" class="el-upload__text">
                 将文件拖到此处，或<em>点击上传</em>
               </div>
-              <img v-else :src="formData.albumCover" width="360px" height="180px" />
+              <img v-else :src="formData.albumCover" height="180px" width="360px" />
             </el-upload>
           </el-form-item>
           <el-form-item label="发布形式">
@@ -145,8 +147,8 @@
   </div>
 </template>
 
-<script setup lang="ts">
-import { ref, reactive, computed, onMounted } from "vue"
+<script lang="ts" setup>
+import { computed } from "vue"
 import { useTableHook } from "./album"
 import { useRouter } from "vue-router"
 import * as imageConversion from "image-conversion"

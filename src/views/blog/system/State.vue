@@ -57,9 +57,9 @@
               </el-col>
               <el-col :span="12">
                 <el-progress
-                  type="dashboard"
-                  :percentage="state.disk.usedPercent"
                   :color="colors"
+                  :percentage="state.disk.usedPercent"
+                  type="dashboard"
                 />
               </el-col>
             </el-row>
@@ -71,8 +71,8 @@
       <el-col :span="12">
         <el-card
           v-if="state.cpu"
-          class="card_item"
           :body-style="{ height: '180px', 'overflow-y': 'scroll' }"
+          class="card_item"
         >
           <template #header>
             <div>CPU</div>
@@ -85,7 +85,7 @@
             <el-row v-for="(item, index) in state.cpu.cpus" :key="index" :gutter="10">
               <el-col :span="12">core {{ index }}:</el-col>
               <el-col :span="12">
-                <el-progress type="line" :percentage="+item.toFixed(0)" :color="colors" />
+                <el-progress :color="colors" :percentage="+item.toFixed(0)" type="line" />
               </el-col>
             </el-row>
           </div>
@@ -117,7 +117,7 @@
                 </el-row>
               </el-col>
               <el-col :span="12">
-                <el-progress type="dashboard" :percentage="state.ram.usedPercent" :color="colors" />
+                <el-progress :color="colors" :percentage="state.ram.usedPercent" type="dashboard" />
               </el-col>
             </el-row>
           </div>

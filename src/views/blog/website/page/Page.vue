@@ -2,67 +2,75 @@
   <el-card class="main-card">
     <div class="table-title">{{ $route.meta.title }}</div>
     <div class="operation-container">
-      <el-button type="primary" size="default" icon="plus" @click="openModel(null)">
+      <el-button icon="plus" size="default" type="primary" @click="openModel(null)">
         新建页面
       </el-button>
     </div>
-    <el-row class="page-container" :gutter="12" v-loading="loading">
+    <el-row v-loading="loading" :gutter="12" class="page-container">
       <el-empty v-if="pageList.length == 0" description="暂无页面" />
       <el-col v-for="item of pageList" :key="item.id" :md="6">
         <div class="page-item">
           <div class="page-operation">
             <!-- 操作 -->
             <el-dropdown trigger="click" @command="handleCommand">
-              <el-icon style="color: #fff; cursor: pointer"><MoreFilled /></el-icon>
+              <el-icon style="color: #fff; cursor: pointer">
+                <MoreFilled />
+              </el-icon>
               <template #dropdown>
                 <el-dropdown-menu>
                   <el-dropdown-item :command="'update' + JSON.stringify(item)">
-                    <el-icon><Edit /></el-icon>编辑
+                    <el-icon>
+                      <Edit />
+                    </el-icon>
+                    编辑
                   </el-dropdown-item>
                   <el-dropdown-item :command="'delete' + item.id">
-                    <el-icon><Delete /></el-icon>删除
+                    <el-icon>
+                      <Delete />
+                    </el-icon>
+                    删除
                   </el-dropdown-item>
                 </el-dropdown-menu>
               </template>
             </el-dropdown>
           </div>
-          <el-image fit="cover" class="page-cover" :src="item.page_cover" />
+          <el-image :src="item.page_cover" class="page-cover" fit="cover" />
           <div class="page-name">{{ item.page_name }}</div>
         </div>
       </el-col>
     </el-row>
-    <el-dialog v-model="addOrEdit" width="35%" top="10vh">
+    <el-dialog v-model="addOrEdit" top="10vh" width="35%">
       <template #header>
         <div class="dialog-title-container">{{ pageTitle }}</div>
       </template>
-      <el-form label-width="80px" size="default" :model="pageForum">
+      <el-form :model="pageForum" label-width="80px" size="default">
         <el-form-item label="页面名称">
-          <el-input style="width: 220px" v-model="pageForum.page_name" />
+          <el-input v-model="pageForum.page_name" style="width: 220px" />
         </el-form-item>
         <el-form-item label="页面标签">
-          <el-input style="width: 220px" v-model="pageForum.page_label" />
+          <el-input v-model="pageForum.page_label" style="width: 220px" />
         </el-form-item>
         <el-form-item label="页面封面">
           <el-upload
+            :before-upload="beforeUpload"
+            :http-request="uploadImage"
+            :on-success="uploadCover"
+            :show-file-list="false"
             class="upload-cover"
             drag
             multiple
-            :show-file-list="false"
-            :http-request="uploadImage"
-            :before-upload="beforeUpload"
-            :on-success="uploadCover"
           >
-            <i class="el-icon-upload" v-if="pageForum.page_cover == ''" />
-            <div class="el-upload__text" v-if="pageForum.page_cover == ''">
+            <i v-if="pageForum.page_cover == ''" class="el-icon-upload" />
+            <div v-if="pageForum.page_cover == ''" class="el-upload__text">
               将文件拖到此处，或<em>点击上传</em>
             </div>
             <el-image
-              fit="cover"
-              class="page-cover"
               v-else
               :src="pageForum.page_cover"
-              width="360px"
+              class="page-cover"
+              fit="cover"
               height="180px"
+              width="360px"
             />
           </el-upload>
         </el-form-item>
@@ -89,8 +97,8 @@
     </el-dialog>
   </el-card>
 </template>
-<script setup lang="ts">
-import { ref, reactive, onMounted } from "vue"
+<script lang="ts" setup>
+import { onMounted, reactive, ref } from "vue"
 import * as imageConversion from "image-conversion"
 import axios from "axios"
 import { ElMessage, ElNotification, UploadRequestOptions } from "element-plus"

@@ -1,11 +1,8 @@
-import { ComponentInternalInstance, getCurrentInstance, onMounted, reactive, ref } from "vue"
-import { Column, ElMessage, ElMessageBox } from "element-plus"
+import { getCurrentInstance } from "vue"
+import { Column, ElMessage } from "element-plus"
 import { FormField, RenderType } from "@/utils/render"
-import { FixedDir } from "element-plus/es/components/table-v2/src/constants"
-import { ElTag } from "element-plus"
-import { Timer } from "@element-plus/icons-vue"
 
-import { findUserLoginHistoryListApi, deleteUserLoginHistoryByIdsApi } from "@/api/user"
+import { deleteUserLoginHistoryByIdsApi, findUserLoginHistoryListApi } from "@/api/user"
 import { LoginHistory } from "@/api/types"
 
 const align = "center"

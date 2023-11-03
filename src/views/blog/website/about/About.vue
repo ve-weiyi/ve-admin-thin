@@ -9,26 +9,24 @@
       <!--      style="height: calc(100vh - 250px); margin-top: 2.25rem"-->
       <!--    />-->
       <MdEditor
-        style="height: calc(100vh - 250px); margin-top: 2.25rem"
         ref="mdRef"
         v-model="aboutContent"
-        placeholder="快编辑你的个人信息吧~"
         :auto-detect-code="true"
+        placeholder="快编辑你的个人信息吧~"
+        style="height: calc(100vh - 250px); margin-top: 2.25rem"
         @onUploadImg="onUploadImg"
       >
       </MdEditor>
-      <el-button type="danger" size="default" class="edit-btn" @click="updateAbout">
+      <el-button class="edit-btn" size="default" type="danger" @click="updateAbout">
         修改
       </el-button>
     </el-card>
   </div>
 </template>
-<script setup lang="ts">
-import { ref, onMounted } from "vue"
-import * as imageConversion from "image-conversion"
-import axios from "axios"
+<script lang="ts" setup>
+import { onMounted, ref } from "vue"
 import { ElNotification } from "element-plus"
-import { MdEditor, MdPreview, MdCatalog } from "md-editor-v3"
+import { MdEditor } from "md-editor-v3"
 import "md-editor-v3/lib/style.css"
 import { uploadFileApi } from "@/api/file"
 import { getAboutMeApi, updateAboutMeApi } from "@/api/website"

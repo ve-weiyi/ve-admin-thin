@@ -1,17 +1,17 @@
 <template>
   <div>
     <TablePage
-      :get-column-fields="getColumnFields"
-      :get-search-fields="getSearchFields"
-      :get-form-fields="getFormFields"
-      :handle-api="handleApi"
       :default-order="defaultOrder"
+      :get-column-fields="getColumnFields"
+      :get-form-fields="getFormFields"
+      :get-search-fields="getSearchFields"
+      :handle-api="handleApi"
       model-name="菜单"
     />
   </div>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import TablePage from "@/components/TablePage/TablePage.vue"
 import { useTableHook } from "./hook"
 import { onMounted } from "vue"

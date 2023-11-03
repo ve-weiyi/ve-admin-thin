@@ -61,8 +61,8 @@ export function getPluginsList(
       logger: false,
     }),
     // 打包分析
-    lifecycle === "report"
-      ? visualizer({ open: true, brotliSize: true, filename: "report.html" })
-      : null,
+    // lifecycle === "report"
+    //   ? visualizer({ open: true, brotliSize: true, filename: "report.html" })
+    //   : null,
   ]
 }

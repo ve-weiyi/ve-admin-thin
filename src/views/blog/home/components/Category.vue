@@ -6,21 +6,19 @@
   />
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import * as echarts from "echarts"
+import { EChartsOption } from "echarts"
 import {
-  onMounted,
-  ref,
   nextTick,
   onBeforeUnmount,
-  shallowRef,
-  ShallowRef,
+  onMounted,
+  ref,
   Ref,
-  computed,
-  watch,
+  ShallowRef,
+  shallowRef,
   watchEffect,
 } from "vue"
-import { EChartsOption } from "echarts"
 
 type ECharts = echarts.ECharts
 

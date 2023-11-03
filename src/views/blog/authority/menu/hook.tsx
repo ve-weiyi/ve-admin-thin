@@ -1,23 +1,14 @@
-import {
-  onMounted,
-  reactive,
-  ref,
-  VNode,
-  getCurrentInstance,
-  resolveDynamicComponent,
-  h,
-} from "vue"
-import { Column, ElMessage, ElMessageBox } from "element-plus"
-import { defaultPaginationData, FormField, RenderType } from "@/utils/render"
+import { getCurrentInstance, h, resolveDynamicComponent } from "vue"
+import { Column } from "element-plus"
+import { FormField, RenderType } from "@/utils/render"
 import {
   createMenuApi,
-  deleteMenuByIdsApi,
   deleteMenuApi,
-  updateMenuApi,
+  deleteMenuByIdsApi,
   findMenuDetailsListApi,
+  updateMenuApi,
 } from "@/api/menu"
 import { Timer } from "@element-plus/icons-vue"
-import * as Icons from "@element-plus/icons-vue"
 
 const align = "center"
 
@@ -142,8 +133,8 @@ function getColumnFields(): Column[] {
             v-model={scope.row.is_hidden}
             active-color="#13ce66"
             inactive-color="#F4F4F5"
-            active-value={true}
-            inactive-value={false}
+            active-value={1}
+            inactive-value={0}
             onClick={() => {
               instance.exposed.onUpdate(scope.row)
             }}

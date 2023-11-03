@@ -1,14 +1,12 @@
-import { ComponentInternalInstance, getCurrentInstance, onMounted, reactive, ref } from "vue"
-import { Column, ElMessage, ElMessageBox } from "element-plus"
+import { getCurrentInstance } from "vue"
+import { Column, ElTag } from "element-plus"
 import { FormField, RenderType } from "@/utils/render"
-import { FixedDir } from "element-plus/es/components/table-v2/src/constants"
-import { ElTag } from "element-plus"
 import { Timer } from "@element-plus/icons-vue"
 
 import {
   createCommentApi,
-  deleteCommentByIdsApi,
   deleteCommentApi,
+  deleteCommentByIdsApi,
   findCommentListBackApi,
   updateCommentApi,
 } from "@/api/comment"
@@ -109,8 +107,8 @@ function getColumnFields(): Column[] {
         return (
           <div>
             <span>
-              {scope.row.is_review === true && <ElTag type="success">正常</ElTag>}
-              {scope.row.is_review === false && <ElTag type="warning">审核中</ElTag>}
+              {scope.row.is_review === 1 && <ElTag type="success">正常</ElTag>}
+              {scope.row.is_review === 0 && <ElTag type="warning">审核中</ElTag>}
             </span>
           </div>
         )
@@ -160,7 +158,7 @@ function getColumnFields(): Column[] {
       cellRenderer: (scope: any) => {
         return (
           <div>
-            {scope.row.is_review === false && (
+            {scope.row.is_review === 0 && (
               <el-button
                 type="success"
                 size="default"

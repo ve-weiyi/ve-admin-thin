@@ -7,8 +7,8 @@
       <div class="operation">
         <div class="all-check">
           <el-checkbox
-            :indeterminate="isIndeterminate"
             v-model="checkAll"
+            :indeterminate="isIndeterminate"
             @change="handleCheckAllPhotoChange"
           >
             全选
@@ -16,37 +16,37 @@
           <div class="check-count">已选择{{ selectionIds.length }}张</div>
         </div>
         <el-button
+          :disabled="selectionIds.length === 0"
+          icon="deleteItem"
+          size="default"
           type="success"
           @click="updatePhotoDelete(null)"
-          :disabled="selectionIds.length === 0"
-          size="default"
-          icon="deleteItem"
         >
           批量恢复
         </el-button>
         <el-button
+          :disabled="selectionIds.length === 0"
+          icon="deleteItem"
+          size="default"
           type="danger"
           @click="batchDeletePhoto = true"
-          :disabled="selectionIds.length === 0"
-          size="default"
-          icon="deleteItem"
         >
           批量删除
         </el-button>
       </div>
       <!-- 照片列表 -->
-      <el-row class="photo-container" :gutter="10" v-loading="loading">
+      <el-row v-loading="loading" :gutter="10" class="photo-container">
         <!-- 空状态 -->
-        <el-empty v-if="tableData.length === 0" style="width: 100%" description="暂无照片" />
+        <el-empty v-if="tableData.length === 0" description="暂无照片" style="width: 100%" />
         <el-checkbox-group v-model="selectionIds" @change="handleCheckedPhotoChange">
-          <el-col :md="4" v-for="item in tableData" :key="item.id">
+          <el-col v-for="item in tableData" :key="item.id" :md="4">
             <el-checkbox :label="item.id">
               <div class="photo-item">
                 <el-image
-                  fit="cover"
-                  class="photo-img"
-                  :src="item.photo_src"
                   :preview-src-list="tableData.map((photo) => photo.photo_src)"
+                  :src="item.photo_src"
+                  class="photo-img"
+                  fit="cover"
                 />
                 <div class="photo-name">{{ item.photo_name }}</div>
               </div>
@@ -56,14 +56,14 @@
       </el-row>
       <!-- 分页 -->
       <el-pagination
-        :hide-on-single-page="true"
-        class="pagination-container"
-        background
         :current-page="pagination.currentPage"
-        :page-size="pagination.pageSize"
-        :total="pagination.total"
-        :page-sizes="pagination.pageSizes"
+        :hide-on-single-page="true"
         :layout="pagination.layout"
+        :page-size="pagination.pageSize"
+        :page-sizes="pagination.pageSizes"
+        :total="pagination.total"
+        background
+        class="pagination-container"
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
       />
@@ -87,8 +87,8 @@
   </div>
 </template>
 
-<script setup lang="ts">
-import { ref, reactive, computed, onMounted } from "vue"
+<script lang="ts" setup>
+import { computed, onMounted, ref } from "vue"
 import { useTableHook } from "./delete"
 
 const {

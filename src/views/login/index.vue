@@ -1,13 +1,5 @@
-<script setup lang="ts">
-import {
-  ref,
-  toRaw,
-  reactive,
-  watch,
-  computed,
-  onMounted,
-  onBeforeUnmount,
-} from "vue"
+<script lang="ts" setup>
+import { onBeforeUnmount, onMounted, reactive, ref, toRaw } from "vue"
 import { useI18n } from "vue-i18n"
 import Motion from "./utils/motion"
 import { useRouter } from "vue-router"
@@ -22,8 +14,7 @@ import type { FormInstance } from "element-plus"
 import { $t, transformI18n } from "@/plugins/i18n"
 import { operates, thirdParty } from "./utils/enums"
 import { useLayout } from "@/layout/hooks/useLayout"
-import { initRouter, getTopMenu } from "@/router/utils"
-import { bg, avatar, illustration } from "./utils/static"
+import { avatar, bg, illustration } from "./utils/static"
 import TypeIt from "@/components/ReTypeit"
 import { ReImageVerify } from "@/components/ReImageVerify"
 import { useRenderIcon } from "@/components/ReIcon/src/hooks"
@@ -37,7 +28,7 @@ import Lock from "@iconify-icons/ri/lock-fill"
 import Check from "@iconify-icons/ep/check"
 import User from "@iconify-icons/ri/user-3-fill"
 import { loginApi } from "@/api/auth"
-import { useAdminStore, useAdminStoreHook } from "@/store/modules/admin"
+import { useAdminStoreHook } from "@/store/modules/admin"
 import { usePermissionStoreHook } from "@/store/modules/permission"
 
 defineOptions({
@@ -65,7 +56,7 @@ const ruleForm = reactive({
   verifyCode: "",
 })
 
-const onLogin = async(formEl: FormInstance | undefined) => {
+const onLogin = async (formEl: FormInstance | undefined) => {
   loading.value = true
   if (!formEl) return
   await formEl.validate((valid, fields) => {
@@ -123,9 +114,9 @@ onBeforeUnmount(() => {
       <!-- 主题 -->
       <el-switch
         v-model="dataTheme"
-        inline-prompt
         :active-icon="dayIcon"
         :inactive-icon="darkIcon"
+        inline-prompt
         @change="dataThemeChange"
       />
       <!-- 国际化 -->
@@ -136,23 +127,19 @@ onBeforeUnmount(() => {
         <template #dropdown>
           <el-dropdown-menu class="translation">
             <el-dropdown-item
-              :style="getDropdownItemStyle(locale, 'zh')"
               :class="['dark:!text-white', getDropdownItemClass(locale, 'zh')]"
+              :style="getDropdownItemStyle(locale, 'zh')"
               @click="translationCh"
             >
-              <IconifyIconOffline
-                class="check-zh"
-                v-show="locale === 'zh'"
-                :icon="Check"
-              />
+              <IconifyIconOffline v-show="locale === 'zh'" :icon="Check" class="check-zh" />
               简体中文
             </el-dropdown-item>
             <el-dropdown-item
-              :style="getDropdownItemStyle(locale, 'en')"
               :class="['dark:!text-white', getDropdownItemClass(locale, 'en')]"
+              :style="getDropdownItemStyle(locale, 'en')"
               @click="translationEn"
             >
-              <span class="check-en" v-show="locale === 'en'">
+              <span v-show="locale === 'en'" class="check-en">
                 <IconifyIconOffline :icon="Check" />
               </span>
               English
@@ -170,7 +157,7 @@ onBeforeUnmount(() => {
           <avatar class="avatar" />
           <Motion>
             <h2 class="outline-none">
-              <TypeIt :values="[title]" :cursor="false" :speed="150" />
+              <TypeIt :cursor="false" :speed="150" :values="[title]" />
             </h2>
           </Motion>
 
@@ -193,10 +180,10 @@ onBeforeUnmount(() => {
                 prop="username"
               >
                 <el-input
-                  clearable
                   v-model="ruleForm.username"
                   :placeholder="t('login.username')"
                   :prefix-icon="useRenderIcon(User)"
+                  clearable
                 />
               </el-form-item>
             </Motion>
@@ -204,11 +191,11 @@ onBeforeUnmount(() => {
             <Motion :delay="150">
               <el-form-item prop="password">
                 <el-input
-                  clearable
-                  show-password
                   v-model="ruleForm.password"
                   :placeholder="t('login.password')"
                   :prefix-icon="useRenderIcon(Lock)"
+                  clearable
+                  show-password
                 />
               </el-form-item>
             </Motion>
@@ -216,10 +203,10 @@ onBeforeUnmount(() => {
             <Motion :delay="200">
               <el-form-item prop="verifyCode">
                 <el-input
-                  clearable
                   v-model="ruleForm.verifyCode"
                   :placeholder="t('login.verifyCode')"
                   :prefix-icon="useRenderIcon('ri:shield-keyhole-line')"
+                  clearable
                 >
                   <template v-slot:append>
                     <ReImageVerify v-model:code="imgCode" />
@@ -239,10 +226,10 @@ onBeforeUnmount(() => {
                   </el-button>
                 </div>
                 <el-button
+                  :loading="loading"
                   class="w-full mt-4"
                   size="default"
                   type="primary"
-                  :loading="loading"
                   @click="onLogin(ruleFormRef)"
                 >
                   {{ t("login.login") }}
@@ -273,15 +260,11 @@ onBeforeUnmount(() => {
                 <p class="text-gray-500 text-xs">{{ t("login.thirdLogin") }}</p>
               </el-divider>
               <div class="w-full flex justify-evenly">
-                <span
-                  v-for="(item, index) in thirdParty"
-                  :key="index"
-                  :title="t(item.title)"
-                >
+                <span v-for="(item, index) in thirdParty" :key="index" :title="t(item.title)">
                   <IconifyIconOnline
                     :icon="`ri:${item.icon}-fill`"
-                    width="20"
                     class="cursor-pointer text-gray-500 hover:text-blue-400"
+                    width="20"
                   />
                 </span>
               </div>

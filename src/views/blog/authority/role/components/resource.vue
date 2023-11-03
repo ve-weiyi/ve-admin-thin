@@ -8,12 +8,12 @@
         ref="resourceTreeRef"
         :data="resourceTreeData"
         :default-checked-keys="defaultCheckIds"
+        :filter-node-method="filterNode"
         :props="resourceDefaultProps"
         default-expand-all
         highlight-current
         node-key="id"
         show-checkbox
-        :filter-node-method="filterNode"
         @check="nodeChange"
       >
         <template #default="{ node, data }">
@@ -27,8 +27,8 @@
 </template>
 
 <script lang="ts" setup>
-import { defineComponent, nextTick, ref, watch } from "vue"
-import { type FormInstance, type FormRules, ElMessage, ElMessageBox, ElTree } from "element-plus"
+import { defineComponent, ref, watch } from "vue"
+import { ElTree } from "element-plus"
 import { findApiDetailsListApi } from "@/api/api"
 
 // 父组件向子组件传输的数据
@@ -99,12 +99,14 @@ defineComponent({
   visibility: hidden;
   clear: both;
 }
+
 .sticky-button {
   position: sticky;
   top: 2px;
   z-index: 2;
   background-color: #fff;
 }
+
 .filter {
   width: 60%;
 }

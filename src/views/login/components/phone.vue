@@ -1,13 +1,12 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { useI18n } from "vue-i18n"
-import { ref, reactive } from "vue"
+import { reactive, ref } from "vue"
 import Motion from "../utils/motion"
 import { message } from "@/utils/message"
 import { phoneRules } from "../utils/rule"
 import type { FormInstance } from "element-plus"
 import { $t, transformI18n } from "@/plugins/i18n"
 import { useVerifyCode } from "../utils/verifyCode"
-import { useUserStoreHook } from "@/store/modules/user"
 import { useRenderIcon } from "@/components/ReIcon/src/hooks"
 import Iphone from "@iconify-icons/ep/iphone"
 
@@ -20,7 +19,7 @@ const ruleForm = reactive({
 const ruleFormRef = ref<FormInstance>()
 const { isDisabled, text } = useVerifyCode()
 
-const onLogin = async(formEl: FormInstance | undefined) => {
+const onLogin = async (formEl: FormInstance | undefined) => {
   loading.value = true
   if (!formEl) return
   await formEl.validate((valid, fields) => {
@@ -50,10 +49,10 @@ function onBack() {
     <Motion>
       <el-form-item prop="phone">
         <el-input
-          clearable
           v-model="ruleForm.phone"
           :placeholder="t('login.phone')"
           :prefix-icon="useRenderIcon(Iphone)"
+          clearable
         />
       </el-form-item>
     </Motion>
@@ -62,21 +61,17 @@ function onBack() {
       <el-form-item prop="verifyCode">
         <div class="w-full flex justify-between">
           <el-input
-            clearable
             v-model="ruleForm.verifyCode"
             :placeholder="t('login.smsVerifyCode')"
             :prefix-icon="useRenderIcon('ri:shield-keyhole-line')"
+            clearable
           />
           <el-button
             :disabled="isDisabled"
             class="ml-2"
             @click="useVerifyCode().start(ruleFormRef, 'phone')"
           >
-            {{
-              text.length > 0
-                ? text + t("login.info")
-                : t("login.getVerifyCode")
-            }}
+            {{ text.length > 0 ? text + t("login.info") : t("login.getVerifyCode") }}
           </el-button>
         </div>
       </el-form-item>
@@ -85,10 +80,10 @@ function onBack() {
     <Motion :delay="150">
       <el-form-item>
         <el-button
+          :loading="loading"
           class="w-full"
           size="default"
           type="primary"
-          :loading="loading"
           @click="onLogin(ruleFormRef)"
         >
           {{ t("login.login") }}

@@ -1,5 +1,14 @@
 import http from "@/utils/request"
-import { LoginHistory, MenuDetails, ApiDetails, UserInfo, UserInformation, Upload, UserAccount, UpdateUserRoles, Role } from "./types"
+import {
+  LoginHistory,
+  MenuDetails,
+  ApiDetails,
+  UserInfo,
+  UserInformation,
+  UserAccount,
+  UpdateUserRoles,
+  Role,
+} from "./types"
 
 /** 获取用户列表 */
 export function findUserListApi(page: PageQuery): Promise<IApiResponseData<any>> {
@@ -20,7 +29,9 @@ export function findUserListAreasApi(page: PageQuery): Promise<IApiResponseData<
 }
 
 /** 获取用户登录历史 */
-export function findUserLoginHistoryListApi(page: PageQuery): Promise<IApiResponseData<PageResult<LoginHistory>>> {
+export function findUserLoginHistoryListApi(
+  page: PageQuery
+): Promise<IApiResponseData<PageResult<LoginHistory>>> {
   return http.request<IApiResponseData<PageResult<LoginHistory>>>({
     url: `/api/v1/user/login_history`,
     method: "post",
@@ -62,8 +73,10 @@ export function getUserInfoApi(): Promise<IApiResponseData<UserInfo>> {
 }
 
 /** 修改用户信息 */
-export function updateUserInfoApi(data: UserInformation): Promise<IApiResponseData<Upload>> {
-  return http.request<IApiResponseData<Upload>>({
+export function updateUserInfoApi(
+  data: UserInformation
+): Promise<IApiResponseData<UserInformation>> {
+  return http.request<IApiResponseData<UserInformation>>({
     url: `/api/v1/user/info`,
     method: "post",
     data: data,
@@ -71,11 +84,16 @@ export function updateUserInfoApi(data: UserInformation): Promise<IApiResponseDa
 }
 
 /** 更换用户头像 */
-export function updateUserAvatarApi(data: Upload): Promise<IApiResponseData<Upload>> {
-  return http.request<IApiResponseData<Upload>>({
+export function updateUserAvatarApi(file: File): Promise<IApiResponseData<UserInformation>> {
+  const formData = new FormData()
+  formData.append("file", file)
+  return http.request<IApiResponseData<UserInformation>>({
     url: `/api/v1/user/avatar`,
     method: "post",
-    data: data,
+    data: formData,
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
   })
 }
 

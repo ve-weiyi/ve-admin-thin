@@ -1,5 +1,5 @@
 import http from "@/utils/request"
-import { Article, BatchResult, ArticleDetails, ArticleCondition, ArticleConditionDTO } from "./types"
+import { Article, BatchResult, ArticleRecommendDetails, ArticleDetails, ArticlePreviewDTO, ArticleCondition, ArticleConditionDTO } from "./types"
 
 /** 创建文章 */
 export function createArticleApi(data: Article): Promise<IApiResponseData<Article>> {
@@ -54,34 +54,26 @@ export function findArticleListApi(page: PageQuery): Promise<IApiResponseData<Pa
 }
 
 /** 文章详情 */
-export function getArticleDetailsApi(id: number): Promise<IApiResponseData<ArticleDetails>> {
-  return http.request<IApiResponseData<ArticleDetails>>({
+export function findArticleDetailsApi(id: number): Promise<IApiResponseData<ArticleRecommendDetails>> {
+  return http.request<IApiResponseData<ArticleRecommendDetails>>({
     url: `/api/v1/article/${id}/details`,
     method: "get",
   })
 }
 
-/** 点赞文章 */
-export function likeArticleApi(id: number): Promise<IApiResponseData<Article>> {
-  return http.request<IApiResponseData<Article>>({
-    url: `/api/v1/article/${id}/like`,
-    method: "put",
-  })
-}
-
-/** 文章归档 */
-export function findArticleArchivesApi(page: PageQuery): Promise<IApiResponseData<PageResult<Article>>> {
-  return http.request<IApiResponseData<PageResult<Article>>>({
-    url: `/api/v1/article/archives`,
+/** 分页获取文章详情列表 */
+export function findArticleDetailsListApi(page: PageQuery): Promise<IApiResponseData<PageResult<ArticleDetails>>> {
+  return http.request<IApiResponseData<PageResult<ArticleDetails>>>({
+    url: `/api/v1/article/list/details`,
     method: "post",
     data: page,
   })
 }
 
-/** 分页获取文章详情列表 */
-export function findArticleDetailsListApi(page: PageQuery): Promise<IApiResponseData<PageResult<Article>>> {
-  return http.request<IApiResponseData<PageResult<Article>>>({
-    url: `/api/v1/article/list/details`,
+/** 文章归档(时间轴) */
+export function findArticleArchivesApi(page: PageQuery): Promise<IApiResponseData<PageResult<ArticlePreviewDTO>>> {
+  return http.request<IApiResponseData<PageResult<ArticlePreviewDTO>>>({
+    url: `/api/v1/article/archives`,
     method: "post",
     data: page,
   })
@@ -93,5 +85,13 @@ export function findArticleListByConditionApi(page: ArticleCondition): Promise<I
     url: `/api/v1/article/list/condition`,
     method: "post",
     data: page,
+  })
+}
+
+/** 点赞文章 */
+export function likeArticleApi(id: number): Promise<IApiResponseData<Article>> {
+  return http.request<IApiResponseData<Article>>({
+    url: `/api/v1/article/${id}/like`,
+    method: "put",
   })
 }

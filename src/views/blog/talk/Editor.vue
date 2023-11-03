@@ -1,17 +1,17 @@
 <template>
   <div
     ref="editorRef"
-    class="edit-container"
-    v-html="innerText"
-    :placeholder="placeholder"
     :contenteditable="disable"
-    @focus="onFocus"
+    :placeholder="placeholder"
+    class="edit-container"
     @blur="onBlur"
+    @focus="onFocus"
     @input="onInput"
+    v-html="innerText"
   />
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import { ref, watchEffect } from "vue"
 
 const props = defineProps({
@@ -116,6 +116,7 @@ defineExpose({
   text-align: left;
   -webkit-user-modify: read-write-plaintext-only;
 }
+
 .edit-container:empty::before {
   cursor: text;
   content: attr(placeholder);

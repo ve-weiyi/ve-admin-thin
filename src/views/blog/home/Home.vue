@@ -60,9 +60,9 @@
       <div v-loading="loading">
         <Calender
           v-loading="loading"
-          start-date="2022-01-01"
-          end-date="2023-01-01"
           :data="articleStatisticsList"
+          end-date="2023-01-01"
+          start-date="2022-01-01"
         />
       </div>
     </el-card>
@@ -93,7 +93,7 @@
       <el-col :span="12">
         <el-card>
           <div class="e-title">用户地域分布</div>
-          <div style="height: 350px" v-loading="loading">
+          <div v-loading="loading" style="height: 350px">
             <div class="area-wrapper">
               <el-radio-group v-model="type">
                 <el-radio :label="1">用户</el-radio>
@@ -109,7 +109,7 @@
       <el-col :span="12">
         <el-card>
           <div class="e-title">文章标签统计</div>
-          <div style="height: 350px" v-loading="loading">
+          <div v-loading="loading" style="height: 350px">
             <!--       <tag-cloud style="margin-top: 1.5rem" :values="tagDTOList" />-->
           </div>
         </el-card>
@@ -118,8 +118,8 @@
   </div>
 </template>
 
-<script setup lang="ts">
-import { ref, onMounted, watch } from "vue"
+<script lang="ts" setup>
+import { onMounted, ref, watch } from "vue"
 import { getHomeInfoApi } from "@/api/blog"
 import { findUserListAreasApi } from "@/api/user"
 import Calender from "@/views/blog/home/components/Calender.vue"

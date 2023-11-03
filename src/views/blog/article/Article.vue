@@ -4,17 +4,17 @@
       <div class="table-title">{{ $route.meta.title }}</div>
       <!-- 文章标题 -->
       <div class="article-title-container">
-        <el-input v-model="article.articleTitle" size="default" placeholder="输入文章标题" />
+        <el-input v-model="article.articleTitle" placeholder="输入文章标题" size="default" />
         <el-button
-          type="danger"
-          size="default"
-          class="save-btn"
-          @click="saveArticleDraft"
           v-if="article.id == null || article.status == 3"
+          class="save-btn"
+          size="default"
+          type="danger"
+          @click="saveArticleDraft"
         >
           保存草稿
         </el-button>
-        <el-button type="danger" size="default" @click="openModel" style="margin-left: 10px">
+        <el-button size="default" style="margin-left: 10px" type="danger" @click="openModel">
           发布文章
         </el-button>
       </div>
@@ -26,49 +26,49 @@
       <!--        style="height: calc(100vh - 260px)"-->
       <!--      />-->
       <MdEditor
-        style="height: calc(100vh - 260px)"
         ref="mdRef"
         v-model="article.articleContent"
-        placeholder="快编辑一篇文章吧~"
         :auto-detect-code="true"
+        placeholder="快编辑一篇文章吧~"
+        style="height: calc(100vh - 260px)"
         @onUploadImg="uploadImg"
       >
       </MdEditor>
       <!-- 添加文章对话框 -->
-      <el-dialog v-model="addOrEdit" width="40%" top="3vh">
+      <el-dialog v-model="addOrEdit" top="3vh" width="40%">
         <template #header>
           <div class="dialog-title-container">发布文章</div>
         </template>
         <!-- 文章数据 -->
-        <el-form label-width="80px" size="default" :model="article">
+        <el-form :model="article" label-width="80px" size="default">
           <!-- 文章分类 -->
           <el-form-item label="文章分类">
             <el-tag
-              type="success"
               v-show="article.categoryName"
-              style="margin: 0 1rem 0 0"
               :closable="true"
+              style="margin: 0 1rem 0 0"
+              type="success"
               @close="removeCategory"
             >
               {{ article.categoryName }}
             </el-tag>
             <!-- 分类选项 -->
             <el-popover
-              placement="bottom-start"
-              width="460"
-              trigger="click"
               v-if="!article.categoryName"
+              placement="bottom-start"
+              trigger="click"
+              width="460"
             >
               <div class="popover-title">分类</div>
               <!-- 搜索框 -->
               <el-autocomplete
-                style="width: 100%"
                 v-model="categoryName"
                 :fetch-suggestions="searchCategories"
-                placeholder="请输入分类名搜索，enter可添加自定义分类"
                 :trigger-on-focus="false"
-                @keyup.enter="saveCategory"
+                placeholder="请输入分类名搜索，enter可添加自定义分类"
+                style="width: 100%"
                 @select="handleSelectCategories"
+                @keyup.enter="saveCategory"
               >
                 <template #default="{ item }">
                   <div>{{ item.category_name }}</div>
@@ -86,7 +86,7 @@
                 </div>
               </div>
               <template #reference>
-                <el-button type="success" plain size="small"> 添加分类 </el-button>
+                <el-button plain size="small" type="success"> 添加分类</el-button>
               </template>
             </el-popover>
           </el-form-item>
@@ -95,29 +95,29 @@
             <el-tag
               v-for="(item, index) of article.tagNameList"
               :key="index"
-              style="margin: 0 1rem 0 0"
               :closable="true"
+              style="margin: 0 1rem 0 0"
               @close="removeTag(item)"
             >
               {{ item }}
             </el-tag>
             <!-- 标签选项 -->
             <el-popover
-              placement="bottom-start"
-              width="460"
-              trigger="click"
               v-if="article.tagNameList.length < 3"
+              placement="bottom-start"
+              trigger="click"
+              width="460"
             >
               <div class="popover-title">标签</div>
               <!-- 搜索框 -->
               <el-autocomplete
-                style="width: 100%"
                 v-model="tagName"
                 :fetch-suggestions="searchTags"
-                placeholder="请输入标签名搜索，enter可添加自定义标签"
                 :trigger-on-focus="false"
-                @keyup.enter="saveTag"
+                placeholder="请输入标签名搜索，enter可添加自定义标签"
+                style="width: 100%"
                 @select="handleSelectTag"
+                @keyup.enter="saveTag"
               >
                 <template #default="{ item }">
                   <div>{{ item.tagName }}</div>
@@ -136,7 +136,7 @@
                 </el-tag>
               </div>
               <template #reference>
-                <el-button type="primary" plain size="small"> 添加标签 </el-button>
+                <el-button plain size="small" type="primary"> 添加标签</el-button>
               </template>
             </el-popover>
           </el-form-item>
@@ -151,32 +151,32 @@
             </el-select>
           </el-form-item>
           <!-- 文章类型 -->
-          <el-form-item label="原文地址" v-if="article.type != 1">
+          <el-form-item v-if="article.type != 1" label="原文地址">
             <el-input v-model="article.originalUrl" placeholder="请填写原文链接" />
           </el-form-item>
           <el-form-item label="上传封面">
             <el-upload
-              class="upload-cover"
-              drag
-              action="/api/admin/articles/images"
-              multiple
               :before-upload="beforeUpload"
               :on-success="uploadCover"
+              action="/api/admin/articles/images"
+              class="upload-cover"
+              drag
+              multiple
             >
-              <i class="el-icon-upload" v-if="article.articleCover == ''" />
-              <div class="el-upload__text" v-if="article.articleCover == ''">
+              <i v-if="article.articleCover == ''" class="el-icon-upload" />
+              <div v-if="article.articleCover == ''" class="el-upload__text">
                 将文件拖到此处，或<em>点击上传</em>
               </div>
-              <img v-else :src="article.articleCover" width="360px" height="180px" />
+              <img v-else :src="article.articleCover" height="180px" width="360px" />
             </el-upload>
           </el-form-item>
           <el-form-item label="置顶">
             <el-switch
               v-model="article.isTop"
-              active-color="#13ce66"
-              inactive-color="#F4F4F5"
               :active-value="1"
               :inactive-value="0"
+              active-color="#13ce66"
+              inactive-color="#F4F4F5"
             />
           </el-form-item>
           <el-form-item label="发布形式">
@@ -188,18 +188,18 @@
         </el-form>
         <template #footer>
           <el-button @click="addOrEdit = false">取 消</el-button>
-          <el-button type="danger" @click="saveOrUpdateArticle"> 发 表 </el-button>
+          <el-button type="danger" @click="saveOrUpdateArticle"> 发 表</el-button>
         </template>
       </el-dialog>
     </el-card>
   </div>
 </template>
 
-<script setup lang="ts">
-import { ref, onBeforeUnmount } from "vue"
+<script lang="ts" setup>
+import { onBeforeUnmount, ref } from "vue"
 import { useRoute, useRouter } from "vue-router"
 import imageConversion from "image-conversion"
-import { MdEditor, MdPreview, MdCatalog } from "md-editor-v3"
+import { MdEditor } from "md-editor-v3"
 import "md-editor-v3/lib/style.css"
 import { findCategoryListApi } from "@/api/category"
 import { findTagListApi } from "@/api/tag"
@@ -497,34 +497,41 @@ const tagClass = (item) => {
   margin-bottom: 1.25rem;
   margin-top: 2.25rem;
 }
+
 .save-btn {
   margin-left: 0.75rem;
   background: #fff;
   color: #f56c6c;
 }
+
 .tag-item {
   margin-right: 1rem;
   margin-bottom: 1rem;
   cursor: pointer;
 }
+
 .tag-item-select {
   margin-right: 1rem;
   margin-bottom: 1rem;
   cursor: not-allowed;
   color: #ccccd8 !important;
 }
+
 .category-item {
   cursor: pointer;
   padding: 0.6rem 0.5rem;
 }
+
 .category-item:hover {
   background-color: #f0f9eb;
   color: #67c23a;
 }
+
 .popover-title {
   margin-bottom: 1rem;
   text-align: center;
 }
+
 .popover-container {
   margin-top: 1rem;
   height: 260px;

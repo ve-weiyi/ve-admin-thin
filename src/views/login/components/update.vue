@@ -1,13 +1,12 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { useI18n } from "vue-i18n"
-import { ref, reactive } from "vue"
+import { reactive, ref } from "vue"
 import Motion from "../utils/motion"
 import { message } from "@/utils/message"
 import { updateRules } from "../utils/rule"
 import type { FormInstance } from "element-plus"
 import { useVerifyCode } from "../utils/verifyCode"
 import { $t, transformI18n } from "@/plugins/i18n"
-import { useUserStoreHook } from "@/store/modules/user"
 import { useRenderIcon } from "@/components/ReIcon/src/hooks"
 import Lock from "@iconify-icons/ri/lock-fill"
 import Iphone from "@iconify-icons/ep/iphone"
@@ -37,7 +36,7 @@ const repeatPasswordRule = [
   },
 ]
 
-const onUpdate = async(formEl: FormInstance | undefined) => {
+const onUpdate = async (formEl: FormInstance | undefined) => {
   loading.value = true
   if (!formEl) return
   await formEl.validate((valid, fields) => {
@@ -65,19 +64,14 @@ function onBack() {
 </script>
 
 <template>
-  <el-form
-    ref="ruleFormRef"
-    :model="ruleForm"
-    :rules="updateRules"
-    size="large"
-  >
+  <el-form ref="ruleFormRef" :model="ruleForm" :rules="updateRules" size="large">
     <Motion>
       <el-form-item prop="phone">
         <el-input
-          clearable
           v-model="ruleForm.phone"
           :placeholder="t('login.phone')"
           :prefix-icon="useRenderIcon(Iphone)"
+          clearable
         />
       </el-form-item>
     </Motion>
@@ -86,21 +80,17 @@ function onBack() {
       <el-form-item prop="verifyCode">
         <div class="w-full flex justify-between">
           <el-input
-            clearable
             v-model="ruleForm.verifyCode"
             :placeholder="t('login.smsVerifyCode')"
             :prefix-icon="useRenderIcon('ri:shield-keyhole-line')"
+            clearable
           />
           <el-button
             :disabled="isDisabled"
             class="ml-2"
             @click="useVerifyCode().start(ruleFormRef, 'phone')"
           >
-            {{
-              text.length > 0
-                ? text + t("login.info")
-                : t("login.getVerifyCode")
-            }}
+            {{ text.length > 0 ? text + t("login.info") : t("login.getVerifyCode") }}
           </el-button>
         </div>
       </el-form-item>
@@ -109,11 +99,11 @@ function onBack() {
     <Motion :delay="150">
       <el-form-item prop="password">
         <el-input
-          clearable
-          show-password
           v-model="ruleForm.password"
           :placeholder="t('login.password')"
           :prefix-icon="useRenderIcon(Lock)"
+          clearable
+          show-password
         />
       </el-form-item>
     </Motion>
@@ -121,11 +111,11 @@ function onBack() {
     <Motion :delay="200">
       <el-form-item :rules="repeatPasswordRule" prop="repeatPassword">
         <el-input
-          clearable
-          show-password
           v-model="ruleForm.repeatPassword"
           :placeholder="t('login.sure')"
           :prefix-icon="useRenderIcon(Lock)"
+          clearable
+          show-password
         />
       </el-form-item>
     </Motion>
@@ -133,10 +123,10 @@ function onBack() {
     <Motion :delay="250">
       <el-form-item>
         <el-button
+          :loading="loading"
           class="w-full"
           size="default"
           type="primary"
-          :loading="loading"
           @click="onUpdate(ruleFormRef)"
         >
           {{ t("login.definite") }}

@@ -6,22 +6,22 @@
         <!-- 输入框 -->
         <Editor
           ref="editorRef"
-          class="editor-wrapper"
           v-model="talk.content"
+          class="editor-wrapper"
           placeholder="说点什么吧"
         />
         <!-- 操作菜单 -->
         <div class="operation-wrapper">
           <div class="left-wrapper">
             <!-- 表情 -->
-            <el-popover placement="bottom-start" width="460" trigger="click">
+            <el-popover placement="bottom-start" trigger="click" width="460">
               <span
-                class="emoji-item"
                 v-for="(item, key, index) of emojiList"
                 :key="index"
+                class="emoji-item"
                 @click="addEmoji(key, item.normal)"
               >
-                <img :src="item.normal" :title="item.key" class="emoji" width="24" height="24" />
+                <img :src="item.normal" :title="item.key" class="emoji" height="24" width="24" />
               </span>
               <template #reference>
                 <i class="iconfont icon-smile operation-btn" />
@@ -29,11 +29,11 @@
             </el-popover>
             <!-- 图片上传 -->
             <el-upload
-              action="/api/admin/talks/images"
-              multiple
               :before-upload="beforeUpload"
               :on-success="upload"
               :show-file-list="false"
+              action="/api/admin/talks/images"
+              multiple
             >
               <i class="iconfont icon-picture operation-btn" />
             </el-upload>
@@ -41,16 +41,17 @@
           <div class="right-wrapper">
             <!-- 是否置顶 -->
             <el-switch
-              style="margin-right: 16px"
               v-model="talk.is_top"
-              inactive-text="置顶"
               :active-value="1"
               :inactive-value="0"
+              inactive-text="置顶"
+              style="margin-right: 16px"
             />
             <!-- 说说状态 -->
-            <el-dropdown trigger="click" @command="handleCommand" style="margin-right: 16px">
+            <el-dropdown style="margin-right: 16px" trigger="click" @command="handleCommand">
               <span class="talk-status">
                 {{ dropdownTitle }}<i class="el-icon-arrow-down el-icon--right" />
+                <el-icon><ArrowUp /></el-icon>
               </span>
               <template #dropdown>
                 <el-dropdown-menu>
@@ -65,10 +66,10 @@
               </template>
             </el-dropdown>
             <el-button
-              type="primary"
-              size="small"
-              @click="saveOrUpdateTalk"
               :disabled="talk.content === ''"
+              size="small"
+              type="primary"
+              @click="saveOrUpdateTalk"
             >
               发布
             </el-button>
@@ -76,15 +77,15 @@
         </div>
         <!-- 图片上传 -->
         <el-upload
-          class="talk-image-upload"
           v-show="uploadList.length > 0"
-          action="/api/admin/talks/images"
-          list-type="picture-card"
-          :file-list="uploadList"
-          multiple
           :before-upload="beforeUpload"
-          :on-success="upload"
+          :file-list="uploadList"
           :on-remove="handleRemove"
+          :on-success="upload"
+          action="/api/admin/talks/images"
+          class="talk-image-upload"
+          list-type="picture-card"
+          multiple
         >
           <i class="el-icon-plus" />
         </el-upload>
@@ -93,8 +94,8 @@
   </div>
 </template>
 
-<script setup lang="ts">
-import { ref, onMounted, computed } from "vue"
+<script lang="ts" setup>
+import { computed, onMounted, ref } from "vue"
 import * as imageConversion from "image-conversion"
 import EmojiList from "@/assets/emojis/qq_emoji.json"
 import Editor from "@/views/blog/talk/Editor.vue"
@@ -202,47 +203,61 @@ const dropdownTitle = computed(() => {
 
 <style scoped>
 .talk-container {
-  margin-top: 40px;
+  margin-top: 20px;
 }
+
 .editor-wrapper {
   min-height: 150px;
 }
+
 .operation-wrapper {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-top: 16px;
 }
+
 .operation-btn {
   cursor: pointer;
   color: #838383;
   font-size: 20px;
   margin-right: 12px;
 }
+
 .talk-status {
   cursor: pointer;
   font-size: 12px;
   color: #999;
 }
+
 .emoji {
   user-select: none;
   margin: 0.25rem;
   display: inline-block;
   vertical-align: middle;
 }
+
 .emoji-item {
   cursor: pointer;
   display: inline-block;
 }
+
 .emoji-item:hover {
   transition: all 0.2s;
   border-radius: 0.25rem;
   background: #dddddd;
 }
+
+.right-wrapper {
+  display: flex;
+  width: 50%;
+}
+
 .left-wrapper {
   display: flex;
   width: 50%;
 }
+
 .talk-image-upload {
   margin-top: 8px;
 }

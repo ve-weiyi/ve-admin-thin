@@ -8,13 +8,13 @@
         <div class="card purple">
           <div class="flex-row flex-vertical-center">
             <div class="circle">
-              <svg-icon icon-class="phone_1" class="icon" />
+              <svg-icon class="icon" icon-class="phone_1" />
             </div>
             <div class="tips-info flex-column flex-vertical-center">
               <div class="f1">
                 绑定手机
-                <svg-icon v-if="set.phone" icon-class="ok" class="status-ok" />
-                <svg-icon v-else icon-class="warning_1" class="status-warning" />
+                <svg-icon v-if="set.phone" class="status-ok" icon-class="ok" />
+                <svg-icon v-else class="status-warning" icon-class="warning_1" />
               </div>
               <div class="f2">
                 {{ set.phone ? "已绑定手机" : "未绑定，请尽快绑定" }}
@@ -29,13 +29,13 @@
         <div class="card orange">
           <div class="flex-row flex-vertical-center">
             <div class="circle">
-              <svg-icon icon-class="safe" class="icon" />
+              <svg-icon class="icon" icon-class="safe" />
             </div>
             <div class="tips-info flex-column flex-vertical-center">
               <div class="f1">
                 实名认证
-                <svg-icon v-if="set.identity" icon-class="ok" class="status-ok" />
-                <svg-icon v-else icon-class="warning_1" class="status-warning" />
+                <svg-icon v-if="set.identity" class="status-ok" icon-class="ok" />
+                <svg-icon v-else class="status-warning" icon-class="warning_1" />
               </div>
               <div class="f2">
                 {{ set.identity ? "已实名认证" : "请尽快完成实名认证" }}
@@ -50,13 +50,13 @@
         <div class="card green">
           <div class="flex-row flex-vertical-center">
             <div class="circle">
-              <svg-icon icon-class="msg_1" class="icon" />
+              <svg-icon class="icon" icon-class="msg_1" />
             </div>
             <div class="tips-info flex-column flex-vertical-center">
               <div class="f1">
                 绑定邮箱
-                <svg-icon v-if="set.phone" icon-class="ok" class="status-ok" />
-                <svg-icon v-else icon-class="warning_1" class="status-warning" />
+                <svg-icon v-if="set.phone" class="status-ok" icon-class="ok" />
+                <svg-icon v-else class="status-warning" icon-class="warning_1" />
               </div>
               <div class="f2">
                 {{ set.email ? "已绑定邮箱" : "未绑定，请尽快绑定" }}
@@ -71,32 +71,32 @@
         <div class="card blue">
           <div class="flex-row flex-vertical-center">
             <div class="circle">
-              <svg-icon icon-class="text" class="icon" />
+              <svg-icon class="icon" icon-class="text" />
             </div>
             <div class="tips-info flex-column flex-vertical-center">
               <div class="f1">
                 个人信息
-                <svg-icon v-if="set.isPerfect" icon-class="ok" class="status-ok" />
-                <svg-icon v-else icon-class="warning_1" class="status-warning" />
+                <svg-icon v-if="set.isPerfect" class="status-ok" icon-class="ok" />
+                <svg-icon v-else class="status-warning" icon-class="warning_1" />
               </div>
               <div class="f2">
                 {{ set.isPerfect ? "个人信息已完善" : "个人信息未完善" }}
               </div>
             </div>
           </div>
-          <el-button class="btn" type="info" v-if="!set.isPerfect" @click="bindHandle(4)">
+          <el-button v-if="!set.isPerfect" class="btn" type="info" @click="bindHandle(4)">
             去完善
           </el-button>
         </div>
       </div>
 
       <!-- 登录历史 -->
-      <div class="card-section" v-loading="loading">
+      <div v-loading="loading" class="card-section">
         <div class="login-title flex-row flex-between flex-vertical-center">
           <el-tooltip
             class="box-item"
-            effect="dark"
             content="此处模拟了10W条数据"
+            effect="dark"
             placement="top-start"
           >
             <span class="title">登录历史</span></el-tooltip
@@ -110,12 +110,12 @@
         </div>
         <!-- Element 虚拟表格-->
         <el-table-v2
-          class="login-history-table"
           :columns="columns"
           :data="tableData"
-          :width="910"
-          :height="210"
           :fixed="false"
+          :height="210"
+          :width="910"
+          class="login-history-table"
         />
 
         <!-- Element 基础table -->
@@ -180,12 +180,12 @@
   </div>
 </template>
 
-<script setup lang="tsx">
-import { ref, reactive, computed } from "vue"
+<script lang="tsx" setup>
+import { computed, reactive, ref } from "vue"
 import { findUserLoginHistoryListApi } from "@/api/user"
 import { useRouter } from "vue-router"
-import { ElMessage } from "element-plus"
 import type { Column } from "element-plus"
+import { ElMessage } from "element-plus"
 import { useAdminStore } from "@/store/modules/admin"
 
 const router = useRouter()

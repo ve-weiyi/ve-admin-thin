@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { useRouter } from "vue-router"
 import noAccess from "@/assets/status/403.svg?component"
 
@@ -14,12 +14,7 @@ const router = useRouter()
     <noAccess />
     <div class="ml-12">
       <p
-        class="font-medium text-4xl mb-4 dark:text-white"
         v-motion
-        :initial="{
-          opacity: 0,
-          y: 100,
-        }"
         :enter="{
           opacity: 1,
           y: 0,
@@ -27,16 +22,16 @@ const router = useRouter()
             delay: 100,
           },
         }"
-      >
-        403
-      </p>
-      <p
-        class="mb-4 text-gray-500"
-        v-motion
         :initial="{
           opacity: 0,
           y: 100,
         }"
+        class="font-medium text-4xl mb-4 dark:text-white"
+      >
+        403
+      </p>
+      <p
+        v-motion
         :enter="{
           opacity: 1,
           y: 0,
@@ -44,17 +39,16 @@ const router = useRouter()
             delay: 300,
           },
         }"
-      >
-        抱歉，你无权访问该页面
-      </p>
-      <el-button
-        type="primary"
-        @click="router.push('/')"
-        v-motion
         :initial="{
           opacity: 0,
           y: 100,
         }"
+        class="mb-4 text-gray-500"
+      >
+        抱歉，你无权访问该页面
+      </p>
+      <el-button
+        v-motion
         :enter="{
           opacity: 1,
           y: 0,
@@ -62,6 +56,12 @@ const router = useRouter()
             delay: 500,
           },
         }"
+        :initial="{
+          opacity: 0,
+          y: 100,
+        }"
+        type="primary"
+        @click="router.push('/')"
       >
         返回首页
       </el-button>

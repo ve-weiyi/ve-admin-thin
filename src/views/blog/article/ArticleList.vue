@@ -2,15 +2,15 @@
   <div>
     <TablePage
       :get-column-fields="getColumnFields"
-      :get-search-fields="getSearchFields"
       :get-form-fields="getFormFields"
+      :get-search-fields="getSearchFields"
       :handle-api="handleApi"
       model-name="文章"
     />
   </div>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import TablePage from "@/components/TablePage/TablePage.vue"
 import { useTableHook } from "./article_list"
 import { onMounted } from "vue"

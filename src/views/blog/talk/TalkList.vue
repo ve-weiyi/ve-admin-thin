@@ -5,29 +5,37 @@
       <!-- 文章状态 -->
       <div class="status-menu">
         <span>状态</span>
-        <span @click="changeStatus(null)" :class="isActive(null)">全部</span>
-        <span @click="changeStatus(1)" :class="isActive(1)"> 公开 </span>
-        <span @click="changeStatus(2)" :class="isActive(2)"> 私密 </span>
+        <span :class="isActive(null)" @click="changeStatus(null)">全部</span>
+        <span :class="isActive(1)" @click="changeStatus(1)"> 公开 </span>
+        <span :class="isActive(2)" @click="changeStatus(2)"> 私密 </span>
       </div>
       <el-empty v-if="tableData == null" description="暂无说说" />
       <!-- 说说列表 -->
-      <div class="talk-item" v-for="item of tableData" :key="item.id">
+      <div v-for="item of tableData" :key="item.id" class="talk-item">
         <!-- 用户信息 -->
         <div class="user-info-wrapper">
-          <el-avatar class="user-avatar" :src="item.avatar" :size="36" />
+          <el-avatar :size="36" :src="item.avatar" class="user-avatar" />
           <div class="user-detail-wrapper">
             <div class="user-nickname">
               <div>{{ item.nickname || "与梦" }}</div>
               <!-- 操作 -->
               <el-dropdown trigger="click" @command="handleCommand">
-                <el-icon style="color: #333; cursor: pointer"><MoreFilled /></el-icon>
+                <el-icon style="color: #333; cursor: pointer">
+                  <MoreFilled />
+                </el-icon>
                 <template #dropdown>
                   <el-dropdown-menu>
                     <el-dropdown-item :command="'1,' + item.id">
-                      <el-icon><Edit /></el-icon>编辑
+                      <el-icon>
+                        <Edit />
+                      </el-icon>
+                      编辑
                     </el-dropdown-item>
                     <el-dropdown-item :command="'2,' + item.id">
-                      <el-icon><Delete /></el-icon>删除
+                      <el-icon>
+                        <Delete />
+                      </el-icon>
+                      删除
                     </el-dropdown-item>
                   </el-dropdown-menu>
                 </template>
@@ -36,19 +44,19 @@
             <!-- 发表时间 -->
             <div class="time">
               {{ item.created_at }}
-              <span class="top" v-if="item.isTop === 1">
+              <span v-if="item.isTop === 1" class="top">
                 <i class="iconfont icon-upload-fill" /> 置顶
               </span>
-              <span class="secret" v-if="item.status === 2">
+              <span v-if="item.status === 2" class="secret">
                 <i class="iconfont icon-password-fill" /> 私密
               </span>
             </div>
             <!-- 说说信息 -->
             <div class="talk-content" v-html="item.content" />
             <!-- 图片列表 -->
-            <el-row :gutter="4" class="talk-images" v-if="item.imgList">
-              <el-col :md="8" :cols="6" v-for="(img, index) of item.imgList" :key="index">
-                <el-image class="images-items" :src="img" :preview-src-list="previewList" />
+            <el-row v-if="item.imgList" :gutter="4" class="talk-images">
+              <el-col v-for="(img, index) of item.imgList" :key="index" :cols="6" :md="8">
+                <el-image :preview-src-list="previewList" :src="img" class="images-items" />
               </el-col>
             </el-row>
           </div>
@@ -56,14 +64,14 @@
       </div>
       <!-- 分页 -->
       <el-pagination
-        :hide-on-single-page="false"
-        class="pagination-container"
-        background
         :current-page="pagination.currentPage"
-        :page-size="pagination.pageSize"
-        :total="pagination.total"
-        :page-sizes="pagination.pageSizes"
+        :hide-on-single-page="false"
         :layout="pagination.layout"
+        :page-size="pagination.pageSize"
+        :page-sizes="pagination.pageSizes"
+        :total="pagination.total"
+        background
+        class="pagination-container"
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
       ></el-pagination>
@@ -80,7 +88,7 @@
         <div style="font-size: 1rem">是否删除该说说？</div>
         <template #footer>
           <el-button @click="isdelete = false">取 消</el-button>
-          <el-button type="primary" @click="onDelete"> 确 定 </el-button>
+          <el-button type="primary" @click="onDelete"> 确 定</el-button>
         </template>
       </el-dialog>
     </el-card>
@@ -88,32 +96,40 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from "vue"
+import { computed, onMounted, ref } from "vue"
 import { useTableHook } from "./talk_list"
 
 const {
-  loading,
-  batchDeleteVisibility,
-  addOrEditVisibility,
-  formRef,
-  formData,
-  formRules,
-  searchFormRef,
-  searchData,
-  tableData,
-  selectionIds,
-  pagination,
-  resetForm,
-  resetSearch,
-  refreshList,
-  onSave,
+  onFindList,
+  onCreate,
+  onUpdate,
   onDelete,
   onDeleteByIds,
-  onChange,
-  handleAddOrEdit,
+  resetSearch,
+  resetTable,
+  refreshList,
+  handleSortChange,
+  handleSelectionChange,
   handleSizeChange,
   handleCurrentChange,
-  handleSelectionChange,
+  resetForm,
+  openForm,
+  closeForm,
+  submitForm,
+  confirmDelete,
+  cancelBatchDelete,
+  confirmBatchDelete,
+  pagination,
+  loading,
+  batchDeleteVisibility,
+  formVisibility,
+  searchRef,
+  searchData,
+  tableRef,
+  tableData,
+  formRef,
+  formData,
+  selectionIds,
 } = useTableHook()
 
 const status = ref(1)

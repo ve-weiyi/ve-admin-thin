@@ -2,11 +2,11 @@
   <div class="app-container">
     <div>
       <TablePage
-        :get-column-fields="getColumnFields"
-        :get-search-fields="getSearchFields"
-        :get-form-fields="getFormFields"
-        :handle-api="handleApi"
         :default-order="defaultOrder"
+        :get-column-fields="getColumnFields"
+        :get-form-fields="getFormFields"
+        :get-search-fields="getSearchFields"
+        :handle-api="handleApi"
         model-name="菜单"
       />
     </div>
@@ -41,9 +41,8 @@
 </template>
 
 <script lang="ts" setup>
-import { defineComponent, reactive, ref, watch } from "vue"
+import { defineComponent, onMounted } from "vue"
 import { useTableHook } from "./hook"
-import { onMounted } from "vue"
 import TablePage from "@/components/TablePage/TablePage.vue"
 
 const defaultOrder = { id: "desc" }

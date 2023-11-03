@@ -1,19 +1,10 @@
-import { reactive, ref, computed, onMounted } from "vue"
-import {
-  CheckboxGroupValueType,
-  CheckboxValueType,
-  Column,
-  ElMessageBox,
-  FormInstance,
-  FormRules,
-  TableInstance,
-} from "element-plus"
-import { ElTag, ElMessage } from "element-plus"
-import { builderFormRender, defaultPaginationData, FormField, Pagination } from "@/utils/render"
+import { onMounted, reactive, ref } from "vue"
+import { Column, ElMessage, FormInstance, FormRules, TableInstance } from "element-plus"
+import { defaultPaginationData, FormField, Pagination } from "@/utils/render"
 import {
   createPhotoApi,
-  deletePhotoByIdsApi,
   deletePhotoApi,
+  deletePhotoByIdsApi,
   findPhotoListApi,
   updatePhotoApi,
 } from "@/api/photo"
