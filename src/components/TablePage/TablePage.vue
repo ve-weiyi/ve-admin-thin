@@ -155,10 +155,10 @@
       </div>
 
       <!-- 表格菜单 -->
-      <div class="status-menu" v-if="tabList.length !== 0">
+      <div class="status-menu" v-if="statusList.length !== 0">
         <span>状态</span>
-        <template v-for="item of tabList" :key="item.count">
-          <span @click="checkTabType(item.count)" :class="isActive(item.count)">
+        <template v-for="item of statusList" :key="item.value">
+          <span @click="handleStatusCheck(item.value)" :class="isActive(item.value)">
             {{ item.label }}
           </span>
         </template>
@@ -277,9 +277,9 @@ import draggable from "vuedraggable/src/vuedraggable"
 import { useRoute } from "vue-router"
 import "@/style/table.scss"
 
-type Tag = {
+type StatusTag = {
+  value: number | string
   label: string
-  count: number
 }
 
 // 父组件向子组件传输的数据
@@ -336,11 +336,15 @@ const props = defineProps({
     type: String,
     default: "",
   },
-  tabList: {
-    type: Array<Tag>,
+  statusList: {
+    type: Array<StatusTag>,
     default: () => {
       return []
     },
+  },
+  onStatusChange: {
+    type: Function,
+    default: (): any => {},
   },
   defaultOrder: {
     type: Object,
@@ -372,14 +376,17 @@ const getDropdownItemStyle = computed(() => {
 })
 
 /** ******** start status menu **********/
-const tabList = reactive<Tag[]>(props.tabList)
 
-const type = ref<number>(0)
-const checkTabType = (count: number) => {
-  type.value = count
+const statusList = reactive<StatusTag[]>(props.statusList)
+
+const type = ref<string | number>(statusList.length > 0 ? statusList[0].value : 0)
+// 选择了状态
+const handleStatusCheck = (status: string | number) => {
+  type.value = status
   refreshList()
 }
-const isActive = (status: number) => {
+
+const isActive = (status: string | number) => {
   return status === type.value ? "status-menu-active" : "status-menu-normal"
 }
 /** ******** start status menu **********/
@@ -486,6 +493,23 @@ function refreshList() {
       field: key,
       value: value,
       rule: item?.searchRules.rule || "=",
+    })
+  }
+
+  const statusData = ref<any>({})
+  if (props.onStatusChange) {
+    statusData.value = props.onStatusChange(type.value)
+  } else {
+    statusData.value = { type: type.value }
+  }
+  // 状态条件
+  for (const key in statusData.value) {
+    const value = statusData.value[key]
+    conditions.push({
+      flag: "and",
+      field: key,
+      value: value,
+      rule: "=",
     })
   }
 

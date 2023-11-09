@@ -4,7 +4,7 @@
       <div class="table-title">{{ $route.meta.title }}</div>
       <!-- 文章标题 -->
       <div class="article-title-container">
-        <el-input v-model="article.articleTitle" placeholder="输入文章标题" size="default" />
+        <el-input v-model="article.article_title" placeholder="输入文章标题" size="default" />
         <el-button
           v-if="article.id == null || article.status == 3"
           class="save-btn"
@@ -21,13 +21,13 @@
       <!-- 文章内容 -->
       <!--      <mavon-editor-->
       <!--        ref="mdRef"-->
-      <!--        v-model="article.articleContent"-->
+      <!--        v-model="article.article_content"-->
       <!--        @imgAdd="uploadImg"-->
       <!--        style="height: calc(100vh - 260px)"-->
       <!--      />-->
       <MdEditor
         ref="mdRef"
-        v-model="article.articleContent"
+        v-model="article.article_content"
         :auto-detect-code="true"
         placeholder="快编辑一篇文章吧~"
         style="height: calc(100vh - 260px)"
@@ -44,17 +44,17 @@
           <!-- 文章分类 -->
           <el-form-item label="文章分类">
             <el-tag
-              v-show="article.categoryName"
+              v-show="article.category_name"
               :closable="true"
               style="margin: 0 1rem 0 0"
               type="success"
               @close="removeCategory"
             >
-              {{ article.categoryName }}
+              {{ article.category_name }}
             </el-tag>
             <!-- 分类选项 -->
             <el-popover
-              v-if="!article.categoryName"
+              v-if="!article.category_name"
               placement="bottom-start"
               trigger="click"
               width="460"
@@ -67,7 +67,7 @@
                 :trigger-on-focus="false"
                 placeholder="请输入分类名搜索，enter可添加自定义分类"
                 style="width: 100%"
-                @select="handleSelectCategories"
+                @select="handleSelectCategory"
                 @keyup.enter="saveCategory"
               >
                 <template #default="{ item }">
@@ -80,7 +80,7 @@
                   v-for="item of categoryList"
                   :key="item.id"
                   class="category-item"
-                  @click="addCategory(item)"
+                  @click="addCategory(item.category_name)"
                 >
                   {{ item.category_name }}
                 </div>
@@ -93,7 +93,7 @@
           <!-- 文章标签 -->
           <el-form-item label="文章标签">
             <el-tag
-              v-for="(item, index) of article.tagNameList"
+              v-for="(item, index) of article.tag_name_list"
               :key="index"
               :closable="true"
               style="margin: 0 1rem 0 0"
@@ -103,7 +103,7 @@
             </el-tag>
             <!-- 标签选项 -->
             <el-popover
-              v-if="article.tagNameList.length < 3"
+              v-if="article.tag_name_list.length < 3"
               placement="bottom-start"
               trigger="click"
               width="460"
@@ -130,9 +130,9 @@
                   v-for="(item, index) of tagList"
                   :key="index"
                   :class="tagClass(item)"
-                  @click="addTag(item)"
+                  @click="addTag(item.tag_name)"
                 >
-                  {{ item.tagName }}
+                  {{ item.tag_name }}
                 </el-tag>
               </div>
               <template #reference>
@@ -152,27 +152,27 @@
           </el-form-item>
           <!-- 文章类型 -->
           <el-form-item v-if="article.type != 1" label="原文地址">
-            <el-input v-model="article.originalUrl" placeholder="请填写原文链接" />
+            <el-input v-model="article.original_url" placeholder="请填写原文链接" />
           </el-form-item>
           <el-form-item label="上传封面">
             <el-upload
+              :http-request="uploadImage"
               :before-upload="beforeUpload"
-              :on-success="uploadCover"
-              action="/api/admin/articles/images"
+              :on-success="afterUpload"
               class="upload-cover"
               drag
               multiple
             >
-              <i v-if="article.articleCover == ''" class="el-icon-upload" />
-              <div v-if="article.articleCover == ''" class="el-upload__text">
+              <i v-if="article.article_cover == ''" class="el-icon-upload" />
+              <div v-if="article.article_cover == ''" class="el-upload__text">
                 将文件拖到此处，或<em>点击上传</em>
               </div>
-              <img v-else :src="article.articleCover" height="180px" width="360px" />
+              <img v-else :src="article.article_cover" height="180px" width="360px" />
             </el-upload>
           </el-form-item>
           <el-form-item label="置顶">
             <el-switch
-              v-model="article.isTop"
+              v-model="article.is_top"
               :active-value="1"
               :inactive-value="0"
               active-color="#13ce66"
@@ -196,29 +196,36 @@
 </template>
 
 <script lang="ts" setup>
-import { onBeforeUnmount, ref } from "vue"
+import { onBeforeUnmount, onMounted, ref } from "vue"
 import { useRoute, useRouter } from "vue-router"
-import imageConversion from "image-conversion"
+import * as imageConversion from "image-conversion"
 import { MdEditor } from "md-editor-v3"
 import "md-editor-v3/lib/style.css"
 import { findCategoryListApi } from "@/api/category"
 import { findTagListApi } from "@/api/tag"
-import { createArticleApi, findArticleApi } from "@/api/article"
+import { saveArticleApi, findArticleApi } from "@/api/article"
 import { uploadFileApi } from "@/api/file"
-import { Category } from "@/api/types"
+import { ArticleBack, Category, Tag } from "@/api/types"
+import {
+  ElMessage,
+  UploadFile,
+  UploadFiles,
+  UploadRawFile,
+  UploadRequestOptions,
+} from "element-plus"
 
 const route = useRoute()
 const router = useRouter()
-const article = ref({
+const article = ref<ArticleBack>({
   id: null,
-  articleTitle: new Date().toISOString().split("T")[0],
-  articleContent: "",
-  articleCover: "",
-  categoryName: null,
-  tagNameList: [],
-  originalUrl: "",
-  isTop: 0,
+  article_title: "",
+  article_content: "",
+  article_cover: "",
+  category_name: null,
+  tag_name_list: [],
   type: 1,
+  original_url: "",
+  is_top: 0,
   status: 1,
 })
 
@@ -229,7 +236,7 @@ const autoSave = ref(true)
 const categoryName = ref("")
 const tagName = ref("")
 const categoryList = ref<Category[]>([])
-const tagList = ref([])
+const tagList = ref<Tag[]>([])
 const typeList = ref([
   {
     type: 1,
@@ -245,24 +252,12 @@ const typeList = ref([
   },
 ])
 
-function listCategories() {
-  findCategoryListApi({}).then((res) => {
-    categoryList.value = res.data.list
-  })
-}
-
-function listTags() {
-  findTagListApi({}).then((res) => {
-    tagList.value = res.data.list
-  })
-}
-
 function openModel() {
-  if (article.value.articleTitle.trim() === "") {
+  if (article.value.article_title.trim() === "") {
     alert("文章标题不能为空")
     return
   }
-  if (article.value.articleContent.trim() === "") {
+  if (article.value.article_content.trim() === "") {
     alert("文章内容不能为空")
     return
   }
@@ -271,47 +266,54 @@ function openModel() {
   addOrEdit.value = true
 }
 
-function uploadCover(response) {
-  article.value.articleCover = response.data
+function uploadImage(options: UploadRequestOptions) {
+  console.log("uploadImage", options.filename)
+  return uploadFileApi("article/cover", options.file)
 }
 
-const beforeUpload = (rawFile) => {
-  if (rawFile.size / 1024 < 200) {
-    return true
+function beforeUpload(rawFile: UploadRawFile) {
+  console.log("beforeUpload", rawFile.size)
+  if (rawFile.size / 1024 < 500) {
+    return rawFile
   }
 
   // 压缩到200KB,这里的200就是要压缩的大小,可自定义
-  imageConversion.compressAccurately(rawFile, 200).then((res) => {
-    rawFile = res
+  imageConversion.compressAccurately(rawFile, 200).then((res: Blob) => {
+    console.log("compressAccurately", res.size)
+    return res
   })
-  return true
+}
+
+function afterUpload(response: any) {
+  article.value.article_cover = response.data.file_url
+  console.log("afterUpload", article.value.article_cover)
 }
 
 function uploadImg(pos, file) {
-  if (file.size / 1024 < 200) {
+  if (file.size / 1024 < 500) {
     uploadFileApi("article", file).then((res) => {
-      mdRef.value.$img2Url(pos, res.data.fileUrl)
+      mdRef.value.$img2Url(pos, res.data.file_url)
     })
   } else {
     imageConversion.compressAccurately(file, 200).then((res) => {
       uploadFileApi("article", file).then((res) => {
-        mdRef.value.$img2Url(pos, res.data.fileUrl)
+        mdRef.value.$img2Url(pos, res.data.file_url)
       })
     })
   }
 }
 
 function saveArticleDraft() {
-  if (article.value.articleTitle.trim() === "") {
+  if (article.value.article_title.trim() === "") {
     alert("文章标题不能为空")
     return
   }
-  if (article.value.articleContent.trim() === "") {
+  if (article.value.article_content.trim() === "") {
     alert("文章内容不能为空")
     return
   }
   article.value.status = 3
-  createArticleApi(article.value).then((res) => {
+  saveArticleApi(article.value).then((res) => {
     if (res.code == 200) {
       if (article.value.id === null) {
         // store.commit("removeTab", "发布文章")
@@ -319,7 +321,7 @@ function saveArticleDraft() {
         // store.commit("removeTab", "修改文章")
       }
       sessionStorage.removeItem("article")
-      router.push({ path: "/article-list" })
+      router.push({ path: "/article/list" })
       alert("保存草稿成功")
     } else {
       alert("保存草稿失败")
@@ -330,27 +332,27 @@ function saveArticleDraft() {
 }
 
 function saveOrUpdateArticle() {
-  if (article.value.articleTitle.trim() === "") {
+  if (article.value.article_title.trim() === "") {
     alert("文章标题不能为空")
     return
   }
-  if (article.value.articleContent.trim() === "") {
+  if (article.value.article_content.trim() === "") {
     alert("文章内容不能为空")
     return
   }
-  if (article.value.categoryName === null) {
+  if (article.value.category_name === null) {
     alert("文章分类不能为空")
     return
   }
-  if (article.value.tagNameList.length === 0) {
+  if (article.value.tag_name_list.length === 0) {
     alert("文章标签不能为空")
     return
   }
-  if (article.value.articleCover.trim() === "") {
+  if (article.value.article_cover.trim() === "") {
     alert("文章封面不能为空")
     return
   }
-  createArticleApi(article.value).then((res) => {
+  saveArticleApi(article.value).then((res) => {
     if (res.code === 200) {
       if (article.value.id === null) {
         // store.commit("removeTab", "发布文章")
@@ -358,7 +360,7 @@ function saveOrUpdateArticle() {
         // store.commit("removeTab", "修改文章")
       }
       sessionStorage.removeItem("article")
-      router.push({ path: "/article-list" })
+      router.push({ path: "/article/list" })
       alert("发布文章成功")
     } else {
       alert("发布文章失败")
@@ -370,17 +372,18 @@ function saveOrUpdateArticle() {
 }
 
 function autoSaveArticle() {
+  console.log("autoSaveArticle", article.value)
   if (
     autoSave.value &&
-    article.value.articleTitle.trim() !== "" &&
-    article.value.articleContent.trim() !== "" &&
+    article.value.article_title.trim() !== "" &&
+    article.value.article_content.trim() !== "" &&
     article.value.id !== null
   ) {
-    createArticleApi(article.value).then((res) => {
+    saveArticleApi(article.value).then((res) => {
       if (res.code === 200) {
-        alert("自动保存成功")
+        ElMessage.success("自动保存成功")
       } else {
-        alert("自动保存失败")
+        ElMessage.error("自动保存失败")
       }
     })
   }
@@ -389,7 +392,7 @@ function autoSaveArticle() {
   }
 }
 
-function searchCategories(keywords, cb) {
+function searchCategories(keywords: string, cb: any) {
   findCategoryListApi({
     conditions: [
       {
@@ -403,26 +406,29 @@ function searchCategories(keywords, cb) {
   })
 }
 
-function handleSelectCategories(item) {
-  addCategory({ categoryName: item.categoryName })
+function handleSelectCategory(item: any) {
+  addCategory(item.value)
 }
 
+// 添加新的文章分类
 function saveCategory() {
   if (categoryName.value.trim() !== "") {
-    addCategory({ categoryName: categoryName.value })
+    addCategory(categoryName.value)
     categoryName.value = ""
   }
 }
 
-function addCategory(item) {
-  article.value.categoryName = item.categoryName
+// 添加文章分类
+function addCategory(name: string) {
+  article.value.category_name = name
 }
 
+// 移除文章分类
 function removeCategory() {
-  article.value.categoryName = null
+  article.value.category_name = null
 }
 
-function searchTags(keywords, cb) {
+function searchTags(keywords: string, cb: any) {
   findTagListApi({
     conditions: [
       {
@@ -436,36 +442,46 @@ function searchTags(keywords, cb) {
   })
 }
 
-function handleSelectTag(item) {
-  addTag({ tagName: item.tagName })
+function handleSelectTag(item: Tag) {
+  addTag(item.tag_name)
 }
 
 function saveTag() {
   if (tagName.value.trim() !== "") {
-    addTag({ tagName: tagName.value })
+    addTag(tagName.value)
     tagName.value = ""
   }
 }
 
-function addTag(item) {
-  if (!article.value.tagNameList.includes(item.tagName)) {
-    article.value.tagNameList.push(item.tagName)
+function addTag(name: string) {
+  if (!article.value.tag_name_list.includes(name)) {
+    article.value.tag_name_list.push(name)
   }
 }
 
-function removeTag(item) {
-  const index = article.value.tagNameList.indexOf(item)
+function removeTag(name: string) {
+  const index = article.value.tag_name_list.indexOf(name)
   if (index !== -1) {
-    article.value.tagNameList.splice(index, 1)
+    article.value.tag_name_list.splice(index, 1)
   }
 }
 
-listCategories()
-listTags()
+const tagClass = (item: Tag) => {
+  const index = article.value.tag_name_list.indexOf(item.tag_name)
+  return index !== -1 ? "tag-item-select" : "tag-item"
+}
 
-onBeforeUnmount(() => {
-  autoSaveArticle()
-})
+function listCategories() {
+  findCategoryListApi({}).then((res) => {
+    categoryList.value = res.data.list
+  })
+}
+
+function listTags() {
+  findTagListApi({}).then((res) => {
+    tagList.value = res.data.list
+  })
+}
 
 const getArticle = (articleId: number) => {
   findArticleApi(articleId).then((res) => {
@@ -473,21 +489,21 @@ const getArticle = (articleId: number) => {
   })
 }
 
-const articleId = route.params.articleId ? parseInt(route.params.articleId as string) : 0 // 获取路由参数
-
-if (articleId) {
-  getArticle(Number(articleId))
-} else {
-  const articleData = sessionStorage.getItem("article")
-  if (articleData) {
-    article.value = JSON.parse(articleData)
+onMounted(() => {
+  const articleId = route.params.articleId ? parseInt(route.params.articleId as string) : 0 // 获取路由参数
+  if (articleId) {
+    getArticle(Number(articleId))
+  } else {
+    const articleData = sessionStorage.getItem("article")
+    if (articleData) {
+      article.value = JSON.parse(articleData)
+    }
   }
-}
+})
 
-const tagClass = (item) => {
-  const index = article.value.tagNameList.indexOf(item.tagName)
-  return index !== -1 ? "tag-item-select" : "tag-item"
-}
+onBeforeUnmount(() => {
+  autoSaveArticle()
+})
 </script>
 
 <style scoped>

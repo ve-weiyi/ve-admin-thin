@@ -6,7 +6,7 @@
         <el-tab-pane label="修改信息" name="info">
           <div class="info-container">
             <el-upload
-              :http-request="uploadAvatar"
+              :http-request="uploadImage"
               :on-success="updateAvatar"
               :show-file-list="false"
               action="/api/v1/user/avatar"
@@ -120,7 +120,7 @@ const handleClick = (tab) => {
   }
 }
 
-const uploadAvatar = (options: UploadRequestOptions) => {
+const uploadImage = (options: UploadRequestOptions) => {
   return updateUserAvatarApi(options.file)
 }
 

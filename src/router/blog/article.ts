@@ -12,7 +12,7 @@ export default {
   },
   children: [
     {
-      path: "/article/publish",
+      path: "/article/publish/:articleId",
       name: "article/publish",
       component: () => import("@/views/blog/article/Article.vue"),
       meta: { title: "发布文章" },

@@ -1,20 +1,11 @@
 import http from "@/utils/request"
-import { Article, BatchResult, ArticleRecommendDetails, ArticleDetails, ArticlePreviewDTO, ArticleCondition, ArticleConditionDTO } from "./types"
+import { ArticleDetailsReq, ArticleBack, ArticleDeleteReq, ArticleTopReq, ArticlePreviewDTO, ArticleCondition, ArticleConditionDTO, ArticlePageDetails, ArticleHome, Article } from "./types"
 
-/** 创建文章 */
-export function createArticleApi(data: Article): Promise<IApiResponseData<Article>> {
-  return http.request<IApiResponseData<Article>>({
-    url: `/api/v1/article`,
+/** 保存文章 */
+export function saveArticleApi(data: ArticleDetailsReq): Promise<IApiResponseData<any>> {
+  return http.request<IApiResponseData<any>>({
+    url: `/api/v1/admin/article`,
     method: "post",
-    data: data,
-  })
-}
-
-/** 更新文章 */
-export function updateArticleApi(data: Article): Promise<IApiResponseData<Article>> {
-  return http.request<IApiResponseData<Article>>({
-    url: `/api/v1/article`,
-    method: "put",
     data: data,
   })
 }
@@ -22,51 +13,43 @@ export function updateArticleApi(data: Article): Promise<IApiResponseData<Articl
 /** 删除文章 */
 export function deleteArticleApi(id: number): Promise<IApiResponseData<any>> {
   return http.request<IApiResponseData<any>>({
-    url: `/api/v1/article/${id}`,
+    url: `/api/v1/admin/article/${id}`,
     method: "delete",
   })
 }
 
 /** 查询文章 */
-export function findArticleApi(id: number): Promise<IApiResponseData<Article>> {
-  return http.request<IApiResponseData<Article>>({
-    url: `/api/v1/article/${id}`,
+export function findArticleApi(id: number): Promise<IApiResponseData<ArticleBack>> {
+  return http.request<IApiResponseData<ArticleBack>>({
+    url: `/api/v1/admin/article/${id}`,
     method: "get",
-  })
-}
-
-/** 批量删除文章 */
-export function deleteArticleByIdsApi(data: number[]): Promise<IApiResponseData<BatchResult>> {
-  return http.request<IApiResponseData<BatchResult>>({
-    url: `/api/v1/article/batch_delete`,
-    method: "delete",
-    data: data,
   })
 }
 
 /** 分页获取文章列表 */
-export function findArticleListApi(page: PageQuery): Promise<IApiResponseData<PageResult<Article>>> {
-  return http.request<IApiResponseData<PageResult<Article>>>({
-    url: `/api/v1/article/list`,
+export function findArticleListApi(page: PageQuery): Promise<IApiResponseData<PageResult<ArticleBack>>> {
+  return http.request<IApiResponseData<PageResult<ArticleBack>>>({
+    url: `/api/v1/admin/article/list`,
     method: "post",
     data: page,
   })
 }
 
-/** 文章详情 */
-export function findArticleDetailsApi(id: number): Promise<IApiResponseData<ArticleRecommendDetails>> {
-  return http.request<IApiResponseData<ArticleRecommendDetails>>({
-    url: `/api/v1/article/${id}/details`,
-    method: "get",
+/** 删除文章-逻辑删除 */
+export function updateArticleDeleteApi(data: ArticleDeleteReq): Promise<IApiResponseData<any>> {
+  return http.request<IApiResponseData<any>>({
+    url: `/api/v1/admin/article/delete`,
+    method: "put",
+    data: data,
   })
 }
 
-/** 分页获取文章详情列表 */
-export function findArticleDetailsListApi(page: PageQuery): Promise<IApiResponseData<PageResult<ArticleDetails>>> {
-  return http.request<IApiResponseData<PageResult<ArticleDetails>>>({
-    url: `/api/v1/article/list/details`,
-    method: "post",
-    data: page,
+/** 更新文章 */
+export function updateArticleTopApi(data: ArticleTopReq): Promise<IApiResponseData<any>> {
+  return http.request<IApiResponseData<any>>({
+    url: `/api/v1/admin/article/top`,
+    method: "put",
+    data: data,
   })
 }
 
@@ -80,9 +63,26 @@ export function findArticleArchivesApi(page: PageQuery): Promise<IApiResponseDat
 }
 
 /** 通过标签或者id获取文章列表 */
-export function findArticleListByConditionApi(page: ArticleCondition): Promise<IApiResponseData<ArticleConditionDTO>> {
+export function findArticleSeriesApi(page: ArticleCondition): Promise<IApiResponseData<ArticleConditionDTO>> {
   return http.request<IApiResponseData<ArticleConditionDTO>>({
-    url: `/api/v1/article/list/condition`,
+    url: `/api/v1/article/series`,
+    method: "post",
+    data: page,
+  })
+}
+
+/** 文章相关推荐 */
+export function findArticleDetailsApi(id: number): Promise<IApiResponseData<ArticlePageDetails>> {
+  return http.request<IApiResponseData<ArticlePageDetails>>({
+    url: `/api/v1/article/${id}/details`,
+    method: "get",
+  })
+}
+
+/** 分页获取文章列表 */
+export function findArticleHomeListApi(page: PageQuery): Promise<IApiResponseData<PageResult<ArticleHome>>> {
+  return http.request<IApiResponseData<PageResult<ArticleHome>>>({
+    url: `/api/v1/article/list`,
     method: "post",
     data: page,
   })

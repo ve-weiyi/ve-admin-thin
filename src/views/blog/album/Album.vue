@@ -101,7 +101,7 @@
           <el-form-item label="相册封面">
             <el-upload
               :before-upload="beforeUpload"
-              :http-request="uploadAvatar"
+              :http-request="uploadImage"
               :on-success="uploadCover"
               :show-file-list="false"
               class="upload-cover"
@@ -201,7 +201,7 @@ const handleCommand = (command) => {
   }
 }
 
-function uploadAvatar(options: UploadRequestOptions) {
+function uploadImage(options: UploadRequestOptions) {
   return uploadFileApi("album", options.file)
 }
 

@@ -7,7 +7,7 @@ import {
   createCommentApi,
   deleteCommentApi,
   deleteCommentByIdsApi,
-  findCommentListBackApi,
+  findCommentBackListApi,
   updateCommentApi,
 } from "@/api/comment"
 import { Comment } from "@/api/types"
@@ -228,7 +228,7 @@ function handleApi(event: string, data: any) {
     case "deleteByIds":
       return deleteCommentByIdsApi(data)
     case "list":
-      return findCommentListBackApi(data)
+      return findCommentBackListApi(data)
     default:
       return
   }

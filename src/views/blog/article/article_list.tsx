@@ -2,26 +2,19 @@ import { FormField, RenderType } from "@/utils/render"
 import { Column, ElMessage } from "element-plus"
 import { Timer } from "@element-plus/icons-vue"
 import {
-  createArticleApi,
+  findArticleListApi,
   deleteArticleApi,
-  findArticleDetailsListApi,
-  updateArticleApi,
+  updateArticleTopApi,
+  updateArticleDeleteApi,
 } from "@/api/article"
 import { getCurrentInstance } from "vue"
+import router from "@/router"
 
 const align = "center"
 
 function getColumnFields(): Column[] {
   const instance = getCurrentInstance()
-  const exposed = instance.exposed
   return [
-    {
-      key: "selection",
-      type: "selection",
-      title: "批量操作",
-      width: 60,
-      align: align,
-    },
     {
       key: "id",
       title: "id",
@@ -59,16 +52,16 @@ function getColumnFields(): Column[] {
       align: align,
     },
     {
-      key: "article_tag_list",
+      key: "tag_name_list",
       title: "标签",
-      dataKey: "article_tag_list",
+      dataKey: "tag_name_list",
       width: 180,
       align: align,
       cellRenderer: (scope: any) => {
         return (
           <div>
-            {scope.row.article_tag_list.map((item: any) => {
-              return <el-tag class="table-tag">{item.tag_name}</el-tag>
+            {scope.row.tag_name_list.map((item: any) => {
+              return <el-tag class="table-tag">{item}</el-tag>
             })}
           </div>
         )
@@ -116,8 +109,8 @@ function getColumnFields(): Column[] {
             inactive-text="普通"
             inline-prompt
             onChange={() => {
-              updateArticleApi(scope.row).then((res) => {
-                ElMessage.success("更新状态成功")
+              updateArticleTopApi(scope.row).then((res) => {
+                ElMessage.success("更新置顶状态成功")
               })
             }}
           />
@@ -146,49 +139,82 @@ function getColumnFields(): Column[] {
       key: "operation",
       title: "操作",
       dataKey: "operation",
-      width: 170,
+      width: 160,
       align: align,
       cellRenderer: (scope: any) => {
         return (
           <div>
-            <el-button
-              class="table-text-button"
-              text
-              type="primary"
-              size="small"
-              icon="Plus"
-              onClick={() => exposed.openForm(scope.row, "add")}
-            >
-              新增
-            </el-button>
-            <el-button
-              class="table-text-button"
-              text
-              type="primary"
-              size="small"
-              icon="editPen"
-              onClick={() => exposed.openForm(scope.row, "edit")}
-            >
-              修改
-            </el-button>
-            <el-popconfirm
-              title="确定删除吗？"
-              onConfirm={() => exposed.confirmDelete(scope.row.id)}
-            >
-              {{
-                reference: () => (
-                  <el-button
-                    text
-                    type="danger"
-                    size="small"
-                    class="table-text-button"
-                    icon="delete"
-                  >
-                    删除
-                  </el-button>
-                ),
-              }}
-            </el-popconfirm>
+            {scope.row.is_delete === 0 && (
+              <div>
+                <el-button
+                  type="primary"
+                  size="default"
+                  onClick={() => {
+                    router.push({ path: `/article/publish/${scope.row.id}` })
+                  }}
+                >
+                  编辑
+                </el-button>
+                <el-popconfirm
+                  title="确定删除吗？"
+                  onConfirm={() => {
+                    // 逻辑删除
+                    updateArticleDeleteApi({ id: scope.row.id, is_delete: 1 }).then((res) => {
+                      ElMessage.success("删除成功,文章可在回收站恢复")
+                      instance.exposed.refreshList()
+                    })
+                  }}
+                >
+                  {{
+                    reference: () => (
+                      <el-button type="danger" size="default">
+                        删除
+                      </el-button>
+                    ),
+                  }}
+                </el-popconfirm>
+              </div>
+            )}
+            {scope.row.is_delete === 1 && (
+              <div>
+                <el-popconfirm
+                  title="确定恢复吗？"
+                  onConfirm={() => {
+                    // 逻辑删除
+                    updateArticleDeleteApi({ id: scope.row.id, is_delete: 0 }).then((res) => {
+                      ElMessage.success("恢复成功,可在文章列表查看")
+                      instance.exposed.refreshList()
+                    })
+                  }}
+                >
+                  {{
+                    reference: () => (
+                      <el-button type="success" size="default">
+                        恢复
+                      </el-button>
+                    ),
+                  }}
+                </el-popconfirm>
+                <el-popconfirm
+                  title="确定彻底删除吗？"
+                  onConfirm={() => {
+                    // 物理删除
+                    deleteArticleApi(scope.row.id).then((res) => {
+                      ElMessage.success("删除成功")
+                      instance.exposed.refreshList()
+                    })
+                  }}
+                >
+                  {{
+                    reference: () => (
+                      <el-button type="danger" size="default">
+                        删除
+                      </el-button>
+                    ),
+                  }}
+                </el-popconfirm>
+              </div>
+            )}
           </div>
         )
       },
@@ -229,74 +255,39 @@ function getSearchFields(): FormField[] {
 }
 
 function getFormFields(row: any): FormField[] {
-  return [
-    {
-      type: RenderType.Radio,
-      field: "name",
-      label: "菜单类型",
-      default: "目录",
-      options: [
-        {
-          label: "目录",
-          value: 1,
-        },
-        {
-          label: "一级菜单",
-          value: 0,
-        },
-      ],
-    },
-    {
-      type: RenderType.Input,
-      field: "name",
-      label: "菜单名称",
-    },
-    {
-      type: RenderType.Input,
-      field: "icon",
-      label: "菜单图标",
-    },
-    {
-      type: RenderType.Input,
-      field: "path",
-      label: "菜单路径",
-    },
-    {
-      type: RenderType.Number,
-      field: "rank",
-      label: "显示排序",
-      default: 1,
-    },
-    {
-      type: RenderType.Radio,
-      field: "is_hidden",
-      label: "显示状态",
-      default: "1",
-      options: [
-        {
-          label: "显示",
-          value: 1,
-        },
-        {
-          label: "隐藏",
-          value: 0,
-        },
-      ],
-    },
-  ]
+  return []
 }
 
 function handleApi(event: string, data: any) {
   switch (event) {
-    case "add":
-      return createArticleApi(data)
-    case "edit":
-      return updateArticleApi(data)
-    case "delete":
-      return deleteArticleApi(data)
     case "list":
-      console.log("list")
-      return findArticleDetailsListApi(data)
+      return findArticleListApi(data)
+    default:
+      return
+  }
+}
+
+const statusList = [
+  { value: "all", label: "全部" },
+  { value: "public", label: "公开" },
+  { value: "private", label: "私密" },
+  { value: "draft", label: "草稿" },
+  { value: "delete", label: "回收站" },
+]
+
+const onStatusChange = (value: any) => {
+  console.log("onStatusChange", value)
+  switch (value) {
+    case "all":
+      return { is_delete: 0 }
+    case "public":
+      return { is_delete: 0, status: 0 }
+    case "private":
+      return { is_delete: 0, status: 1 }
+    case "draft":
+      return { is_delete: 0, status: 2 }
+    case "delete":
+      return { is_delete: 1 }
     default:
       return
   }
@@ -308,5 +299,7 @@ export function useTableHook() {
     getSearchFields,
     getFormFields,
     handleApi,
+    statusList,
+    onStatusChange,
   }
 }
