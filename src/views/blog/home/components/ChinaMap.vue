@@ -19,7 +19,7 @@ import {
   shallowRef,
   watchEffect,
 } from "vue"
-import chinaJson from "@/assets/js/china.json"
+import chinaJson from "@/assets/china.json"
 
 type ECharts = echarts.ECharts
 

@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "NODE_OPTIONS=--max-old-space-size=4096 vite",
     "serve": "pnpm dev",
-    "build": "rimraf dist && NODE_OPTIONS=--max-old-space-size=8192 vite build",
+    "build": "rimraf dist && vue-tsc --noEmit && NODE_OPTIONS=--max-old-space-size=8192 vite build",
     "build:staging": "rimraf dist && vite build --mode staging",
     "report": "rimraf dist && vite build",
     "preview": "vite preview",
@@ -41,7 +41,7 @@
     "element-plus": "2.3.6",
     "image-conversion": "^2.1.1",
     "js-cookie": "^3.0.5",
-    "md-editor-v3": "^4.4.0",
+    "md-editor-v3": "^4e.4.0",
     "mitt": "^3.0.0",
     "mockjs": "^1.1.0",
     "nprogress": "^0.2.0",

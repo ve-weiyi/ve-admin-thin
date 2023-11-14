@@ -257,4 +257,8 @@ function getFormFields(row: any): FormField[] {
   ]
 }
 
-export { getSearchFields, getColumnFields, getFormFields }
+function handleApi(api: string) {
+  return
+}
+
+export { getSearchFields, getColumnFields, getFormFields, handleApi }

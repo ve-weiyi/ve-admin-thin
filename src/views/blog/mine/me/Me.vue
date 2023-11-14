@@ -180,11 +180,11 @@ const updatePassword = () => {
 
 onMounted(() => {
   console.log("mounted", store)
-  avatar.value = store.avatar
+  avatar.value = store.userInfo.avatar
 
-  infoForm.value.nickname = store.nickname
-  infoForm.value.intro = store.intro
-  infoForm.value.webSite = store.webSite
+  infoForm.value.nickname = store.userInfo.nickname
+  infoForm.value.intro = store.userInfo.intro
+  infoForm.value.webSite = store.userInfo.webSite
 })
 </script>
 

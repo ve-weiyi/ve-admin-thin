@@ -18,7 +18,7 @@
       >
         <template #default="{ node, data }">
           <span class="custom-tree-node">
-            <span>{{ values.name }}</span>
+            <span>{{ data.name }}</span>
           </span>
         </template>
       </el-tree>

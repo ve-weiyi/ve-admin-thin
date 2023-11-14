@@ -120,13 +120,13 @@
 
 <script lang="ts" setup>
 import { onMounted, ref, watch } from "vue"
-import { getHomeInfoApi } from "@/api/blog"
-import { findUserListAreasApi } from "@/api/user"
 import Calender from "@/views/blog/home/components/Calender.vue"
 import LineChart from "@/views/blog/home/components/LineChart.vue"
 import ChinaMap from "@/views/blog/home/components/ChinaMap.vue"
 import Category from "@/views/blog/home/components/Category.vue"
 import Rank from "@/views/blog/home/components/Rank.vue"
+import { findUserListAreasApi } from "@/api/user"
+import { getAdminHomeInfoApi } from "@/api/website";
 
 const viewsCount = ref(0)
 const messageCount = ref(0)
@@ -171,7 +171,7 @@ const areaData = ref<{
 // 获取数据
 const getData = () => {
   // 发送请求获取数据
-  getHomeInfoApi().then((res) => {
+  getAdminHomeInfoApi().then((res) => {
     console.log("res", res)
     viewsCount.value = res.data.views_count
     messageCount.value = res.data.message_count
@@ -199,7 +199,8 @@ const getData = () => {
 
       res.data.category_dto_list.forEach((item) => {
         series.push({
-          value: item.article_count,
+          // value: item.article_count,
+          value: 10,
           name: item.category_name,
         })
         legend.push(item.category_name)
