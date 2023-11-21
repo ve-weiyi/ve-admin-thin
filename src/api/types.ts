@@ -668,7 +668,23 @@ export interface TalkDetails {
   updated_at?: string // 更新时间
 }
 
-export interface UserArea {
+export interface UserDTO {
+  id?: number
+  username?: string
+  status?: number
+  nickname?: string
+  avatar?: string
+  intro?: string
+  website?: string
+  email?: string
+  created_at?: string
+
+  ip_address?: string
+  ip_source?: string
+  roles?: RoleDTO[]
+}
+
+export interface UserAreaDTO {
   name?: string
   value?: number
 }

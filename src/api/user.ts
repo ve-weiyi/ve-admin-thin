@@ -1,18 +1,18 @@
 import http from "@/utils/request"
-import { LoginHistory, MenuDetails, ApiDetails, UserInfo, UserInformation, UserAccount, UpdateUserRoles, Role } from "./types"
+import { UserDTO, UserAreaDTO, LoginHistory, MenuDetails, ApiDetails, UserInfo, UserInformation, UserAccount, UpdateUserRoles, Role } from "./types"
 
 /** 获取用户列表 */
-export function findUserListApi(page: PageQuery): Promise<IApiResponseData<any>> {
-  return http.request<IApiResponseData<any>>({
+export function findUserListApi(page: PageQuery): Promise<IApiResponseData<PageResult<UserDTO>>> {
+  return http.request<IApiResponseData<PageResult<UserDTO>>>({
     url: `/api/v1/user/list`,
     method: "post",
     data: page,
   })
 }
 
-/** 获取用户地区 */
-export function findUserListAreasApi(page: PageQuery): Promise<IApiResponseData<any>> {
-  return http.request<IApiResponseData<any>>({
+/** 获取用户地区列表 */
+export function findUserAreaListApi(page: PageQuery): Promise<IApiResponseData<PageResult<UserAreaDTO>>> {
+  return http.request<IApiResponseData<PageResult<UserAreaDTO>>>({
     url: `/api/v1/user/list/areas`,
     method: "post",
     data: page,

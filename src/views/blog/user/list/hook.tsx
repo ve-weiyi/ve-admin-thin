@@ -57,7 +57,7 @@ function getColumnFields(): Column[] {
       cellRenderer: (scope: any) => {
         return (
           <div>
-            {scope.row.roles.map((item: any) => {
+            {scope.row.roles?.map((item: any) => {
               return <el-tag class="table-tag">{item.role_comment}</el-tag>
             })}
           </div>

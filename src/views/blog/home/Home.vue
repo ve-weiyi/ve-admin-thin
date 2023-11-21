@@ -125,8 +125,8 @@ import LineChart from "@/views/blog/home/components/LineChart.vue"
 import ChinaMap from "@/views/blog/home/components/ChinaMap.vue"
 import Category from "@/views/blog/home/components/Category.vue"
 import Rank from "@/views/blog/home/components/Rank.vue"
-import { findUserListAreasApi } from "@/api/user"
-import { getAdminHomeInfoApi } from "@/api/website";
+import { findUserAreaListApi } from "@/api/user"
+import { getAdminHomeInfoApi } from "@/api/website"
 
 const viewsCount = ref(0)
 const messageCount = ref(0)
@@ -162,7 +162,7 @@ const articleRankData = ref<{
 
 const areaData = ref<{
   type: number
-  data: { name: string; value: number }[]
+  data: { name?: string; value?: number }[]
 }>({
   type: 1,
   data: [],
@@ -243,9 +243,9 @@ const getData = () => {
 const type = ref(1)
 const listUserArea = () => {
   // 发送请求获取用户地域分布数据
-  findUserListAreasApi({}).then((res) => {
+  findUserAreaListApi({}).then((res) => {
     // userAreaMap.series[0].data = res.data
-    areaData.value = res.data.list
+    areaData.value.data = res.data.list
   })
 }
 
