@@ -8,7 +8,7 @@ import {
   findPhotoAlbumDetailsListApi,
   updatePhotoAlbumApi,
 } from "@/api/photo_album"
-import { PhotoAlbumDetails } from "@/api/types"
+import { PhotoAlbumDetailsDTO } from "@/api/types"
 
 const align = "center"
 
@@ -53,7 +53,7 @@ export function useTableHook() {
 
   // 表格数据定义
   const tableRef = ref<TableInstance | null>(null)
-  const tableData = ref<PhotoAlbumDetails[]>([])
+  const tableData = ref<PhotoAlbumDetailsDTO[]>([])
   const pagination = reactive<Pagination>({ ...defaultPaginationData })
   const selectionIds = reactive<number[]>([])
 

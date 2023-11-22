@@ -229,7 +229,7 @@ import { useTableHook } from "./photo"
 import { useRoute } from "vue-router"
 import * as imageConversion from "image-conversion"
 import { findPhotoAlbumDetailsApi } from "@/api/photo_album"
-import { PhotoAlbum, PhotoAlbumDetails } from "@/api/types"
+import { PhotoAlbum, PhotoAlbumDetailsDTO } from "@/api/types"
 import { CheckboxValueType } from "element-plus"
 
 const {
@@ -318,7 +318,7 @@ const dialogTitle = computed(() => {
 // 获取路由参数
 const route = useRoute()
 const albumId = route.params.id ? parseInt(route.params.id as string) : 0 // 假设路由参数名为 "id"
-const albumInfo = ref<PhotoAlbumDetails>({})
+const albumInfo = ref<PhotoAlbumDetailsDTO>({})
 const albumList = ref<PhotoAlbum[]>([])
 const movePhoto = ref(false)
 const uploadPhoto = ref(false)

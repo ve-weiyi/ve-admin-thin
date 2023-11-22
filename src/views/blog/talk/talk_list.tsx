@@ -9,7 +9,7 @@ import {
   updateTalkApi,
 } from "@/api/talk"
 
-import { TalkDetails } from "@/api/types"
+import { TalkDetailsDTO } from "@/api/types"
 
 const align = "center"
 
@@ -54,7 +54,7 @@ export function useTableHook() {
 
   // 表格数据定义
   const tableRef = ref<TableInstance | null>(null)
-  const tableData = ref<TalkDetails[]>([])
+  const tableData = ref<TalkDetailsDTO[]>([])
   const pagination = reactive<Pagination>({ ...defaultPaginationData })
   const selectionIds = reactive<number[]>([])
 
