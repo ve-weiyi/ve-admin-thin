@@ -5,11 +5,11 @@ import {
   createTalkApi,
   deleteTalkApi,
   deleteTalkByIdsApi,
-  findTalkListApi,
+  findTalkDetailsListApi,
   updateTalkApi,
 } from "@/api/talk"
 
-import { Talk } from "@/api/types"
+import { TalkDetails } from "@/api/types"
 
 const align = "center"
 
@@ -39,7 +39,7 @@ function handleApi(event: string, data: any) {
     case "deleteByIds":
       return deleteTalkByIdsApi(data)
     case "list":
-      return findTalkListApi(data)
+      return findTalkDetailsListApi(data)
     default:
       return
   }
@@ -54,7 +54,7 @@ export function useTableHook() {
 
   // 表格数据定义
   const tableRef = ref<TableInstance | null>(null)
-  const tableData = ref<Talk[]>([])
+  const tableData = ref<TalkDetails[]>([])
   const pagination = reactive<Pagination>({ ...defaultPaginationData })
   const selectionIds = reactive<number[]>([])
 

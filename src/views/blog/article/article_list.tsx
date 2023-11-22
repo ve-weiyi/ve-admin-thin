@@ -104,7 +104,7 @@ function getColumnFields(): Column[] {
             active-value={1}
             inactive-value={0}
             active-color="#13ce66"
-            inactive-color="#888888"
+            inactive-color="#cccccc"
             active-text="置顶"
             inactive-text="普通"
             inline-prompt

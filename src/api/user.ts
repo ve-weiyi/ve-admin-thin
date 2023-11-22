@@ -10,10 +10,19 @@ export function findUserListApi(page: PageQuery): Promise<IApiResponseData<PageR
   })
 }
 
+/** 获取在线用户列表 */
+export function findOnlineUserListApi(page: PageQuery): Promise<IApiResponseData<PageResult<UserDTO>>> {
+  return http.request<IApiResponseData<PageResult<UserDTO>>>({
+    url: `/api/v1/user/online_list`,
+    method: "post",
+    data: page,
+  })
+}
+
 /** 获取用户地区列表 */
 export function findUserAreaListApi(page: PageQuery): Promise<IApiResponseData<PageResult<UserAreaDTO>>> {
   return http.request<IApiResponseData<PageResult<UserAreaDTO>>>({
-    url: `/api/v1/user/list/areas`,
+    url: `/api/v1/user/area_list`,
     method: "post",
     data: page,
   })

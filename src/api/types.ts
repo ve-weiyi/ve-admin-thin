@@ -671,16 +671,17 @@ export interface TalkDetails {
 export interface UserDTO {
   id?: number
   username?: string
-  status?: number
   nickname?: string
+  status?: number
   avatar?: string
   intro?: string
   website?: string
   email?: string
+  register_type?: string
+  ip_address?: string // ip host
+  ip_source?: string // ip 源
   created_at?: string
-
-  ip_address?: string
-  ip_source?: string
+  updated_at?: string
   roles?: RoleDTO[]
 }
 

@@ -123,7 +123,7 @@ function getColumnFields(): Column[] {
           <el-switch
             v-model={scope.row.is_disable}
             active-color="#13ce66"
-            inactive-color="#F4F4F5"
+            inactive-color="#cccccc"
             active-value={1}
             inactive-value={0}
             onClick={() => {}}

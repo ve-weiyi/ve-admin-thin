@@ -176,7 +176,7 @@
               :active-value="1"
               :inactive-value="0"
               active-color="#13ce66"
-              inactive-color="#F4F4F5"
+              inactive-color="#cccccc"
             />
           </el-form-item>
           <el-form-item label="发布形式">

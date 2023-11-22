@@ -77,9 +77,9 @@ function getColumnFields(): Column[] {
             active-value={1}
             inactive-value={0}
             active-color="#13ce66"
-            inactive-color="#F4F4F5"
-            active-text="已启用"
-            inactive-text="已停用"
+            inactive-color="#cccccc"
+            active-text="禁用"
+            inactive-text="正常"
             inline-prompt
             onChange={() => {
               updateUserStatusApi(scope.row).then((res) => {

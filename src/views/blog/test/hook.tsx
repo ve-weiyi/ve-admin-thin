@@ -122,7 +122,7 @@ function getColumnFields(onChange: (row: any, event: string) => void): Column[] 
           <el-switch
             v-model={row.is_hidden}
             active-color="#13ce66"
-            inactive-color="#F4F4F5"
+            inactive-color="#cccccc"
             active-value={1}
             inactive-value={0}
             onClick={() => onChange(row, "is_hidden")}

@@ -4,7 +4,7 @@ import { FormField, RenderType } from "@/utils/render"
 import { FixedDir } from "element-plus/es/components/table-v2/src/constants"
 import { Timer } from "@element-plus/icons-vue"
 
-import { findUserListApi, updateUserStatusApi } from "@/api/user"
+import { findOnlineUserListApi, updateUserStatusApi } from "@/api/user"
 
 const align = "center"
 
@@ -77,9 +77,9 @@ function getColumnFields(): Column[] {
             active-value={1}
             inactive-value={0}
             active-color="#13ce66"
-            inactive-color="#F4F4F5"
-            active-text="已启用"
-            inactive-text="已停用"
+            inactive-color="#cccccc"
+            active-text="禁用"
+            inactive-text="正常"
             inline-prompt
             onChange={() => {
               updateUserStatusApi(scope.row).then((res) => {
@@ -204,7 +204,7 @@ function handleApi(event: string, data: any) {
     case "deleteByIds":
       return null
     case "list":
-      return findUserListApi(data)
+      return findOnlineUserListApi(data)
     default:
       return
   }
