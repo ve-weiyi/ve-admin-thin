@@ -156,7 +156,7 @@
           </el-form-item>
           <el-form-item label="上传封面">
             <el-upload
-              :http-request="uploadImage"
+              :http-request="onUpload"
               :before-upload="beforeUpload"
               :on-success="afterUpload"
               class="upload-cover"
@@ -266,8 +266,8 @@ function openModel() {
   addOrEdit.value = true
 }
 
-function uploadImage(options: UploadRequestOptions) {
-  console.log("uploadImage", options.filename)
+function onUpload(options: UploadRequestOptions) {
+  console.log("onUpload", options.filename)
   return uploadFileApi("article/cover", options.file)
 }
 

@@ -68,7 +68,7 @@ const onLogin = async (formEl: FormInstance | undefined) => {
           console.log("router", router.getRoutes())
           message("登录成功", { type: "success" })
           // 保存token
-          useAdminStoreHook().setToken(res.data)
+          useAdminStoreHook().login(res.data)
           // 拉取用户菜单
           usePermissionStoreHook().handleWholeMenus([])
           // 跳转到首页

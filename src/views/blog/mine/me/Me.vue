@@ -6,13 +6,13 @@
         <el-tab-pane label="修改信息" name="info">
           <div class="info-container">
             <el-upload
-              :http-request="uploadImage"
-              :on-success="updateAvatar"
+              :http-request="onUpload"
+              :before-upload="beforeUpload"
+              :on-success="afterUpload"
               :show-file-list="false"
-              action="/api/v1/user/avatar"
               class="avatar-uploader"
             >
-              <img v-if="avatar" :src="avatar" alt="avatar" class="avatar" />
+              <img v-if="infoForm.avatar" :src="infoForm.avatar" alt="avatar" class="avatar" />
               <i v-else class="plus avatar-uploader-icon" />
             </el-upload>
             <el-form :model="infoForm" label-width="70px" style="width: 320px; margin-left: 3rem">
@@ -23,7 +23,7 @@
                 <el-input v-model="infoForm.intro" size="default" />
               </el-form-item>
               <el-form-item label="个人网站">
-                <el-input v-model="infoForm.webSite" size="default" />
+                <el-input v-model="infoForm.website" size="default" />
               </el-form-item>
               <el-button
                 size="default"
@@ -79,7 +79,7 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, ref } from "vue"
+import { computed, onMounted, ref } from "vue"
 import {
   ElButton,
   ElForm,
@@ -89,27 +89,26 @@ import {
   ElTabPane,
   ElTabs,
   ElUpload,
+  UploadRawFile,
   UploadRequestOptions,
 } from "element-plus"
 import axios from "axios"
-import { useAdminStore } from "@/store/modules/admin"
-import { updateUserAvatarApi } from "@/api/user"
+import { useAdminStoreHook } from "@/store/modules/admin"
+import { uploadFileApi } from "@/api/file"
+import * as imageConversion from "image-conversion"
+import { UserInfo } from "@/api/types"
+import { updateUserInfoApi } from "@/api/user"
 
 // 获取缓存信息
-const store = useAdminStore()
+const store = useAdminStoreHook()
 
 const activeName = ref("info")
-const infoForm = ref({
-  nickname: "",
-  intro: "",
-  webSite: "",
-})
+const infoForm = ref<UserInfo>(store.getUserInfo())
 const passwordForm = ref({
   oldPassword: "",
   newPassword: "",
   confirmPassword: "",
 })
-const avatar = ref("")
 const notice = ref("")
 
 const handleClick = (tab) => {
@@ -120,32 +119,45 @@ const handleClick = (tab) => {
   }
 }
 
-const uploadImage = (options: UploadRequestOptions) => {
-  return updateUserAvatarApi(options.file)
+function onUpload(options: UploadRequestOptions) {
+  console.log("onUpload", options.filename)
+  return uploadFileApi("article/cover", options.file)
 }
 
-const updateAvatar = (response) => {
-  if (response.code === 200) {
-    ElMessage.success(response.message)
-    store.updateAvatar(response.data.avatar)
-  } else {
-    ElMessage.error(response.message)
+function beforeUpload(rawFile: UploadRawFile) {
+  console.log("beforeUpload", rawFile.size)
+  if (rawFile.size / 1024 < 500) {
+    return rawFile
   }
+
+  // 压缩到200KB,这里的200就是要压缩的大小,可自定义
+  imageConversion.compressAccurately(rawFile, 200).then((res: Blob) => {
+    console.log("compressAccurately", res.size)
+    return res
+  })
 }
+
+function afterUpload(response: any) {
+  console.log("afterUpload", response)
+  ElMessage.success(response.message)
+  // store.updateAvatar(response.data.file_url)
+  infoForm.value.avatar = response.data.file_url
+}
+
+// const uploadImage = (options: UploadRequestOptions) => {
+//   return updateUserAvatarApi(options.file)
+// }
 
 const updateInfo = () => {
   if (infoForm.value.nickname.trim() === "") {
     ElMessage.error("昵称不能为空")
     return false
   }
-  // updateUserAvatarApi()
-  axios.put("/api/users/info", infoForm.value).then(({ data }) => {
-    if (data.flag) {
-      ElMessage.success(data.message)
-      store.updateUserInfo(infoForm.value)
-    } else {
-      ElMessage.error(data.message)
-    }
+
+  // 更新用户信息
+  updateUserInfoApi(infoForm.value).then((res) => {
+    ElMessage.success(res.message)
+    store.updateUserInfo(res.data)
   })
 }
 
@@ -180,11 +192,6 @@ const updatePassword = () => {
 
 onMounted(() => {
   console.log("mounted", store)
-  avatar.value = store.userInfo.avatar
-
-  infoForm.value.nickname = store.userInfo.nickname
-  infoForm.value.intro = store.userInfo.intro
-  infoForm.value.webSite = store.userInfo.webSite
 })
 </script>
 

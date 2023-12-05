@@ -186,13 +186,10 @@ import { findUserLoginHistoryListApi } from "@/api/user"
 import { useRouter } from "vue-router"
 import type { Column } from "element-plus"
 import { ElMessage } from "element-plus"
-import { useAdminStore } from "@/store/modules/admin"
 
 const router = useRouter()
 
 const loading = ref<boolean>(false)
-
-const userStore = useAdminStore()
 
 const encryptionPhone = (phone: string) => {
   return phone.replace(/(\d{3})\d{4}(\d{4})/, "$1****$2")

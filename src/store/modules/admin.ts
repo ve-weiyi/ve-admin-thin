@@ -1,55 +1,48 @@
 import { defineStore } from "pinia"
-import { getToken, setToken, removeToken, Token } from "@/utils/token"
 import { store } from "@/store"
-import { Login } from "@/api/types"
+import { Login, Token, UserInfo } from "@/api/types"
+import cookies from "@/utils/cookies"
+import { useMultiTagsStoreHook } from "@/store/modules/multiTags"
+import { routerArrays } from "@/layout/types"
+import { resetRouter, router } from "@/router"
 
-export const useAdminStore = defineStore({
+const useAdminStore = defineStore({
   id: "admin",
-  state: () => ({
-    collapse: false,
-    tabList: [{ name: "首页", path: "/" }],
-    userInfo: getToken()?.user_info,
+  state: (): {
+    verifyCode: string
+    userInfo: UserInfo
+  } => ({
+    verifyCode: "",
+    userInfo: cookies.getItem<UserInfo>("user_info") || {},
   }),
   actions: {
-    login(data: Login) {},
+    login(login: Login) {
+      cookies.setItem("token", login.token)
+      cookies.setItem("user_info", login.user_info)
+      console.log("token", cookies.getItem<Token>("token"))
+      console.log("user_info", cookies.getItem<UserInfo>("user_info"))
+    },
     logout() {
-      removeToken()
+      cookies.clear()
+      this.userInfo = {}
+      useMultiTagsStoreHook().handleTags("equal", [...routerArrays])
+      resetRouter()
+      router.push("/login")
     },
-    getToken() {
-      return getToken()
+    isLogin(): boolean {
+      return this.getToken() != undefined
     },
-    setToken(token) {
-      setToken(token)
+    getToken(): Token {
+      return cookies.getItem<Token>("token")
     },
-    removeToken() {
-      removeToken()
-    },
-
-    saveTab(tab) {
-      if (this.tabList.findIndex((item) => item.path === tab.path) === -1) {
-        this.tabList.push({ name: tab.name, path: tab.path })
-      }
-    },
-    removeTab(tab) {
-      const index = this.tabList.findIndex((item) => item.name === tab.name)
-      this.tabList.splice(index, 1)
-    },
-    resetTab() {
-      this.tabList = [{ name: "首页", path: "/" }]
-    },
-    trigger() {
-      this.collapse = !this.collapse
-    },
-    saveUserMenuList(userMenuList) {
-      this.userMenuList = userMenuList
+    getUserInfo(): UserInfo {
+      return cookies.getItem<UserInfo>("user_info")
     },
     updateAvatar(avatar) {
       this.avatar = avatar
     },
-    updateUserInfo(user) {
-      this.nickname = user.nickname
-      this.intro = user.intro
-      this.webSite = user.webSite
+    updateUserInfo(user: UserInfo) {
+      cookies.setItem("user_info", user)
     },
   },
 })

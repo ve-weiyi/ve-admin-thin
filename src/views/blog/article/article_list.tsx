@@ -12,6 +12,19 @@ import router from "@/router"
 
 const align = "center"
 
+const typeOptions = (type: number) => {
+  switch (type) {
+    case 1:
+      return { value: "success", label: "原创" }
+    case 2:
+      return { value: "warning", label: "转载" }
+    case 3:
+      return { value: "danger", label: "翻译" }
+    default:
+      return { value: "info", label: "未知" }
+  }
+}
+
 function getColumnFields(): Column[] {
   const instance = getCurrentInstance()
   return [
@@ -83,10 +96,13 @@ function getColumnFields(): Column[] {
     },
     {
       key: "type",
-      title: "路径",
+      title: "文章类型",
       dataKey: "type",
       width: 0,
       align: align,
+        cellRenderer: (scope: any) => {
+            return <el-tag type={typeOptions(scope.row.type).value}>{typeOptions(scope.row.type).label}</el-tag>
+        },
     },
     {
       key: "is_top",

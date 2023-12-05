@@ -25,11 +25,12 @@
 </template>
 <script lang="ts" setup>
 import { onMounted, ref } from "vue"
-import { ElNotification } from "element-plus"
+import { ElNotification, UploadRawFile, UploadRequestOptions } from "element-plus"
 import { MdEditor } from "md-editor-v3"
 import "md-editor-v3/lib/style.css"
 import { uploadFileApi } from "@/api/file"
 import { getAboutMeApi, updateAboutMeApi } from "@/api/website"
+import * as imageConversion from "image-conversion"
 
 const mdRef = ref(null)
 const aboutContent = ref("")
@@ -51,7 +52,7 @@ const onUploadImg = async (files, callback) => {
     })
   )
 
-  callback(res.map((item) => item.data.fileUrl))
+  callback(res.map((item) => item.data.file_url))
 
   // const formdata = new FormData()
   // if (file.size / 1024 < 200) {

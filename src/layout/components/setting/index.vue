@@ -1,26 +1,11 @@
 <script setup lang="ts">
-import {
-  ref,
-  unref,
-  watch,
-  reactive,
-  computed,
-  nextTick,
-  onBeforeMount,
-} from "vue"
-import {
-  useDark,
-  debounce,
-  useGlobal,
-  storageLocal,
-  storageSession,
-} from "@pureadmin/utils"
+import { ref, unref, watch, reactive, computed, nextTick, onBeforeMount } from "vue"
+import { useDark, debounce, useGlobal, storageLocal, storageSession } from "@pureadmin/utils"
 import { getConfig } from "@/config"
 import { useRouter } from "vue-router"
 import panel from "../panel/index.vue"
 import { emitter } from "@/utils/mitt"
 import { resetRouter } from "@/router"
-import { removeToken } from "@/utils/token"
 import { routerArrays } from "@/layout/types"
 import { useNav } from "@/layout/hooks/useNav"
 import { useAppStoreHook } from "@/store/modules/app"
@@ -32,7 +17,9 @@ import dayIcon from "@/assets/svg/day.svg?component"
 import darkIcon from "@/assets/svg/dark.svg?component"
 import Check from "@iconify-icons/ep/check"
 import Logout from "@iconify-icons/ri/logout-circle-r-line"
+import { useAdminStoreHook } from "@/store/modules/admin"
 
+const store = useAdminStoreHook()
 const router = useRouter()
 const { isDark } = useDark()
 const { device, tooltipEffect } = useNav()
@@ -127,7 +114,7 @@ const multiTagsCacheChange = () => {
 
 /** 清空缓存并返回登录页 */
 function onReset() {
-  removeToken()
+  store.logout()
   storageLocal().clear()
   storageSession().clear()
   const { Grey, Weak, MultiTagsCache, EpThemeColor, Layout } = getConfig()
@@ -163,15 +150,9 @@ function setFalse(Doms): any {
 /** 主题色 激活选择项 */
 const getThemeColor = computed(() => {
   return (current) => {
-    if (
-      current === layoutTheme.value.theme &&
-      layoutTheme.value.theme !== "light"
-    ) {
+    if (current === layoutTheme.value.theme && layoutTheme.value.theme !== "light") {
       return "#fff"
-    } else if (
-      current === layoutTheme.value.theme &&
-      layoutTheme.value.theme === "light"
-    ) {
+    } else if (current === layoutTheme.value.theme && layoutTheme.value.theme === "light") {
       return "#1d2b45"
     } else {
       return "transparent"
@@ -216,10 +197,8 @@ watch($storage, ({ layout }) => {
 onBeforeMount(() => {
   /* 初始化项目配置 */
   nextTick(() => {
-    settings.greyVal &&
-      document.querySelector("html")?.setAttribute("class", "html-grey")
-    settings.weakVal &&
-      document.querySelector("html")?.setAttribute("class", "html-weakness")
+    settings.greyVal && document.querySelector("html")?.setAttribute("class", "html-grey")
+    settings.weakVal && document.querySelector("html")?.setAttribute("class", "html-weakness")
     settings.tabsVal && tagsChange()
   })
 })
@@ -302,11 +281,7 @@ onBeforeMount(() => {
         :style="getThemeColorStyle(item.color)"
         @click="setLayoutThemeColor(item.themeColor)"
       >
-        <el-icon
-          style="margin: 0.1em 0.1em 0 0"
-          :size="17"
-          :color="getThemeColor(item.themeColor)"
-        >
+        <el-icon style="margin: 0.1em 0.1em 0 0" :size="17" :color="getThemeColor(item.themeColor)">
           <IconifyIconOffline :icon="Check" />
         </el-icon>
       </li>
@@ -382,17 +357,8 @@ onBeforeMount(() => {
     </ul>
 
     <el-divider />
-    <el-button
-      type="danger"
-      style="width: 90%; margin: 24px 15px"
-      @click="onReset"
-    >
-      <IconifyIconOffline
-        :icon="Logout"
-        width="15"
-        height="15"
-        style="margin-right: 4px"
-      />
+    <el-button type="danger" style="width: 90%; margin: 24px 15px" @click="onReset">
+      <IconifyIconOffline :icon="Logout" width="15" height="15" style="margin-right: 4px" />
       清空缓存并返回登录页
     </el-button>
   </panel>

@@ -9,7 +9,7 @@
 "use strict"
 import axios, { AxiosRequestConfig, AxiosInstance, AxiosResponse } from "axios"
 import { ElMessage } from "element-plus"
-import { getToken, removeToken } from "@/utils/token"
+import { useAdminStoreHook } from "@/store/modules/admin"
 
 class HttpRequest {
   private baseUrl: string
@@ -111,7 +111,7 @@ class HttpRequest {
   }
 
   private setHeader(config: AxiosRequestConfig) {
-    const tk = getToken()
+    const tk = useAdminStoreHook().getToken()
     if (tk) {
       config.headers!.token = tk?.access_token
       config.headers!.uid = tk?.uid
@@ -161,7 +161,7 @@ class HttpRequest {
           // token 错误
           case 403:
             console.log("403")
-            removeToken()
+            useAdminStoreHook().logout()
             return Promise.reject(new Error(message || "Error"))
           default:
             ElMessage({

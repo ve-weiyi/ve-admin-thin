@@ -2,7 +2,7 @@ import { reactive } from "vue"
 import { isPhone } from "@pureadmin/utils"
 import type { FormRules } from "element-plus"
 import { $t, transformI18n } from "@/plugins/i18n"
-import { useUserStoreHook } from "@/store/modules/user"
+import { useAdminStoreHook } from "@/store/modules/admin"
 
 /** 6位数字验证码正则 */
 export const REGEXP_SIX = /^\d{6}$/
@@ -33,7 +33,7 @@ const loginRules = reactive<FormRules>({
         if (value === "") {
           callback()
           // callback(new Error(transformI18n($t("login.verifyCodeReg"))))
-        } else if (useUserStoreHook().verifyCode !== value) {
+        } else if (useAdminStoreHook().verifyCode !== value) {
           callback(new Error(transformI18n($t("login.verifyCodeCorrectReg"))))
         } else {
           callback()

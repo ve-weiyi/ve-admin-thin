@@ -62,6 +62,7 @@
             <el-checkbox-group v-model="websiteConfigForm.social_login_list">
               <el-checkbox label="qq">QQ</el-checkbox>
               <el-checkbox label="weibo">微博</el-checkbox>
+              <el-checkbox label="feishu">飞书</el-checkbox>
             </el-checkbox-group>
           </el-form-item>
           <el-button

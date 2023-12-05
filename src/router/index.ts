@@ -25,7 +25,7 @@ import { buildHierarchyTree } from "@/utils/tree"
 import { isUrl, openLink, storageSession, isAllEmpty } from "@pureadmin/utils"
 
 import remainingRouter from "./modules/remaining"
-import { getToken, sessionKey } from "@/utils/token"
+import { useAdminStoreHook } from "@/store/modules/admin"
 
 /** 自动导入全部静态路由，无需再手动引入！匹配 src/router/modules 目录（任何嵌套级别）中具有 .ts 扩展名的所有文件，除了 remaining.ts 文件
  * 如何匹配所有文件请看：https://github.com/mrmlnc/fast-glob#basic-syntax
@@ -124,8 +124,8 @@ router.beforeEach((to: ToRouteType, _from, next) => {
     })
   }
 
-  const userInfo = storageSession().getItem<string>(sessionKey)
-  if (userInfo) {
+  const tk = useAdminStoreHook().getToken()
+  if (tk) {
     console.log("用户已登录")
     if (to.path === "/login") {
       // 如果已经登录，并准备进入 Login 页面，则重定向到主页

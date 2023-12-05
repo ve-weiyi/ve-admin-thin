@@ -578,11 +578,10 @@ export interface CommentBackDTO {
   created_at?: string
 }
 
-export interface Login extends Token {
-  ip_address?: string
-  ip_source?: string
+export interface Login {
+  token?: Token
   user_info?: UserInfo
-  login_info?: LoginHistory
+  login_history?: LoginHistory
 }
 
 export interface Token {
