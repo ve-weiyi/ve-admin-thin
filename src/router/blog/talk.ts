@@ -14,13 +14,19 @@ export default {
     {
       path: "/talk/publish",
       component: () => import("@/views/blog/talk/Talk.vue"),
-      name: "publish",
+      name: "talk_publish",
       meta: { title: "发布说说" },
+    },
+    {
+      path: "/talk/edit/:talkId",
+      component: () => import("@/views/blog/talk/Talk.vue"),
+      name: "talk_edit",
+      meta: { title: "编辑说说", showLink: false },
     },
     {
       path: "/talk/list",
       component: () => import("@/views/blog/talk/TalkList.vue"),
-      name: "TalkList",
+      name: "talk_list",
       meta: { title: "说说列表" },
     },
   ],

@@ -47,7 +47,7 @@ const option: Ref<EChartsOption | null> = ref(null)
 
 option.value = {
   tooltip: {
-    formatter: function (e) {
+    formatter: function(e) {
       var value = e.value ? e.value : 0
       return e.seriesName + "<br />" + e.name + "：" + value
     },

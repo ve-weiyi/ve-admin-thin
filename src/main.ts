@@ -42,7 +42,7 @@ import { Auth } from "@/components/ReAuth"
 import { loadPlugins } from "@/plugins"
 app.component("Auth", Auth)
 
-getServerConfig(app).then(async (config) => {
+getServerConfig(app).then(async(config) => {
   app.use(router)
   await router.isReady()
   loadPlugins(app)

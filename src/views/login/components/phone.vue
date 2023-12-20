@@ -19,7 +19,7 @@ const ruleForm = reactive({
 const ruleFormRef = ref<FormInstance>()
 const { isDisabled, text } = useVerifyCode()
 
-const onLogin = async (formEl: FormInstance | undefined) => {
+const onLogin = async(formEl: FormInstance | undefined) => {
   loading.value = true
   if (!formEl) return
   await formEl.validate((valid, fields) => {

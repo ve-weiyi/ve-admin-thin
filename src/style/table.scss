@@ -1,5 +1,6 @@
 /***********************************/
 /** 自定义 Element Plus 样式 */
+@import "./flex.scss";
 
 // 表格
 .el-table {
@@ -153,17 +154,6 @@
 /* 重置 el-button 中 icon 的 margin */
 .reset-margin [class*="el-icon"] + span {
   margin-left: 2px !important;
-}
-
-.flex-center {
-  display: flex;
-  justify-content: center; /* 可选，根据需要调整对齐方式 */
-  align-items: center; /* 可选，根据需要调整对齐方式 */
-}
-
-.flex-between {
-  display: flex;
-  justify-content: space-between;
 }
 
 .align-right {

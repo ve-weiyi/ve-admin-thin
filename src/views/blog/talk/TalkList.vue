@@ -17,7 +17,7 @@
           <el-avatar :size="36" :src="item.avatar" class="user-avatar" />
           <div class="user-detail-wrapper">
             <div class="user-nickname">
-              <div>{{ item.nickname || "与梦" }}</div>
+              <div>{{ item.nickname || "未知用户" }}</div>
               <!-- 操作 -->
               <el-dropdown trigger="click" @command="handleCommand">
                 <el-icon style="color: #333; cursor: pointer">
@@ -54,8 +54,8 @@
             <!-- 说说信息 -->
             <div class="talk-content" v-html="item.content" />
             <!-- 图片列表 -->
-            <el-row v-if="item.imgList" :gutter="4" class="talk-images">
-              <el-col v-for="(img, index) of item.imgList" :key="index" :cols="6" :md="8">
+            <el-row v-if="item.img_list" :gutter="4" class="talk-images">
+              <el-col v-for="(img, index) of item.img_list" :key="index" :cols="6" :md="8">
                 <el-image :preview-src-list="previewList" :src="img" class="images-items" />
               </el-col>
             </el-row>
@@ -76,7 +76,7 @@
         @current-change="handleCurrentChange"
       ></el-pagination>
       <!-- 删除对话框 -->
-      <el-dialog v-model="isdelete" width="30%">
+      <el-dialog v-model="isDelete" width="30%">
         <template #header>
           <div class="dialog-title-container">
             <el-icon style="color: #ff9900">
@@ -87,8 +87,8 @@
         </template>
         <div style="font-size: 1rem">是否删除该说说？</div>
         <template #footer>
-          <el-button @click="isdelete = false">取 消</el-button>
-          <el-button type="primary" @click="onDelete"> 确 定</el-button>
+          <el-button @click="isDelete = false">取 消</el-button>
+          <el-button type="primary" @click="handDelete"> 确 定</el-button>
         </template>
       </el-dialog>
     </el-card>
@@ -98,6 +98,7 @@
 <script setup>
 import { computed, onMounted, ref } from "vue"
 import { useTableHook } from "./talk_list"
+import router from "@/router"
 
 const {
   onFindList,
@@ -133,9 +134,9 @@ const {
 } = useTableHook()
 
 const status = ref(1)
-const isdelete = ref(false)
+const isDelete = ref(false)
 const previewList = ref([])
-const talkId = ref(null)
+const talkId = ref(0)
 
 onMounted(() => {
   refreshList()
@@ -143,25 +144,31 @@ onMounted(() => {
 
 function handleCommand(command) {
   const arr = command.split(",")
-  talkId.value = arr[1]
+  talkId.value = parseInt(arr[1])
+  console.log("talkId", talkId.value)
   switch (arr[0]) {
     case "1":
-      this.$router.push({ path: "/talks/" + talkId.value })
+      router.push({ path: "/talk/edit/" + talkId.value })
       break
     case "2":
-      isdelete.value = true
+      isDelete.value = true
       break
   }
 }
 
+function handDelete() {
+  confirmDelete(talkId.value)
+  isDelete.value = false
+}
+
 function changeStatus(status) {
-  searchData.status = status
+  searchData.value.status = status
   refreshList()
 }
 
 const isActive = computed(() => {
-  return function (status) {
-    return status === searchData.status ? "active-status" : "status"
+  return function(status) {
+    return status === searchData.value.status ? "active-status" : "status"
   }
 })
 </script>

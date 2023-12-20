@@ -7,15 +7,14 @@
     @blur="onBlur"
     @focus="onFocus"
     @input="onInput"
-    v-html="innerText"
   />
 </template>
 
 <script lang="ts" setup>
-import { ref, watchEffect } from "vue"
+import { ref, watchEffect, computed, onMounted, watch } from "vue"
 
 const props = defineProps({
-  value: {
+  modelValue: {
     type: String,
     default: "",
   },
@@ -35,17 +34,23 @@ const emit = defineEmits([
   "input",
   "focus",
   "blur",
+  "update:modelValue",
 ])
 
 const editorRef = ref(null)
-const innerText = ref(props.value)
-const isLocked = ref(false)
+const innerText = ref(props.modelValue)
+const isLocked = ref(true)
 let range = null
+
+watch(innerText, (val) => {
+  editorRef.value.innerHTML = val
+})
 
 watchEffect(() => {
   if (!isLocked.value) {
-    innerText.value = props.value
+    emit("update:modelValue", editorRef.value.innerHTML)
   }
+  innerText.value = props.modelValue
 })
 
 function clear() {
@@ -72,7 +77,7 @@ function onBlur() {
   isLocked.value = false
 }
 
-function addText(value) {
+function addText(value: string) {
   // 还原光标
   if (window.getSelection) {
     const selection = window.getSelection()
@@ -94,6 +99,7 @@ function addText(value) {
 
 defineExpose({
   addText,
+  clear,
 })
 </script>
 

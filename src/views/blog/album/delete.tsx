@@ -142,6 +142,7 @@ export function useTableHook() {
     for (const key in searchData.value) {
       const item = searchFields.value.find((v) => v.field === key)
       const value = searchData.value[key]
+      if (value === null || value === undefined || value === "") continue
       conditions.push({
         flag: item?.searchRules.flag || "and",
         field: key,

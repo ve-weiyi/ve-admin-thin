@@ -181,7 +181,7 @@ module.exports = {
     camelcase: "off",
     // 'comma-dangle': [1, 'never'],
     "comma-spacing": [
-      2,
+      1,
       {
         before: false,
         after: true,

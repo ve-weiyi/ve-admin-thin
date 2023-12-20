@@ -158,9 +158,9 @@ class HttpRequest {
         switch (code) {
           case 200:
             return result
-          // token 错误
-          case 403:
-            console.log("403")
+          // 未授权
+          case 401:
+            console.log("401")
             useAdminStoreHook().logout()
             return Promise.reject(new Error(message || "Error"))
           default:

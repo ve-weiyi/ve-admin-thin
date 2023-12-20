@@ -41,7 +41,7 @@ const getAbout = () => {
   })
 }
 
-const onUploadImg = async (files, callback) => {
+const onUploadImg = async(files, callback) => {
   const res = await Promise.all(
     files.map((file) => {
       return new Promise((rev, rej) => {

@@ -14,6 +14,7 @@
 }
 // 两侧排列
 .flex-between {
+  display: flex;
   justify-content: space-between;
   -webkit-justify-content: space-between;
 }
@@ -26,4 +27,11 @@
 .flex-vertical-center {
   align-items: center;
   -webkit-align-items: center;
+}
+
+// 水平居中 垂直居中
+.flex-center {
+  display: flex;
+  justify-content: center; /* 可选，根据需要调整对齐方式 */
+  align-items: center; /* 可选，根据需要调整对齐方式 */
 }

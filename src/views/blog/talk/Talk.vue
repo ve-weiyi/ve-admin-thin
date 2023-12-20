@@ -19,12 +19,15 @@
                 v-for="(item, key, index) of emojiList"
                 :key="index"
                 class="emoji-item"
-                @click="addEmoji(key, item.normal)"
+                @click="addEmoji(key, item.active)"
               >
                 <img :src="item.normal" :title="item.key" class="emoji" height="24" width="24" />
               </span>
               <template #reference>
-                <i class="iconfont icon-smile operation-btn" />
+                <el-icon class="operation-btn">
+                  <Avatar />
+                </el-icon>
+                <!--                <i class="iconfont icon-smile operation-btn" />-->
               </template>
             </el-popover>
             <!-- 图片上传 -->
@@ -35,10 +38,12 @@
               action="/api/admin/talks/images"
               multiple
             >
-              <i class="iconfont icon-picture operation-btn" />
+              <el-icon class="operation-btn">
+                <PictureFilled />
+              </el-icon>
             </el-upload>
           </div>
-          <div class="right-wrapper">
+          <div class="flex-center">
             <!-- 是否置顶 -->
             <el-switch
               v-model="talk.is_top"
@@ -50,7 +55,7 @@
             <!-- 说说状态 -->
             <el-dropdown style="margin-right: 16px" trigger="click" @command="handleCommand">
               <span class="talk-status">
-                {{ dropdownTitle }}<i class="el-icon-arrow-down el-icon--right" />
+                {{ dropdownTitle }}
                 <el-icon><ArrowUp /></el-icon>
               </span>
               <template #dropdown>
@@ -67,7 +72,7 @@
             </el-dropdown>
             <el-button
               :disabled="talk.content === ''"
-              size="small"
+              size="default"
               type="primary"
               @click="saveOrUpdateTalk"
             >
@@ -100,8 +105,10 @@ import * as imageConversion from "image-conversion"
 import EmojiList from "@/assets/emojis/qq_emoji.json"
 import Editor from "@/views/blog/talk/Editor.vue"
 import { useRoute } from "vue-router"
-import { findTalkApi } from "@/api/talk"
+import { createTalkApi, findTalkApi, updateTalkApi } from "@/api/talk"
 import { Talk } from "@/api/types"
+import { ElMessage } from "element-plus"
+import { number } from "echarts/core"
 
 const route = useRoute()
 const emojiList = ref<any>(EmojiList)
@@ -119,8 +126,10 @@ const statusList = ref([
 const uploadList = ref([])
 
 onMounted(() => {
+  console.log("route.params.talkId", route.params.talkId)
   if (route.params.talkId) {
-    findTalkApi(parseInt(route.params.talkId as string)).then((res) => {
+    const tid = parseInt(route.params.talkId as string)
+    findTalkApi(tid).then((res) => {
       talk.value = res.data
       if (res.data.images) {
         // res.data.images.forEach((item) => {
@@ -131,15 +140,16 @@ onMounted(() => {
   }
 })
 
-function handleCommand(command) {
+function handleCommand(command: any) {
   talk.value.status = command
 }
 
 const editorRef = ref(null)
 
 function addEmoji(key, value) {
-  const emojiTag = `<img src="${value}" width="24" height="24" alt="${key}" style="margin: 0 1px;vertical-align: text-bottom"/>`
+  const emojiTag = `<img src="${value}" width="24" height="24" alt="${key}" style="margin: 0 1px;display: inline;vertical-align: text-bottom"/>`
   editorRef.value.addText(emojiTag)
+  console.log("talk.value.content", talk.value.content)
 }
 
 function handleRemove(file) {
@@ -167,7 +177,7 @@ const beforeUpload = (rawFile) => {
 
 function saveOrUpdateTalk() {
   if (talk.value.content.trim() === "") {
-    this.$message.error("说说内容不能为空")
+    ElMessage.error("说说内容不能为空")
     return false
   }
 
@@ -177,21 +187,20 @@ function saveOrUpdateTalk() {
     talk.value.images = JSON.stringify(imgList)
   }
 
-  this.axios.post("/api/admin/talks", talk.value).then(({ data }) => {
-    if (data.flag) {
-      this.$refs.editor.clear()
+  console.log("talk.value", talk.value)
+  if (talk.value.id) {
+    updateTalkApi(talk.value).then((res) => {
+      editorRef.value.clear()
       uploadList.value = []
-      this.$notify.success({
-        title: "成功",
-        message: data.message,
-      })
-    } else {
-      this.$notify.error({
-        title: "失败",
-        message: data.message,
-      })
-    }
-  })
+      ElMessage.success("更新说说成功")
+    })
+  } else {
+    createTalkApi(talk.value).then((res) => {
+      editorRef.value.clear()
+      uploadList.value = []
+      ElMessage.success("发布说说成功")
+    })
+  }
 }
 
 const dropdownTitle = computed(() => {
@@ -214,7 +223,7 @@ const dropdownTitle = computed(() => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 16px;
+  margin-top: 12px;
 }
 
 .operation-btn {
@@ -249,8 +258,6 @@ const dropdownTitle = computed(() => {
 }
 
 .right-wrapper {
-  display: flex;
-  width: 50%;
 }
 
 .left-wrapper {

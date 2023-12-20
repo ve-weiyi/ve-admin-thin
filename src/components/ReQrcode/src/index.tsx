@@ -66,7 +66,7 @@ export default defineComponent({
         height: props.width + "px"
       };
     });
-    const initQrcode = async () => {
+    const initQrcode = async() => {
       await nextTick();
       const options = cloneDeep(props.options || {});
       if (props.tag === "canvas") {
@@ -185,7 +185,7 @@ export default defineComponent({
       });
     };
     // 得到原QrCode的大小，以便缩放得到正确的QrCode大小
-    const getOriginWidth = async (
+    const getOriginWidth = async(
       content: string,
       options: QRCodeRenderersOptions
     ) => {

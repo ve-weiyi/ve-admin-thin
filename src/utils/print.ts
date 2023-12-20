@@ -5,7 +5,7 @@ interface PrintFunction {
   toPrint: Function
 }
 
-const Print = function (dom, options?: object): PrintFunction {
+const Print = function(dom, options?: object): PrintFunction {
   options = options || {}
   // @ts-expect-error
   if (!(this instanceof Print)) return new Print(dom, options)
@@ -39,7 +39,7 @@ Print.prototype = {
   /**
    * init
    */
-  init: function (): void {
+  init: function(): void {
     const content = this.getStyle() + this.getHtml()
     this.writeIframe(content)
   },
@@ -57,7 +57,7 @@ Print.prototype = {
   /**
     Copy all styles of the original page
   */
-  getStyle: function (): string {
+  getStyle: function(): string {
     let str = ""
     const styles: NodeListOf<Element> = document.querySelectorAll("style,link")
     for (let i = 0; i < styles.length; i++) {
@@ -67,7 +67,7 @@ Print.prototype = {
     return str
   },
   // form assignment
-  getHtml: function (): Element {
+  getHtml: function(): Element {
     const inputs = document.querySelectorAll("input")
     const selects = document.querySelectorAll("select")
     const textareas = document.querySelectorAll("textarea")
@@ -122,7 +122,7 @@ Print.prototype = {
   /**
     create iframe
   */
-  writeIframe: function (content) {
+  writeIframe: function(content) {
     let w: Document | Window
     let doc: Document
     const iframe: HTMLIFrameElement = document.createElement("iframe")
@@ -147,13 +147,13 @@ Print.prototype = {
 
     // eslint-disable-next-line @typescript-eslint/no-this-alias
     const _this = this
-    iframe.onload = function (): void {
+    iframe.onload = function(): void {
       // Before popping, callback
       if (_this.conf.printBeforeFn) {
         _this.conf.printBeforeFn({ doc })
       }
       _this.toPrint(w)
-      setTimeout(function () {
+      setTimeout(function() {
         document.body.removeChild(iframe)
         // After popup, callback
         if (_this.conf.printDoneCallBack) {
@@ -165,9 +165,9 @@ Print.prototype = {
   /**
     Print
   */
-  toPrint: function (frameWindow): void {
+  toPrint: function(frameWindow): void {
     try {
-      setTimeout(function () {
+      setTimeout(function() {
         frameWindow.focus()
         try {
           if (!frameWindow.document.execCommand("print", false, null)) {
@@ -184,10 +184,10 @@ Print.prototype = {
   },
   isDOM:
     typeof HTMLElement === "object"
-      ? function (obj) {
+      ? function(obj) {
           return obj instanceof HTMLElement
         }
-      : function (obj) {
+      : function(obj) {
           return (
             obj &&
             typeof obj === "object" &&
