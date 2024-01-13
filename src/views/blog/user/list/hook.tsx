@@ -1,10 +1,11 @@
-import { getCurrentInstance } from "vue"
+import { getCurrentInstance, VNode } from "vue"
 import { Column, ElMessage } from "element-plus"
 import { FormField, RenderType } from "@/utils/render"
 import { FixedDir } from "element-plus/es/components/table-v2/src/constants"
 import { Timer } from "@element-plus/icons-vue"
 
-import { findUserListApi, updateUserStatusApi } from "@/api/user"
+import { findUserListApi, updateUserRolesApi, updateUserStatusApi } from "@/api/user"
+import { findRoleDetailsListApi } from "@/api/role"
 
 const align = "center"
 
@@ -45,6 +46,13 @@ function getColumnFields(): Column[] {
       key: "nickname",
       title: "昵称",
       dataKey: "nickname",
+      width: 100,
+      align: align,
+    },
+    {
+      key: "register_type",
+      title: "登录方式",
+      dataKey: "register_type",
       width: 100,
       align: align,
     },
@@ -123,42 +131,40 @@ function getColumnFields(): Column[] {
       },
     },
     {
+      key: "last_login_time",
+      title: "上次登录时间",
+      dataKey: "last_login_time",
+      width: 0,
+      align: align,
+      sortable: true,
+      cellRenderer: (scope: any) => {
+        return (
+          <div>
+            <el-icon class="table-icon">
+              <Timer />
+            </el-icon>
+            <span>{new Date(scope.row.last_login_time).toLocaleString()}</span>
+          </div>
+        )
+      },
+    },
+    {
       key: "operation",
       title: "操作",
-      width: 150,
+      width: 120,
       align: align,
       fixed: FixedDir.RIGHT,
       cellRenderer: (scope: any) => {
         return (
           <div>
             <el-button
-              text
-              class="table-text-button"
               type="primary"
-              size="small"
-              icon="view"
+              size="default"
+              icon="edit-pen"
               onClick={() => instance.exposed.openForm(scope.row)}
             >
-              查看
+              编辑
             </el-button>
-            <el-popconfirm
-              title="确定删除吗？"
-              onConfirm={() => instance.exposed.confirmDelete(scope.row.id)}
-            >
-              {{
-                reference: () => (
-                  <el-button
-                    text
-                    class="table-text-button"
-                    type="danger"
-                    size="small"
-                    icon="delete"
-                  >
-                    删除
-                  </el-button>
-                ),
-              }}
-            </el-popconfirm>
           </div>
         )
       },
@@ -182,23 +188,38 @@ function getSearchFields(): FormField[] {
   ]
 }
 
+let roleOptions = []
+findRoleDetailsListApi({}).then((res) => {
+  res.data.list.forEach((item) => {
+    roleOptions.push({ label: item.role_comment, value: item.id })
+  })
+})
+
 // 表单字段
-function getFormFields(): FormField[] {
+function getFormFields(model: any): FormField[] {
   return [
     {
+      type: RenderType.Input,
+      field: "nickname",
+      label: "昵称",
+    },
+    {
+      type: RenderType.MultiSelect,
       field: "roles",
       label: "角色",
+      options: roleOptions,
     },
   ]
 }
 
 function handleApi(event: string, data: any) {
   console.log("event", event)
+  console.log("data", data)
   switch (event) {
     case "create":
       return null
     case "update":
-      return null
+      return updateUserRolesApi({ user_id: data.id, role_ids: data.roles })
     case "delete":
       return null
     case "deleteByIds":

@@ -7,7 +7,13 @@
       :get-search-fields="getSearchFields"
       :handle-api="handleApi"
       model-name="接口"
-    />
+    >
+      <template #operation="{ selectionIds, columnFieldsVisibility }">
+        <el-button icon="CircleCheck" size="default" type="success" @click="Sync">
+          同步接口
+        </el-button>
+      </template>
+    </TablePage>
   </div>
 </template>
 
@@ -15,10 +21,35 @@
 import TablePage from "@/components/TablePage/TablePage.vue"
 import { useTableHook } from "./hook"
 import { onMounted } from "vue"
+import { syncApiListApi } from "@/api/api"
+import { ElMessage, ElMessageBox } from "element-plus"
 
 const defaultOrder = { id: "desc" }
 
 const { getSearchFields, getColumnFields, getFormFields, handleApi } = useTableHook()
+
+function Sync(evt: MouseEvent) {
+  ElMessageBox.confirm(
+    `确认要<strong>同步API到数据库吗</strong>`,
+    "系统提示",
+    {
+      confirmButtonText: "确定",
+      cancelButtonText: "取消",
+      type: "warning",
+      dangerouslyUseHTMLString: true,
+      draggable: true
+    }
+  )
+    .then(() => {
+      syncApiListApi().then((res) => {
+        ElMessage.success("同步成功")
+      })
+    })
+    .catch(() => {
+      ElMessage.success("同步取消")
+    });
+
+}
 
 onMounted(() => {})
 </script>

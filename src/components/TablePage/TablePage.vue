@@ -276,6 +276,7 @@ import {
 import draggable from "vuedraggable/src/vuedraggable"
 import { useRoute } from "vue-router"
 import "@/style/table.scss"
+import { copy } from "@/directives"
 
 type StatusTag = {
   value: number | string

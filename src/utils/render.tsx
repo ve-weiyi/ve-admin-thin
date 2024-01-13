@@ -27,6 +27,7 @@ export enum RenderType {
   Tag = "tag",
   Radio = "radio",
   Number = "number",
+  MultiSelect = "multi-select",
 }
 
 /** 搜索校验规则 */
@@ -95,6 +96,20 @@ export function formRender(field: FormField, model: any): VNode {
     case RenderType.Select:
       return (
         <el-select v-model={model[field.field]} placeholder={`请选择${field.label}`}>
+          {field.options.map((item) => (
+            <el-option key={item.value} label={item.label} value={item.value} />
+          ))}
+        </el-select>
+      )
+    case RenderType.MultiSelect:
+      return (
+        <el-select
+          v-model={model[field.field]}
+          placeholder={`请选择${field.label}`}
+          multiple
+          clearable
+          style={"width: 90%"}
+        >
           {field.options.map((item) => (
             <el-option key={item.value} label={item.label} value={item.value} />
           ))}

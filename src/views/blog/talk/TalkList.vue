@@ -44,7 +44,7 @@
             <!-- 发表时间 -->
             <div class="time">
               {{ item.created_at }}
-              <span v-if="item.isTop === 1" class="top">
+              <span v-if="item.is_top === 1" class="top">
                 <i class="iconfont icon-upload-fill" /> 置顶
               </span>
               <span v-if="item.status === 2" class="secret">
@@ -145,7 +145,7 @@ onMounted(() => {
 function handleCommand(command) {
   const arr = command.split(",")
   talkId.value = parseInt(arr[1])
-  console.log("talkId", talkId.value)
+  console.log("type", arr[0], "talkId", talkId.value)
   switch (arr[0]) {
     case "1":
       router.push({ path: "/talk/edit/" + talkId.value })
@@ -167,7 +167,7 @@ function changeStatus(status) {
 }
 
 const isActive = computed(() => {
-  return function(status) {
+  return function (status) {
     return status === searchData.value.status ? "active-status" : "status"
   }
 })

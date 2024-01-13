@@ -7,7 +7,7 @@
       :get-search-fields="getSearchFields"
       :handle-api="handleApi"
       :show-add-button="false"
-      :show-edit-button="false"
+      :show-edit-button="true"
       model-name="用户"
     />
   </div>

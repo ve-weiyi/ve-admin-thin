@@ -1,4 +1,4 @@
-import { Column } from "element-plus"
+import { Column, ElMessage } from "element-plus"
 import { FormField, RenderType } from "@/utils/render"
 import {
   createRoleApi,
@@ -9,6 +9,7 @@ import {
 } from "@/api/role"
 
 import { Timer } from "@element-plus/icons-vue"
+import { getCurrentInstance } from "vue"
 
 const align = "center"
 
@@ -70,6 +71,7 @@ function getSearchFields(): FormField[] {
 }
 
 function getColumnFields(): Column[] {
+  const instance = getCurrentInstance()
   return [
     {
       key: "selection",
@@ -105,7 +107,7 @@ function getColumnFields(): Column[] {
       key: "role_comment",
       title: "角色标签",
       dataKey: "role_comment",
-      width: 80,
+      width: 120,
       align: align,
       sortable: true,
     },
@@ -126,7 +128,43 @@ function getColumnFields(): Column[] {
             inactive-color="#cccccc"
             active-value={1}
             inactive-value={0}
-            onClick={() => {}}
+            active-text="禁用"
+            inactive-text="启用"
+            inline-prompt
+            onClick={() => {
+              updateRoleApi(scope.row).then((res) => {
+                ElMessage.success("更新成功")
+              })
+            }}
+          />
+        )
+      },
+    },
+    {
+      key: "is_default",
+      title: "是否默认",
+      dataKey: "is_default",
+      width: 120,
+      align: align,
+      cellRenderer: (scope: any) => {
+        if (scope.row.path === "") {
+          return <div></div>
+        }
+        return (
+          <el-switch
+            v-model={scope.row.is_default}
+            active-color="#13ce66"
+            inactive-color="#cccccc"
+            active-value={1}
+            inactive-value={0}
+            active-text="默认"
+            inactive-text="非默认"
+            inline-prompt
+            onClick={() => {
+              updateRoleApi(scope.row).then((res) => {
+                ElMessage.success("更新成功")
+              })
+            }}
           />
         )
       },
@@ -163,22 +201,20 @@ function getColumnFields(): Column[] {
               text
               type="primary"
               size="small"
-              icon="Plus"
-              onClick={() => {}}
-            >
-              新增
-            </el-button>
-            <el-button
-              class="table-text-button"
-              text
-              type="primary"
-              size="small"
               icon="editPen"
-              onClick={() => {}}
+              onClick={() => instance.exposed.openForm(scope.row)}
             >
               修改
             </el-button>
-            <el-popconfirm title="确定删除吗？" onConfirm={() => {}}>
+            <el-popconfirm
+              title="确定删除吗？"
+              onConfirm={() => {
+                deleteRoleApi(scope.row.id).then((res) => {
+                  ElMessage.success("删除成功")
+                  instance.exposed.refreshList()
+                })
+              }}
+            >
               {{
                 reference: () => (
                   <el-button
@@ -216,6 +252,24 @@ function getFormFields(row: any): FormField[] {
       type: RenderType.Input,
       field: "role_comment",
       label: "角色标签",
+    },
+    {
+      type: RenderType.Radio,
+      field: "is_disable",
+      label: "是否禁用",
+      options: [
+        { label: "是", value: 1 },
+        { label: "否", value: 0 },
+      ],
+    },
+    {
+      type: RenderType.Radio,
+      field: "is_default",
+      label: "是否默认",
+      options: [
+        { label: "是", value: 1 },
+        { label: "否", value: 0 },
+      ],
     },
   ]
 }

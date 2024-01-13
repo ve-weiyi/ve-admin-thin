@@ -1,5 +1,5 @@
 import http from "@/utils/request"
-import { Role, BatchResult } from "./types"
+import { Role, BatchResult, RoleDetailsDTO } from "./types"
 
 /** 创建角色 */
 export function createRoleApi(data: Role): Promise<IApiResponseData<Role>> {
@@ -54,8 +54,8 @@ export function findRoleListApi(page: PageQuery): Promise<IApiResponseData<PageR
 }
 
 /** 获取角色列表 */
-export function findRoleDetailsListApi(page: PageQuery): Promise<IApiResponseData<PageResult<Role>>> {
-  return http.request<IApiResponseData<PageResult<Role>>>({
+export function findRoleDetailsListApi(page: PageQuery): Promise<IApiResponseData<PageResult<RoleDetailsDTO>>> {
+  return http.request<IApiResponseData<PageResult<RoleDetailsDTO>>>({
     url: `/api/v1/role/details_list`,
     method: "post",
     data: page,
@@ -63,8 +63,8 @@ export function findRoleDetailsListApi(page: PageQuery): Promise<IApiResponseDat
 }
 
 /** 更新角色菜单 */
-export function updateRoleMenusApi(data: Role): Promise<IApiResponseData<Role>> {
-  return http.request<IApiResponseData<Role>>({
+export function updateRoleMenusApi(data: Role): Promise<IApiResponseData<any>> {
+  return http.request<IApiResponseData<any>>({
     url: `/api/v1/role/update_menus`,
     method: "post",
     data: data,
@@ -72,8 +72,8 @@ export function updateRoleMenusApi(data: Role): Promise<IApiResponseData<Role>> 
 }
 
 /** 更新角色资源 */
-export function updateRoleResourcesApi(data: Role): Promise<IApiResponseData<Role>> {
-  return http.request<IApiResponseData<Role>>({
+export function updateRoleResourcesApi(data: Role): Promise<IApiResponseData<any>> {
+  return http.request<IApiResponseData<any>>({
     url: `/api/v1/role/update_resources`,
     method: "post",
     data: data,

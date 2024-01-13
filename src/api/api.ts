@@ -61,3 +61,11 @@ export function findApiDetailsListApi(page: PageQuery): Promise<IApiResponseData
     data: page,
   })
 }
+
+/** 同步api列表 */
+export function syncApiListApi(): Promise<IApiResponseData<BatchResult>> {
+  return http.request<IApiResponseData<BatchResult>>({
+    url: `/api/v1/api/sync`,
+    method: "post",
+  })
+}

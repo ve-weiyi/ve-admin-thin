@@ -16,7 +16,7 @@ const align = "center"
 const tagType = (type: string) => {
   switch (type) {
     case "GET":
-      return "info"
+      return ""
     case "POST":
       return "success"
     case "PUT":
@@ -24,7 +24,7 @@ const tagType = (type: string) => {
     case "DELETE":
       return "danger"
     default:
-      return ""
+      return "info"
   }
 }
 
@@ -197,8 +197,9 @@ function getColumnFields(): Column[] {
             <el-popconfirm
               title="确定删除吗？"
               onConfirm={() => {
-                deleteApiApi(scope.row).then((res) => {
+                deleteApiApi(scope.row.id).then((res) => {
                   ElMessage.success("删除成功")
+                  instance.exposed.refreshList()
                 })
               }}
             >
@@ -223,7 +224,7 @@ function getColumnFields(): Column[] {
   ]
 }
 
-function getFormFields(model): FormField[] {
+function getFormFields(model: any): FormField[] {
   return [
     {
       type: RenderType.Input,
