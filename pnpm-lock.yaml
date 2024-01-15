@@ -42,8 +42,8 @@ dependencies:
     specifier: ^3.0.5
     version: 3.0.5
   md-editor-v3:
-    specifier: ^4.4.0
-    version: 4.4.0(@codemirror/state@6.2.1)(@codemirror/view@6.17.0)(@lezer/common@1.0.4)(vue@3.3.4)
+    specifier: ^4.10.0
+    version: 4.10.0(@codemirror/state@6.2.1)(@codemirror/view@6.17.0)(@lezer/common@1.0.4)(vue@3.3.4)
   mitt:
     specifier: ^3.0.0
     version: 3.0.0
@@ -86,6 +86,9 @@ dependencies:
   vue-i18n:
     specifier: ^9.2.2
     version: 9.2.2(vue@3.3.4)
+  vue-json-viewer:
+    specifier: '3'
+    version: 3.0.4(vue@3.3.4)
   vue-router:
     specifier: ^4.2.2
     version: 4.2.2(vue@3.3.4)
@@ -2012,8 +2015,8 @@ packages:
       eslint-visitor-keys: 3.4.1
     dev: true
 
-  /@vavt/util@1.2.0:
-    resolution: {integrity: sha512-g/20ugYpM09EpzvGvLPUReEo3fPBefq810NYR31EZwPozZvymkPs1pM1A60GfG0wlQq35iiWoV6HHTyDy/FbwA==}
+  /@vavt/util@1.4.1:
+    resolution: {integrity: sha512-EhYyvt5w+GE6IO1JzDFZLmJOXQmWHnx3OBvA3YY/ZB1kWqHlhJTpL4x7TuANTzK7q1Y6G/okk4eFpLVWxvEBVA==}
     dev: false
 
   /@vitejs/plugin-vue-jsx@3.0.1(vite@4.3.9)(vue@3.3.4):
@@ -2699,6 +2702,14 @@ packages:
       string-width: 5.1.2
     dev: true
 
+  /clipboard@2.0.11:
+    resolution: {integrity: sha512-C+0bbOqkezLIsmWSvlsXS0Q0bmkugu7jcfMIACB+RDEntIzQIkdr148we28AfSloQLRdZlYL/QYyrq05j/3Faw==}
+    dependencies:
+      good-listener: 1.2.2
+      select: 1.1.2
+      tiny-emitter: 2.1.0
+    dev: false
+
   /cliui@6.0.0:
     resolution: {integrity: sha512-t6wbgtoCXvAzst7QgXxJYqPt0usEfbgQdftEPbLL/cvv6HPE5VgvqCuAIDR0NgU52ds6rFwqrgakNLrHEjCbrQ==}
     dependencies:
@@ -3199,6 +3210,10 @@ packages:
   /delayed-stream@1.0.0:
     resolution: {integrity: sha512-ZySD7Nf91aLB0RxL4KGrKHBXl7Eds1DAmEdcoVawXnLD7SDhpNgtuII2aAkg7a7QS41jxPSZ17p4VdGnMHk3MQ==}
     engines: {node: '>=0.4.0'}
+    dev: false
+
+  /delegate@3.2.0:
+    resolution: {integrity: sha512-IofjkYBZaZivn0V8nnsMJGBr4jVLxHDheKSW88PyxS5QC4Vo9ZbZVvhzlSxY87fVq3STR6r+4cGepyHkcWOQSw==}
     dev: false
 
   /destr@2.0.0:
@@ -4027,6 +4042,12 @@ packages:
     resolution: {integrity: sha512-xYfnw62CKG8nLkZBfWbhWwDw02CHty86jfPcc2cr3ZfeuK9ysoVPPEUxf21bAD/rWAgk52SuBrLJlefNy8mvFg==}
     dev: true
 
+  /good-listener@1.2.2:
+    resolution: {integrity: sha512-goW1b+d9q/HIwbVYZzZ6SsTr4IgE+WA44A0GmPIQstuOrgsFcT7VEJ48nmr9GaRtNu0XTKacFLGnBPAM6Afouw==}
+    dependencies:
+      delegate: 3.2.0
+    dev: false
+
   /graceful-fs@4.2.11:
     resolution: {integrity: sha512-RbJ5/jmFcNNCcDV5o9eTnBLJ/HszWV0P73bc+Ff4nS/rJj+YaS6IGyiOL0VoBYX+l1Wrl3k63h/KrH+nhJ0XvQ==}
 
@@ -4636,15 +4657,15 @@ packages:
     resolution: {integrity: sha512-APMBEanjybaPzUrfqU0IMU5I0AswKMH7k8OTLs0vvV4KZpExkTkY87nR/zpbuTPj+gARop7aGUbl11pnDfW6xg==}
     dev: true
 
-  /md-editor-v3@4.4.0(@codemirror/state@6.2.1)(@codemirror/view@6.17.0)(@lezer/common@1.0.4)(vue@3.3.4):
-    resolution: {integrity: sha512-Wb6bueyqCBwgJu0ic9Af+t+kJZDgZEyeSAmYieLhp+/XlxwBSQV5kDvUtUDxfUK4ZEAaI7w+DCV+y4r0uMGYPw==}
+  /md-editor-v3@4.10.0(@codemirror/state@6.2.1)(@codemirror/view@6.17.0)(@lezer/common@1.0.4)(vue@3.3.4):
+    resolution: {integrity: sha512-Sz9tAd6RZbc4l7Ys//GvGFX9mklk8bmQwfjbpbgMNX/4U8DkTeXpQlO8oSNzRGWE9QgZjt4ZTdxjljAIbYLdgQ==}
     peerDependencies:
       vue: ^3.2.47
     dependencies:
       '@codemirror/lang-markdown': 6.2.0
       '@codemirror/language-data': 6.3.1(@codemirror/state@6.2.1)(@codemirror/view@6.17.0)(@lezer/common@1.0.4)
       '@types/markdown-it': 12.2.3
-      '@vavt/util': 1.2.0
+      '@vavt/util': 1.4.1
       codemirror: 6.0.1(@lezer/common@1.0.4)
       copy-to-clipboard: 3.3.3
       lru-cache: 8.0.5
@@ -6230,6 +6251,10 @@ packages:
     dev: false
     optional: true
 
+  /select@1.1.2:
+    resolution: {integrity: sha512-OwpTSOfy6xSs1+pwcNrv0RBMOzI39Lp3qQKUTPVVPRjCdNa5JH/oPRiqsesIskK8TVgmRiHwO4KXlV2Li9dANA==}
+    dev: false
+
   /semver@5.7.1:
     resolution: {integrity: sha512-sauaDf/PZdVgrLTNYHRtpXa1iRiKcaebiKQ1BJdpQlWH2lCvexQdX55snPFyK7QzpudqbCI0qXFfOasHdyNDGQ==}
     hasBin: true
@@ -6887,6 +6912,10 @@ packages:
     resolution: {integrity: sha512-w89qg7PI8wAdvX60bMDP+bFoD5Dvhm9oLheFp5O4a2QF0cSBGsBX4qZmadPMvVqlLJBBci+WqGGOAPvcDeNSVg==}
     dev: true
 
+  /tiny-emitter@2.1.0:
+    resolution: {integrity: sha512-NB6Dk1A9xgQPMoGqC5CVXn123gWyte215ONT5Pp5a0yt4nlEoO1ZWeCwpncaekPHXO60i47ihFnZPiRPjRMq4Q==}
+    dev: false
+
   /to-fast-properties@2.0.0:
     resolution: {integrity: sha512-/OaKK0xYrs3DmxRYqL/yDc+FxFUVYhDlXMhRmv3z915w2HF1tnN1omB354j8VUGO/hbRzyD6Y3sA7v7GS/ceog==}
     engines: {node: '>=4'}
@@ -7268,6 +7297,15 @@ packages:
       '@intlify/vue-devtools': 9.2.2
       '@vue/devtools-api': 6.5.0
       vue: 3.3.4
+
+  /vue-json-viewer@3.0.4(vue@3.3.4):
+    resolution: {integrity: sha512-pnC080rTub6YjccthVSNQod2z9Sl5IUUq46srXtn6rxwhW8QM4rlYn+CTSLFKXWfw+N3xv77Cioxw7B4XUKIbQ==}
+    peerDependencies:
+      vue: ^3.2.2
+    dependencies:
+      clipboard: 2.0.11
+      vue: 3.3.4
+    dev: false
 
   /vue-router@4.2.2(vue@3.3.4):
     resolution: {integrity: sha512-cChBPPmAflgBGmy3tBsjeoe3f3VOSG6naKyY5pjtrqLGbNEXdzCigFUHgBvp9e3ysAtFtEx7OLqcSDh/1Cq2TQ==}

@@ -4,6 +4,8 @@ import { FormField, RenderType } from "@/utils/render"
 import { FixedDir } from "element-plus/es/components/table-v2/src/constants"
 import { Timer } from "@element-plus/icons-vue"
 
+import JsonViewer from 'vue-json-viewer'
+
 import {
   createOperationLogApi,
   deleteOperationLogApi,
@@ -32,24 +34,24 @@ const tagType = (type: string) => {
 
 const options = [
   {
-    value: "新增",
-    label: "新增",
+    label: "GET",
+    value: "GET",
   },
   {
-    value: "修改",
-    label: "修改",
+    label: "POST",
+    value: "POST",
   },
   {
-    value: "删除",
-    label: "删除",
+    label: "PUT",
+    value: "PUT",
   },
   {
-    value: "查询",
-    label: "查询",
+    label: "DELETE",
+    value: "DELETE",
   },
   {
-    value: "新增或修改",
-    label: "新增或修改",
+    label: "NULL",
+    value: "",
   },
 ]
 
@@ -76,13 +78,6 @@ function getColumnFields(): Column[] {
       key: "opt_module",
       title: "系统模块",
       dataKey: "opt_module",
-      width: 100,
-      align: align,
-    },
-    {
-      key: "opt_type",
-      title: "操作类型",
-      dataKey: "opt_type",
       width: 100,
       align: align,
     },
@@ -200,7 +195,7 @@ function getSearchFields(): FormField[] {
     },
     {
       type: RenderType.Select,
-      label: "操作类型",
+      label: "请求方法",
       field: "opt_type",
       options: options,
       searchRules: {
@@ -214,6 +209,28 @@ function getSearchFields(): FormField[] {
 // 表单字段
 function getFormFields(model: OperationLog): FormField[] {
   return [
+    {
+      field: "user_id",
+      label: "用户id",
+    },
+    {
+      field: "nickname",
+      label: "操作人员",
+    },
+    {
+      field: "ip_address",
+      label: "登录ip",
+    },
+    {
+      field: "ip_source",
+      label: "操作地址",
+      render(field, model) {
+        if (model.ip_source == "") {
+          return <div style="width: 100%">未知地址</div>
+        }
+        return <div style="width: 100%">{model.ip_source}</div>
+      },
+    },
     {
       field: "opt_module",
       label: "操作模块",
@@ -234,20 +251,26 @@ function getFormFields(model: OperationLog): FormField[] {
       },
     },
     {
-      field: "opt_method",
-      label: "操作方法",
-    },
-    {
-      field: "request_param",
+      field: "request_data",
       label: "请求参数",
+      render: (field, model) => {
+        return <JsonViewer value={JSON.parse(model.request_data)} copyable boxed expanded/>
+      },
     },
     {
       field: "response_data",
       label: "返回数据",
+      render: (field, model) => {
+        return <JsonViewer value={JSON.parse(model.response_data)} copyable boxed expanded/>
+      },
     },
     {
-      field: "nickname",
-      label: "操作人员",
+      field: "response_status",
+      label: "状态码",
+    },
+    {
+      field: "cost",
+      label: "响应耗时",
     },
     {
       field: "created_at",

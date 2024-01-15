@@ -1,5 +1,5 @@
 import http from "@/utils/request"
-import { Role, BatchResult, RoleDetailsDTO } from "./types"
+import { Role, BatchResult, RoleDetailsDTO, UpdateRoleMenusReq, UpdateRoleApisReq } from "./types"
 
 /** 创建角色 */
 export function createRoleApi(data: Role): Promise<IApiResponseData<Role>> {
@@ -63,7 +63,7 @@ export function findRoleDetailsListApi(page: PageQuery): Promise<IApiResponseDat
 }
 
 /** 更新角色菜单 */
-export function updateRoleMenusApi(data: Role): Promise<IApiResponseData<any>> {
+export function updateRoleMenusApi(data: UpdateRoleMenusReq): Promise<IApiResponseData<any>> {
   return http.request<IApiResponseData<any>>({
     url: `/api/v1/role/update_menus`,
     method: "post",
@@ -72,7 +72,7 @@ export function updateRoleMenusApi(data: Role): Promise<IApiResponseData<any>> {
 }
 
 /** 更新角色资源 */
-export function updateRoleResourcesApi(data: Role): Promise<IApiResponseData<any>> {
+export function updateRoleResourcesApi(data: UpdateRoleApisReq): Promise<IApiResponseData<any>> {
   return http.request<IApiResponseData<any>>({
     url: `/api/v1/role/update_resources`,
     method: "post",
