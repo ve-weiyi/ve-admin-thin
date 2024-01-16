@@ -46,6 +46,7 @@ menus:
   hssplitPane: Split Pane
   hsbutton: Button Components
   hscropping: Picture Cropping
+  hsanimatecss: AnimateCss Selector
   hscountTo: Digital Animation
   hsselector: Selector Components
   hsflowChart: Flow Chart
@@ -75,14 +76,16 @@ menus:
   hsPrint: Print
   hsDownload: Download
   hsExternalPage: External Page
-  hsPureDocument: Pure Doc(Embedded)
-  externalLink: Pure Doc(External)
-  hsEpDocument: Element Plus Doc(Embedded)
-  hsVueDocument: Vue3 Doc(Embedded)
-  hsViteDocument: Vite Doc(Embedded)
-  hsPiniaDocument: Pinia Doc(Embedded)
-  hsRouterDocument: Vue Router Doc(Embedded)
-  hsTailwindcssDocument: Tailwindcss Doc(Embedded)
+  hsExternalDoc: Docs External
+  hsEmbeddedDoc: Docs Embedded
+  externalLink: Vue-Pure-Admin
+  pureutilsLink: Pure-Admin-Utils
+  hsEpDocument: Element-Plus
+  hsTailwindcssDocument: Tailwindcss
+  hsVueDocument: Vue3
+  hsViteDocument: Vite
+  hsPiniaDocument: Pinia
+  hsRouterDocument: Vue-Router
   hsAbout: About
   hsResult: Result Page
   hsSuccess: Success Page
@@ -108,6 +111,7 @@ menus:
   hsPureTableBase: Base Usage
   hsPureTableHigh: High Usage
   hsTree: Big Data Tree
+  hsboard: Paint Board
   hsMenuoverflow: Menu Overflow Show Tooltip Text
   hsChildMenuoverflow: Child Menu Overflow Show Tooltip Text
 status:
@@ -116,7 +120,8 @@ login:
   username: Username
   password: Password
   verifyCode: VerifyCode
-  remember: Remember Password
+  remember: days no need to login
+  rememberInfo: After checking and logging in, will automatically log in to the system without entering your username and password within the specified number of days.
   sure: Sure Password
   forget: Forget Password?
   login: Login
