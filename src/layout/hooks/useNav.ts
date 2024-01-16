@@ -10,9 +10,9 @@ import { transformI18n } from "@/plugins/i18n"
 import { router, remainingPaths } from "@/router"
 import { computed, type CSSProperties } from "vue"
 import { useAppStoreHook } from "@/store/modules/app"
-import { useUserStoreHook } from "@/store/modules/user"
 import { useEpThemeStoreHook } from "@/store/modules/epTheme"
 import { usePermissionStoreHook } from "@/store/modules/permission"
+import { useAdminStoreHook } from "@/store/modules/admin"
 
 const errorInfo = "当前路由配置不正确，请检查配置"
 
@@ -35,7 +35,7 @@ export function useNav() {
 
   /** 用户名 */
   const username = computed(() => {
-    return useUserStoreHook()?.username
+    return useAdminStoreHook()?.userInfo.username
   })
 
   /** 设置国际化选中后的样式 */
@@ -84,7 +84,7 @@ export function useNav() {
 
   /** 退出登录 */
   function logout() {
-    useUserStoreHook().logOut()
+    useAdminStoreHook().logout()
   }
 
   function backTopMenu() {

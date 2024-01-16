@@ -2,14 +2,15 @@ import App from "./App.vue"
 import router from "./router"
 import { setupStore } from "@/store"
 import { useI18n } from "@/plugins/i18n"
-import { getServerConfig } from "./config"
-import { createApp, Directive } from "vue"
+import { getPlatformConfig } from "./config"
 import { MotionPlugin } from "@vueuse/motion"
-// import { useEcharts } from "@/plugins/echarts";
+// import { useEcharts } from "@/plugins/echarts"
+import { createApp, type Directive } from "vue"
+// import { useElementPlus } from "@/plugins/elementPlus"
 import { injectResponsiveStorage } from "@/utils/responsive"
 
-// import Table from "@pureadmin/table";
-// import PureDescriptions from "@pureadmin/descriptions";
+// import Table from "@pureadmin/table"
+// import PureDescriptions from "@pureadmin/descriptions"
 
 // 引入重置样式
 import "./style/reset.scss"
@@ -42,12 +43,19 @@ import { Auth } from "@/components/ReAuth"
 import { loadPlugins } from "@/plugins"
 app.component("Auth", Auth)
 
-getServerConfig(app).then(async(config) => {
+// 全局注册`vue-tippy`
+import "tippy.js/dist/tippy.css";
+import "tippy.js/animations/perspective.css";
+import VueTippy from "vue-tippy";
+app.use(VueTippy, {
+  defaultProps: { animation: "perspective" }
+});
+getPlatformConfig(app).then(async (config) => {
+  setupStore(app)
   app.use(router)
   await router.isReady()
   loadPlugins(app)
   injectResponsiveStorage(app, config)
-  setupStore(app)
   app.use(MotionPlugin).use(useI18n)
   // .use(useEcharts);
   // .use(Table);

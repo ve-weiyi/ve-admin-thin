@@ -172,7 +172,7 @@ module.exports = {
     ],
     "block-spacing": [2, "always"],
     "brace-style": [
-      2,
+      1,
       "1tbs",
       {
         allowSingleLine: true,
@@ -189,7 +189,7 @@ module.exports = {
     ],
     "comma-style": [2, "last"],
     "constructor-super": 2,
-    curly: [2, "multi-line"],
+    curly: [1, "multi-line"],
     "dot-location": [2, "property"],
     "default-case": 1,
     "eol-last": 2,

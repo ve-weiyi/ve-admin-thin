@@ -9,16 +9,12 @@ import { toggleTheme } from "@pureadmin/theme/dist/browser-utils"
 import { useMultiTagsStoreHook } from "@/store/modules/multiTags"
 import Segmented, { type OptionsType } from "@/components/ReSegmented"
 import { useDataThemeChange } from "@/layout/hooks/useDataThemeChange"
-import { useRouter } from "vue-router"
 
+import Check from "@iconify-icons/ep/check"
 import dayIcon from "@/assets/svg/day.svg?component"
 import darkIcon from "@/assets/svg/dark.svg?component"
-import Check from "@iconify-icons/ep/check"
-import Logout from "@iconify-icons/ri/logout-circle-r-line"
-import { useAdminStoreHook } from "@/store/modules/admin"
+import systemIcon from "@/assets/svg/system.svg?component"
 
-const store = useAdminStoreHook()
-const router = useRouter()
 const { device } = useNav()
 const { isDark } = useDark()
 const { $storage } = useGlobal<GlobalPropertiesApi>()
