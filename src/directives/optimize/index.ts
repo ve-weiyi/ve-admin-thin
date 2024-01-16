@@ -1,10 +1,4 @@
-import {
-  isFunction,
-  isObject,
-  isArray,
-  debounce,
-  throttle,
-} from "@pureadmin/utils"
+import { isFunction, isObject, isArray, debounce, throttle } from "@pureadmin/utils"
 import { useEventListener } from "@vueuse/core"
 import type { Directive, DirectiveBinding } from "vue"
 
@@ -21,9 +15,7 @@ export const optimize: Directive = {
           if (isArray(params) || isObject(params)) {
             params = isObject(params) ? Array.of(params) : params
           } else {
-            throw new Error(
-              "[Directive: optimize]: `params` must be an array or object"
-            )
+            throw new Error("[Directive: optimize]: `params` must be an array or object")
           }
         }
         // Register using addEventListener on mounted, and removeEventListener automatically on unmounted
@@ -36,10 +28,7 @@ export const optimize: Directive = {
                 value?.timeout ?? 200,
                 value?.immediate ?? false
               )
-            : throttle(
-                params ? () => value.fn(...params) : value.fn,
-                value?.timeout ?? 1000
-              )
+            : throttle(params ? () => value.fn(...params) : value.fn, value?.timeout ?? 1000)
         )
       } else {
         throw new Error(
@@ -47,9 +36,7 @@ export const optimize: Directive = {
         )
       }
     } else {
-      throw new Error(
-        "[Directive: optimize]: only `debounce` and `throttle` are supported"
-      )
+      throw new Error("[Directive: optimize]: only `debounce` and `throttle` are supported")
     }
   },
 }

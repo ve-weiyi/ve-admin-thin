@@ -1,8 +1,8 @@
 {
   "compilerOptions": {
-    "target": "esnext",
-    "module": "esnext",
-    "moduleResolution": "Node",
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
     "strict": false,
     "jsx": "preserve",
     "importHelpers": true,
@@ -15,9 +15,12 @@
     "forceConsistentCasingInFileNames": true,
     "sourceMap": false,
     "baseUrl": ".",
-    "allowJs": true,
+    "allowJs": false,
     "resolveJsonModule": true,
-    "lib": ["dom", "esnext"],
+    "lib": [
+      "ESNext",
+      "DOM"
+    ],
     "paths": {
       "@/*": ["src/*"],
       "@build/*": ["build/*"]

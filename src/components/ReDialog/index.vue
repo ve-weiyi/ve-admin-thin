@@ -5,7 +5,7 @@ import {
   type EventType,
   type ButtonProps,
   type DialogOptions,
-} from "../index"
+} from "./index"
 import { ref, computed } from "vue"
 import { isFunction } from "@pureadmin/utils"
 import Fullscreen from "@iconify-icons/ri/fullscreen-fill"
@@ -22,9 +22,8 @@ const footerButtons = computed(() => {
             label: "取消",
             text: true,
             bg: true,
-            btnClick: ({ dialog: { options, index }}) => {
-              const done = () =>
-                closeDialog(options, index, { command: "cancel" })
+            btnClick: ({ dialog: { options, index } }) => {
+              const done = () => closeDialog(options, index, { command: "cancel" })
               if (options?.beforeCancel && isFunction(options?.beforeCancel)) {
                 options.beforeCancel(done, { options, index })
               } else {
@@ -37,9 +36,8 @@ const footerButtons = computed(() => {
             type: "primary",
             text: true,
             bg: true,
-            btnClick: ({ dialog: { options, index }}) => {
-              const done = () =>
-                closeDialog(options, index, { command: "sure" })
+            btnClick: ({ dialog: { options, index } }) => {
+              const done = () => closeDialog(options, index, { command: "sure" })
               if (options?.beforeSure && isFunction(options?.beforeSure)) {
                 options.beforeSure(done, { options, index })
               } else {
@@ -52,31 +50,17 @@ const footerButtons = computed(() => {
 })
 
 const fullscreenClass = computed(() => {
-  return [
-    "el-icon",
-    "el-dialog__close",
-    "-translate-x-2",
-    "cursor-pointer",
-    "hover:!text-[red]",
-  ]
+  return ["el-icon", "el-dialog__close", "-translate-x-2", "cursor-pointer", "hover:!text-[red]"]
 })
 
-function eventsCallBack(
-  event: EventType,
-  options: DialogOptions,
-  index: number
-) {
+function eventsCallBack(event: EventType, options: DialogOptions, index: number) {
   fullscreen.value = options?.fullscreen ?? false
   if (options?.[event] && isFunction(options?.[event])) {
     return options?.[event]({ options, index })
   }
 }
 
-function handleClose(
-  options: DialogOptions,
-  index: number,
-  args = { command: "close" }
-) {
+function handleClose(options: DialogOptions, index: number, args = { command: "close" }) {
   closeDialog(options, index, args)
   eventsCallBack("close", options, index)
 }
@@ -84,11 +68,11 @@ function handleClose(
 
 <template>
   <el-dialog
-    class="pure-dialog"
     v-for="(options, index) in dialogStore"
     :key="index"
     v-bind="options"
     v-model="options.visible"
+    class="pure-dialog"
     :fullscreen="fullscreen ? true : options?.fullscreen ? true : false"
     @close="handleClose(options, index)"
     @opened="eventsCallBack('open', options, index)"
@@ -100,32 +84,16 @@ function handleClose(
       v-if="options?.fullscreenIcon || options?.headerRenderer"
       #header="{ close, titleId, titleClass }"
     >
-      <div
-        v-if="options?.fullscreenIcon"
-        class="flex items-center justify-between"
-      >
+      <div v-if="options?.fullscreenIcon" class="flex items-center justify-between">
         <span :id="titleId" :class="titleClass">{{ options?.title }}</span>
-        <i
-          v-if="!options?.fullscreen"
-          :class="fullscreenClass"
-          @click="fullscreen = !fullscreen"
-        >
+        <i v-if="!options?.fullscreen" :class="fullscreenClass" @click="fullscreen = !fullscreen">
           <IconifyIconOffline
             class="pure-dialog-svg"
-            :icon="
-              options?.fullscreen
-                ? ExitFullscreen
-                : fullscreen
-                ? ExitFullscreen
-                : Fullscreen
-            "
+            :icon="options?.fullscreen ? ExitFullscreen : fullscreen ? ExitFullscreen : Fullscreen"
           />
         </i>
       </div>
-      <component
-        v-else
-        :is="options?.headerRenderer({ close, titleId, titleClass })"
-      />
+      <component :is="options?.headerRenderer({ close, titleId, titleClass })" v-else />
     </template>
     <component
       v-bind="options?.props"

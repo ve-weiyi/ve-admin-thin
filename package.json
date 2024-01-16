@@ -23,15 +23,10 @@
     "prepare": "husky install",
     "preinstall": "npx only-allow pnpm"
   },
-  "browserslist": [
-    "> 1%",
-    "not ie 11",
-    "not op_mini all"
-  ],
   "dependencies": {
     "@pureadmin/descriptions": "^1.2.0",
     "@pureadmin/table": "^3.0.1",
-    "@pureadmin/utils": "^2.4.0",
+    "@pureadmin/utils": "^2.4.1",
     "@vueuse/core": "^10.7.2",
     "@vueuse/motion": "^2.0.0",
     "animate.css": "^4.1.1",

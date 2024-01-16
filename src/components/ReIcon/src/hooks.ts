@@ -1,5 +1,5 @@
-import { iconType } from "./types"
-import { h, defineComponent, Component } from "vue"
+import type { iconType } from "./types"
+import { h, defineComponent, type Component } from "vue"
 import { IconifyIconOnline, IconifyIconOffline, FontIcon } from "../index"
 
 /**
@@ -16,10 +16,7 @@ export function useRenderIcon(icon: any, attrs?: iconType): Component {
   if (ifReg.test(icon)) {
     // iconfont
     const name = icon.split(ifReg)[1]
-    const iconName = name.slice(
-      0,
-      name.indexOf(" ") == -1 ? name.length : name.indexOf(" ")
-    )
+    const iconName = name.slice(0, name.indexOf(" ") == -1 ? name.length : name.indexOf(" "))
     const iconType = name.slice(name.indexOf(" ") + 1, name.length)
     return defineComponent({
       name: "FontIcon",
@@ -33,7 +30,7 @@ export function useRenderIcon(icon: any, attrs?: iconType): Component {
     })
   } else if (typeof icon === "function" || typeof icon?.render === "function") {
     // svg
-    return icon
+    return attrs ? h(icon, { ...attrs }) : icon
   } else if (typeof icon === "object") {
     return defineComponent({
       name: "OfflineIcon",
@@ -49,8 +46,7 @@ export function useRenderIcon(icon: any, attrs?: iconType): Component {
     return defineComponent({
       name: "Icon",
       render() {
-        const IconifyIcon =
-          icon && icon.includes(":") ? IconifyIconOnline : IconifyIconOffline
+        const IconifyIcon = icon && icon.includes(":") ? IconifyIconOnline : IconifyIconOffline
         return h(IconifyIcon, {
           icon: icon,
           ...attrs,

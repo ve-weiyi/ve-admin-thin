@@ -152,13 +152,7 @@ interface DialogOptions extends DialogProps {
   /** `Dialog` 打开后的回调 */
   open?: ({ options, index }: { options: DialogOptions; index: number }) => void
   /** `Dialog` 关闭后的回调（只有点击右上角关闭按钮或者空白页关闭页面时才会触发） */
-  close?: ({
-    options,
-    index,
-  }: {
-    options: DialogOptions
-    index: number
-  }) => void
+  close?: ({ options, index }: { options: DialogOptions; index: number }) => void
   /** `Dialog` 关闭后的回调。 `args` 返回的 `command` 值解析：`cancel` 点击取消按钮、`sure` 点击确定按钮、`close` 点击右上角关闭按钮或者空白页  */
   closeCallBack?: ({
     options,
@@ -170,21 +164,9 @@ interface DialogOptions extends DialogProps {
     args: any
   }) => void
   /** 输入焦点聚焦在 `Dialog` 内容时的回调 */
-  openAutoFocus?: ({
-    options,
-    index,
-  }: {
-    options: DialogOptions
-    index: number
-  }) => void
+  openAutoFocus?: ({ options, index }: { options: DialogOptions; index: number }) => void
   /** 输入焦点从 `Dialog` 内容失焦时的回调 */
-  closeAutoFocus?: ({
-    options,
-    index,
-  }: {
-    options: DialogOptions
-    index: number
-  }) => void
+  closeAutoFocus?: ({ options, index }: { options: DialogOptions; index: number }) => void
   /** 点击底部取消按钮的回调，会暂停 `Dialog` 的关闭. 回调函数内执行 `done` 参数方法的时候才是真正关闭对话框的时候 */
   beforeCancel?: (
     done: Function,
