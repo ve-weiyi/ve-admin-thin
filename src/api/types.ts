@@ -47,7 +47,7 @@ export interface Api {
 }
 
 export interface Article {
-  id?: number
+  id?: number // id
   user_id?: number // 作者
   category_id?: number // 文章分类
   article_cover?: string // 文章缩略图
@@ -63,7 +63,7 @@ export interface Article {
 }
 
 export interface ArticleTag {
-  id?: number
+  id?: number // id
   article_id?: number // 文章id
   tag_id?: number // 标签id
 }
@@ -80,7 +80,7 @@ export interface CasbinRule {
 }
 
 export interface Category {
-  id?: number
+  id?: number // id
   category_name?: string // 分类名
   created_at?: string // 创建时间
   updated_at?: string // 更新时间
@@ -114,7 +114,7 @@ export interface Comment {
 }
 
 export interface FriendLink {
-  id?: number
+  id?: number // id
   link_name?: string // 链接名
   link_avatar?: string // 链接头像
   link_address?: string // 链接地址
@@ -196,7 +196,7 @@ export interface Remark {
   time?: number // 弹幕速度
   is_review?: number // 是否审核
   created_at?: string // 发布时间
-  updated_at?: string // 修改时间
+  updated_at?: string // 更新时间
 }
 
 export interface Role {
@@ -224,7 +224,7 @@ export interface RoleMenu {
 }
 
 export interface Tag {
-  id?: number
+  id?: number // id
   tag_name?: string // 标签名
   created_at?: string // 创建时间
   updated_at?: string // 更新时间
@@ -242,7 +242,7 @@ export interface Talk {
 }
 
 export interface UniqueView {
-  id?: number
+  id?: number // id
   views_count?: number // 访问量
   created_at?: string // 创建时间
   updated_at?: string // 更新时间
@@ -312,7 +312,7 @@ export interface UserRole {
 }
 
 export interface WebsiteConfig {
-  id?: number
+  id?: number // id
   key?: string // 关键词
   config?: string // 配置信息
   created_at?: string // 创建时间
@@ -375,6 +375,30 @@ export interface ChangePasswordReq {
   new_password?: string // 新密码
 }
 
+export interface CustomizeRouteMeta {
+  title?: string // 菜单名称
+  icon?: any // 菜单图标
+  extra_icon?: any // 菜单名称右侧的额外图标
+  show_link?: boolean // 是否在菜单中显示
+  show_parent?: boolean // 是否显示父级菜单
+  roles?: string[] // 页面级别权限设置
+  auths?: string[] // 按钮级别权限设置
+  keep_alive?: boolean // 路由组件缓存
+  frame_src?: string // 内嵌的iframe链接
+  frame_loading?: boolean // iframe页是否开启首次加载动画
+  transition?: Transition // 页面加载动画
+  hidden_tag?: boolean // 是否不添加信息到标签页
+  dynamic_level?: number // 动态路由可打开的最大数量
+  active_path?: string // 将某个菜单激活
+}
+
+export interface Meta {
+  title?: string // 菜单名称
+  icon?: string // 菜单图标
+  show_link?: boolean // 是否在菜单中显示
+  rank?: number // 菜单升序排序
+}
+
 export interface OauthLoginReq {
   platform?: string // 平台
   code?: string // 授权码
@@ -385,6 +409,34 @@ export interface ResetPasswordReq {
   username?: string
   password?: string
   code?: string
+}
+
+export interface RouteChildrenConfigsTable {
+  path?: string // 子路由地址
+  name?: string // 路由名字
+  redirect?: string // 路由重定向
+  component?: any // 按需加载组件
+  meta?: CustomizeRouteMeta // meta配置
+  children?: RouteChildrenConfigsTable[] // 子路由配置项
+}
+
+export interface RouteConfigsTable {
+  path?: string // 路由地址
+  name?: string // 路由名字
+  component?: any // Layout组件
+  redirect?: string // 路由重定向
+  meta?: Meta // meta配置
+  children?: RouteChildrenConfigsTable[] // 子路由配置项
+}
+
+export interface SyncMenuRequest {
+  menus?: RouteConfigsTable[]
+}
+
+export interface Transition {
+  name?: string // 当前路由动画效果
+  enter_transition?: string // 进场动画
+  leave_transition?: string // 离场动画
 }
 
 export interface UpdateRoleApisReq {

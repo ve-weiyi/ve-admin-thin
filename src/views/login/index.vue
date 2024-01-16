@@ -65,7 +65,6 @@ const onLogin = async(formEl: FormInstance | undefined) => {
         .then((res) => {
           loading.value = false
           console.log("res", res)
-          console.log("router", router.getRoutes())
           message("登录成功", { type: "success" })
           // 保存token
           useAdminStoreHook().login(res.data)

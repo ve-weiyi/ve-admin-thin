@@ -86,6 +86,13 @@ function getColumnFields(): Column[] {
       align: align,
     },
     {
+      key: "title",
+      title: "标题",
+      dataKey: "title",
+      width: 120,
+      align: align,
+    },
+    {
       key: "icon",
       title: "图标",
       dataKey: "icon",
@@ -242,6 +249,11 @@ function getFormFields(row: any): FormField[] {
       type: RenderType.Input,
       field: "name",
       label: "菜单名称",
+    },
+    {
+      type: RenderType.Input,
+      field: "title",
+      label: "菜单标题",
     },
     {
       type: RenderType.Input,

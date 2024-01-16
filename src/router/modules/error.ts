@@ -1,6 +1,7 @@
 import { $t } from "@/plugins/i18n"
 
 export default {
+  name: "error",
   path: "/error",
   redirect: "/error/403",
   meta: {

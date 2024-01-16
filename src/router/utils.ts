@@ -19,7 +19,6 @@ import {
 import { getConfig } from "@/config"
 import { menuType } from "@/layout/types"
 import { buildHierarchyTree } from "@/utils/tree"
-import { sessionKey, Token } from "@/utils/token"
 import { useMultiTagsStoreHook } from "@/store/modules/multiTags"
 import { usePermissionStoreHook } from "@/store/modules/permission"
 const IFrame = () => import("@/layout/frameView.vue")

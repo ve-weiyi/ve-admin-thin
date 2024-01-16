@@ -1,5 +1,5 @@
 import http from "@/utils/request"
-import { Menu, BatchResult, MenuDetailsDTO } from "./types"
+import { Menu, BatchResult, MenuDetailsDTO, SyncMenuRequest } from "./types"
 
 /** 创建菜单 */
 export function createMenuApi(data: Menu): Promise<IApiResponseData<Menu>> {
@@ -59,5 +59,14 @@ export function findMenuDetailsListApi(page: PageQuery): Promise<IApiResponseDat
     url: `/api/v1/menu/details_list`,
     method: "post",
     data: page,
+  })
+}
+
+/** 同步菜单列表 */
+export function syncMenuListApi(data: SyncMenuRequest): Promise<IApiResponseData<BatchResult>> {
+  return http.request<IApiResponseData<BatchResult>>({
+    url: `/api/v1/menu/sync`,
+    method: "post",
+    data: data,
   })
 }
