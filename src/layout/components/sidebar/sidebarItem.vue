@@ -237,8 +237,13 @@ function resolvePath(routePath) {
       </div>
     </template>
   </el-menu-item>
-
-  <el-sub-menu v-else ref="subMenu" v-bind="expandCloseIcon" :index="resolvePath(props.item.path)">
+  <el-sub-menu
+    v-else
+    ref="subMenu"
+    teleported
+    :index="resolvePath(props.item.path)"
+    v-bind="expandCloseIcon"
+  >
     <template #title>
       <div v-if="toRaw(props.item.meta.icon)" :style="getsubMenuIconStyle" class="sub-menu-icon">
         <component :is="useRenderIcon(props.item.meta && toRaw(props.item.meta.icon))" />
@@ -247,8 +252,8 @@ function resolvePath(routePath) {
         {{ transformI18n(props.item.meta.title) }}
       </span>
       <div
-        :style="getSubMenuDivStyle(props.item)"
         v-if="!(isCollapse && toRaw(props.item.meta.icon) && props.item.parentId === null)"
+        :style="getSubMenuDivStyle(props.item)"
       >
         <el-tooltip
           v-if="layout !== 'horizontal'"
@@ -267,6 +272,7 @@ function resolvePath(routePath) {
         <extraIcon v-if="!isCollapse" :extraIcon="props.item.meta.extraIcon" />
       </div>
     </template>
+
     <sidebar-item
       v-for="child in props.item.children"
       :key="child.path"

@@ -17,7 +17,7 @@ const showLogo = ref(
     true
 )
 
-const { device, pureApp, isCollapse, menuSelect, toggleSideBar } = useNav()
+const { device, pureApp, isCollapse, tooltipEffect, menuSelect, toggleSideBar } = useNav()
 
 const subMenuData = ref([])
 
@@ -74,17 +74,19 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div v-loading="loading" :class="['sidebar-container', showLogo ? 'has-logo' : '']">
+  <div v-loading="loading" :class="['sidebar-container', showLogo ? 'has-logo' : 'no-logo']">
     <Logo v-if="showLogo" :collapse="isCollapse" />
     <el-scrollbar wrap-class="scrollbar-wrapper" :class="[device === 'mobile' ? 'mobile' : 'pc']">
       <el-menu
         router
         unique-opened
         mode="vertical"
+        popper-class="pure-scrollbar"
         class="outer-most select-none"
         :collapse="isCollapse"
-        :default-active="defaultActive"
         :collapse-transition="false"
+        :popper-effect="tooltipEffect"
+        :default-active="defaultActive"
       >
         <sidebar-item
           v-for="routes in menuData"

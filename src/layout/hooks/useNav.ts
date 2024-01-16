@@ -2,17 +2,17 @@ import { storeToRefs } from "pinia"
 import { getConfig } from "@/config"
 import { useRouter } from "vue-router"
 import { emitter } from "@/utils/mitt"
-import { routeMetaType } from "../types"
 import userAvatar from "@/assets/user.jpg"
 import { getTopMenu } from "@/router/utils"
 import { useGlobal } from "@pureadmin/utils"
+import type { routeMetaType } from "../types"
 import { transformI18n } from "@/plugins/i18n"
 import { router, remainingPaths } from "@/router"
 import { computed, type CSSProperties } from "vue"
 import { useAppStoreHook } from "@/store/modules/app"
+import { useUserStoreHook } from "@/store/modules/user"
 import { useEpThemeStoreHook } from "@/store/modules/epTheme"
 import { usePermissionStoreHook } from "@/store/modules/permission"
-import { useAdminStoreHook } from "@/store/modules/admin"
 
 const errorInfo = "当前路由配置不正确，请检查配置"
 
@@ -35,7 +35,7 @@ export function useNav() {
 
   /** 用户名 */
   const username = computed(() => {
-    return useAdminStoreHook()?.userInfo.username
+    return useUserStoreHook()?.username
   })
 
   /** 设置国际化选中后的样式 */
@@ -84,7 +84,7 @@ export function useNav() {
 
   /** 退出登录 */
   function logout() {
-    useAdminStoreHook().logout()
+    useUserStoreHook().logOut()
   }
 
   function backTopMenu() {
@@ -124,6 +124,11 @@ export function useNav() {
     return remainingPaths.includes(path)
   }
 
+  /** 获取`logo` */
+  function getLogo() {
+    return new URL("/logo.svg", import.meta.url).href
+  }
+
   return {
     title,
     device,
@@ -139,6 +144,7 @@ export function useNav() {
     menuSelect,
     handleResize,
     resolvePath,
+    getLogo,
     isCollapse,
     pureApp,
     username,

@@ -1,15 +1,13 @@
 import {
   ref,
   unref,
-  watch,
   computed,
   reactive,
   onMounted,
-  CSSProperties,
+  type CSSProperties,
   getCurrentInstance,
 } from "vue"
-import { tagsViewsType } from "../types"
-import { useEventListener } from "@vueuse/core"
+import type { tagsViewsType } from "../types"
 import { useRoute, useRouter } from "vue-router"
 import { transformI18n, $t } from "@/plugins/i18n"
 import { responsiveStorageNameSpace } from "@/config"
@@ -161,13 +159,11 @@ export function useTags() {
   function onMouseenter(index) {
     if (index) activeIndex.value = index
     if (unref(showModel) === "smart") {
-      if (hasClass(instance.refs["schedule" + index][0], "schedule-active")) {
-        return
-      }
+      if (hasClass(instance.refs["schedule" + index][0], "schedule-active")) return
       toggleClass(true, "schedule-in", instance.refs["schedule" + index][0])
       toggleClass(false, "schedule-out", instance.refs["schedule" + index][0])
     } else {
-      if (hasClass(instance.refs["dynamic" + index][0], "card-active")) return
+      if (hasClass(instance.refs["dynamic" + index][0], "is-active")) return
       toggleClass(true, "card-in", instance.refs["dynamic" + index][0])
       toggleClass(false, "card-out", instance.refs["dynamic" + index][0])
     }
@@ -177,13 +173,11 @@ export function useTags() {
   function onMouseleave(index) {
     activeIndex.value = -1
     if (unref(showModel) === "smart") {
-      if (hasClass(instance.refs["schedule" + index][0], "schedule-active")) {
-        return
-      }
+      if (hasClass(instance.refs["schedule" + index][0], "schedule-active")) return
       toggleClass(false, "schedule-in", instance.refs["schedule" + index][0])
       toggleClass(true, "schedule-out", instance.refs["schedule" + index][0])
     } else {
-      if (hasClass(instance.refs["dynamic" + index][0], "card-active")) return
+      if (hasClass(instance.refs["dynamic" + index][0], "is-active")) return
       toggleClass(false, "card-in", instance.refs["dynamic" + index][0])
       toggleClass(true, "card-out", instance.refs["dynamic" + index][0])
     }
@@ -204,13 +198,6 @@ export function useTags() {
       storageLocal().setItem(`${responsiveStorageNameSpace()}configure`, configure)
     }
   })
-
-  watch(
-    () => visible.value,
-    () => {
-      useEventListener(document, "click", closeMenu)
-    }
-  )
 
   return {
     route,

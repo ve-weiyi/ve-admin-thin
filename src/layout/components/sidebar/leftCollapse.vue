@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, computed } from "vue"
+import { useGlobal } from "@pureadmin/utils"
 import { useNav } from "@/layout/hooks/useNav"
 import MenuFold from "@iconify-icons/ri/menu-fold-fill"
 
@@ -22,15 +23,16 @@ const iconClass = computed(() => {
     "h-[16px]",
     "inline-block",
     "align-middle",
-    "text-primary",
     "cursor-pointer",
     "duration-[100ms]",
-    "hover:text-primary",
-    "dark:hover:!text-white",
   ]
 })
 
-const emit = defineEmits<{(e: "toggleClick"): void }>()
+const { $storage } = useGlobal<GlobalPropertiesApi>()
+const themeColor = computed(() => $storage.layout?.themeColor)
+
+const emit = defineEmits<{(e: "toggleClick"): void
+}>()
 
 const toggleClick = () => {
   emit("toggleClick")
@@ -38,7 +40,7 @@ const toggleClick = () => {
 </script>
 
 <template>
-  <div class="container">
+  <div class="collapse-container">
     <el-tooltip
       placement="right"
       :visible="visible"
@@ -47,7 +49,7 @@ const toggleClick = () => {
     >
       <IconifyIconOffline
         :icon="MenuFold"
-        :class="iconClass"
+        :class="[iconClass, themeColor === 'light' ? '' : 'text-primary']"
         :style="{ transform: props.isActive ? 'none' : 'rotateY(180deg)' }"
         @click="toggleClick"
         @mouseenter="visible = true"
@@ -58,12 +60,12 @@ const toggleClick = () => {
 </template>
 
 <style lang="scss" scoped>
-.container {
+.collapse-container {
   position: absolute;
   bottom: 0;
   width: 100%;
   height: 40px;
   line-height: 40px;
-  box-shadow: 0 0 6px -2px var(--el-color-primary);
+  box-shadow: 0 0 6px -3px var(--el-color-primary);
 }
 </style>

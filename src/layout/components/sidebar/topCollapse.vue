@@ -10,7 +10,8 @@ const props = withDefaults(defineProps<Props>(), {
   isActive: false,
 })
 
-const emit = defineEmits<{(e: "toggleClick"): void }>()
+const emit = defineEmits<{(e: "toggleClick"): void
+}>()
 
 const toggleClick = () => {
   emit("toggleClick")

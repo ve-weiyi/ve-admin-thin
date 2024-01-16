@@ -94,7 +94,7 @@ export const noticesData: TabItem[] = [
   },
   {
     key: "3",
-    name: "代办",
+    name: "待办",
     list: [
       {
         avatar: "",
