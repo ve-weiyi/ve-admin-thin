@@ -29,9 +29,7 @@ const { t, locale, translationCh, translationEn } = useTranslationLang()
 </script>
 
 <template>
-  <div
-    class="navbar bg-[#fff] shadow-sm shadow-[rgba(0, 21, 41, 0.08)] dark:shadow-[#0d0d0d]"
-  >
+  <div class="navbar bg-[#fff] shadow-sm shadow-[rgba(0, 21, 41, 0.08)] dark:shadow-[#0d0d0d]">
     <topCollapse
       v-if="device === 'mobile'"
       class="hamburger-container"
@@ -39,10 +37,7 @@ const { t, locale, translationCh, translationEn } = useTranslationLang()
       @toggleClick="toggleSideBar"
     />
 
-    <Breadcrumb
-      v-if="layout !== 'mix' && device !== 'mobile'"
-      class="breadcrumb-container"
-    />
+    <Breadcrumb v-if="layout !== 'mix' && device !== 'mobile'" class="breadcrumb-container" />
 
     <mixNav v-if="layout === 'mix'" />
 
@@ -63,11 +58,7 @@ const { t, locale, translationCh, translationEn } = useTranslationLang()
               :class="['dark:!text-white', getDropdownItemClass(locale, 'zh')]"
               @click="translationCh"
             >
-              <IconifyIconOffline
-                class="check-zh"
-                v-show="locale === 'zh'"
-                :icon="Check"
-              />
+              <IconifyIconOffline class="check-zh" v-show="locale === 'zh'" :icon="Check" />
               简体中文
             </el-dropdown-item>
             <el-dropdown-item
@@ -92,20 +83,13 @@ const { t, locale, translationCh, translationEn } = useTranslationLang()
         <template #dropdown>
           <el-dropdown-menu class="logout">
             <el-dropdown-item @click="logout">
-              <IconifyIconOffline
-                :icon="LogoutCircleRLine"
-                style="margin: 5px"
-              />
+              <IconifyIconOffline :icon="LogoutCircleRLine" style="margin: 5px" />
               {{ t("buttons.hsLoginOut") }}
             </el-dropdown-item>
           </el-dropdown-menu>
         </template>
       </el-dropdown>
-      <span
-        class="set-icon navbar-bg-hover"
-        :title="t('buttons.hssystemSet')"
-        @click="onPanel"
-      >
+      <span class="set-icon navbar-bg-hover" :title="t('buttons.hssystemSet')" @click="onPanel">
         <IconifyIconOffline :icon="Setting" />
       </span>
     </div>

@@ -30,8 +30,7 @@ const iconClass = computed(() => {
   ]
 })
 
-const emit = defineEmits<{(e: "toggleClick"): void
-}>()
+const emit = defineEmits<{(e: "toggleClick"): void }>()
 
 const toggleClick = () => {
   emit("toggleClick")

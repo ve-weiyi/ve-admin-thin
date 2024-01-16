@@ -13,9 +13,8 @@ import { ref, computed, watch, onMounted, onBeforeUnmount } from "vue"
 
 const route = useRoute()
 const showLogo = ref(
-  storageLocal().getItem<StorageConfigs>(
-    `${responsiveStorageNameSpace()}configure`
-  )?.showLogo ?? true
+  storageLocal().getItem<StorageConfigs>(`${responsiveStorageNameSpace()}configure`)?.showLogo ??
+    true
 )
 
 const { device, pureApp, isCollapse, menuSelect, toggleSideBar } = useNav()
@@ -41,10 +40,7 @@ function getSubMenuData() {
   path = defaultActive.value
   subMenuData.value = []
   // path的上级路由组成的数组
-  const parentPathArr = getParentPaths(
-    path,
-    usePermissionStoreHook().wholeMenus
-  )
+  const parentPathArr = getParentPaths(path, usePermissionStoreHook().wholeMenus)
   // 当前路由的父级路由信息
   const parenetRoute = findRouteByPath(
     parentPathArr[0] || path,
@@ -78,15 +74,9 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div
-    v-loading="loading"
-    :class="['sidebar-container', showLogo ? 'has-logo' : '']"
-  >
+  <div v-loading="loading" :class="['sidebar-container', showLogo ? 'has-logo' : '']">
     <Logo v-if="showLogo" :collapse="isCollapse" />
-    <el-scrollbar
-      wrap-class="scrollbar-wrapper"
-      :class="[device === 'mobile' ? 'mobile' : 'pc']"
-    >
+    <el-scrollbar wrap-class="scrollbar-wrapper" :class="[device === 'mobile' ? 'mobile' : 'pc']">
       <el-menu
         router
         unique-opened

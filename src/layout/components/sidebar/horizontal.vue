@@ -14,8 +14,7 @@ import Check from "@iconify-icons/ep/check"
 
 const menuRef = ref()
 
-const { t, route, locale, translationCh, translationEn } =
-  useTranslationLang(menuRef)
+const { t, route, locale, translationCh, translationEn } = useTranslationLang(menuRef)
 const {
   title,
   logout,
@@ -38,10 +37,7 @@ nextTick(() => {
 </script>
 
 <template>
-  <div
-    v-loading="usePermissionStoreHook().wholeMenus.length === 0"
-    class="horizontal-header"
-  >
+  <div v-loading="usePermissionStoreHook().wholeMenus.length === 0" class="horizontal-header">
     <div class="horizontal-header-left" @click="backTopMenu">
       <img src="/logo.svg" alt="logo" />
       <span>{{ title }}</span>
@@ -104,20 +100,13 @@ nextTick(() => {
         <template #dropdown>
           <el-dropdown-menu class="logout">
             <el-dropdown-item @click="logout">
-              <IconifyIconOffline
-                :icon="LogoutCircleRLine"
-                style="margin: 5px"
-              />
+              <IconifyIconOffline :icon="LogoutCircleRLine" style="margin: 5px" />
               {{ t("buttons.hsLoginOut") }}
             </el-dropdown-item>
           </el-dropdown-menu>
         </template>
       </el-dropdown>
-      <span
-        class="set-icon navbar-bg-hover"
-        :title="t('buttons.hssystemSet')"
-        @click="onPanel"
-      >
+      <span class="set-icon navbar-bg-hover" :title="t('buttons.hssystemSet')" @click="onPanel">
         <IconifyIconOffline :icon="Setting" />
       </span>
     </div>

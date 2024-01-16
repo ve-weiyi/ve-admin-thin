@@ -44,11 +44,9 @@ const transitionMain = defineComponent({
       Transition,
       {
         name:
-          transitions.value(this.route) &&
-          this.route.meta.transition.enterTransition
+          transitions.value(this.route) && this.route.meta.transition.enterTransition
             ? "pure-classes-transition"
-            : (transitions.value(this.route) &&
-                this.route.meta.transition.name) ||
+            : (transitions.value(this.route) && this.route.meta.transition.name) ||
               "fade-transform",
         enterActiveClass:
           transitions.value(this.route) &&
@@ -85,42 +83,18 @@ const transitionMain = defineComponent({
             <backTop />
           </el-backtop>
           <transitionMain :route="route">
-            <keep-alive
-              v-if="keepAlive"
-              :include="usePermissionStoreHook().cachePageList"
-            >
-              <component
-                :is="Component"
-                :key="route.fullPath"
-                class="main-content"
-              />
+            <keep-alive v-if="keepAlive" :include="usePermissionStoreHook().cachePageList">
+              <component :is="Component" :key="route.fullPath" class="main-content" />
             </keep-alive>
-            <component
-              v-else
-              :is="Component"
-              :key="route.fullPath"
-              class="main-content"
-            />
+            <component v-else :is="Component" :key="route.fullPath" class="main-content" />
           </transitionMain>
         </el-scrollbar>
         <div v-else>
           <transitionMain :route="route">
-            <keep-alive
-              v-if="keepAlive"
-              :include="usePermissionStoreHook().cachePageList"
-            >
-              <component
-                :is="Component"
-                :key="route.fullPath"
-                class="main-content"
-              />
+            <keep-alive v-if="keepAlive" :include="usePermissionStoreHook().cachePageList">
+              <component :is="Component" :key="route.fullPath" class="main-content" />
             </keep-alive>
-            <component
-              v-else
-              :is="Component"
-              :key="route.fullPath"
-              class="main-content"
-            />
+            <component v-else :is="Component" :key="route.fullPath" class="main-content" />
           </transitionMain>
         </div>
       </template>

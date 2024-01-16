@@ -104,9 +104,7 @@ function scrollTo(index) {
 function handleUp() {
   const { length } = resultOptions.value
   if (length === 0) return
-  const index = resultOptions.value.findIndex(
-    (item) => item.path === activePath.value
-  )
+  const index = resultOptions.value.findIndex((item) => item.path === activePath.value)
   if (index === 0) {
     activePath.value = resultOptions.value[length - 1].path
     scrollTo(resultOptions.value.length - 1)
@@ -120,9 +118,7 @@ function handleUp() {
 function handleDown() {
   const { length } = resultOptions.value
   if (length === 0) return
-  const index = resultOptions.value.findIndex(
-    (item) => item.path === activePath.value
-  )
+  const index = resultOptions.value.findIndex((item) => item.path === activePath.value)
   if (index + 1 === length) {
     activePath.value = resultOptions.value[0].path
   } else {
@@ -168,18 +164,12 @@ onKeyStroke("ArrowDown", handleDown)
       @input="handleSearch"
     >
       <template #prefix>
-        <IconifyIconOffline
-          :icon="Search"
-          class="text-primary w-[24px] h-[24px]"
-        />
+        <IconifyIconOffline :icon="Search" class="text-primary w-[24px] h-[24px]" />
       </template>
     </el-input>
     <div class="search-result-container">
       <el-scrollbar ref="scrollbarRef" max-height="calc(90vh - 140px)">
-        <el-empty
-          v-if="resultOptions.length === 0"
-          description="暂无搜索结果"
-        />
+        <el-empty v-if="resultOptions.length === 0" description="暂无搜索结果" />
         <SearchResult
           v-else
           ref="resultRef"

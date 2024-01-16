@@ -32,9 +32,8 @@ function hoverDescription(event, description) {
   tempTag.innerText = description
   tempTag.className = "getDescriptionWidth"
   document.querySelector("body").appendChild(tempTag)
-  const currentWidth = (
-    document.querySelector(".getDescriptionWidth") as HTMLSpanElement
-  ).offsetWidth
+  const currentWidth = (document.querySelector(".getDescriptionWidth") as HTMLSpanElement)
+    .offsetWidth
   document.querySelector(".getDescriptionWidth").remove()
 
   // cellWidth为容器的宽度
@@ -48,9 +47,7 @@ function hoverDescription(event, description) {
 </script>
 
 <template>
-  <div
-    class="notice-container border-b-[1px] border-solid border-[#f0f0f0] dark:border-[#303030]"
-  >
+  <div class="notice-container border-b-[1px] border-solid border-[#f0f0f0] dark:border-[#303030]">
     <el-avatar
       v-if="props.noticeItem.avatar"
       :size="30"
@@ -67,11 +64,7 @@ function hoverDescription(event, description) {
           placement="top-start"
           :enterable="!isMobile"
         >
-          <div
-            ref="titleRef"
-            class="notice-title-content"
-            @mouseover="hoverTitle"
-          >
+          <div ref="titleRef" class="notice-title-content" @mouseover="hoverTitle">
             {{ props.noticeItem.title }}
           </div>
         </el-tooltip>
