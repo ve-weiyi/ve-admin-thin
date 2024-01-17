@@ -1,6 +1,7 @@
 <template>
   <div>
     <TablePage
+      ref="tableRef"
       :default-order="defaultOrder"
       :get-column-fields="getColumnFields"
       :get-form-fields="getFormFields"

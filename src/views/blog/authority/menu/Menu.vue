@@ -1,6 +1,7 @@
 <template>
   <div>
     <TablePage
+      ref="tableRef"
       :default-order="defaultOrder"
       :get-column-fields="getColumnFields"
       :get-form-fields="getFormFields"
@@ -20,12 +21,13 @@
 <script lang="ts" setup>
 import TablePage from "@/components/TablePage/TablePage.vue"
 import { useTableHook } from "./hook"
-import { onMounted } from "vue"
+import { onMounted, ref } from "vue"
 import router, { constantMenus } from "@/router"
 import { ElMessage, ElMessageBox } from "element-plus"
 import { syncMenuListApi } from "@/api/menu"
 import { RouteConfigsTable } from "@/api/types"
 
+const tableRef = ref<InstanceType<typeof TablePage>>()
 const defaultOrder = { id: "asc" }
 
 const { getSearchFields, getColumnFields, getFormFields, handleApi } = useTableHook()
@@ -42,6 +44,7 @@ function Sync(evt: MouseEvent) {
       const menus = constantMenus as RouteConfigsTable[]
       syncMenuListApi({ menus: menus }).then((res) => {
         ElMessage.success("同步成功")
+        tableRef.value.refreshList()
       })
     })
     .catch(() => {

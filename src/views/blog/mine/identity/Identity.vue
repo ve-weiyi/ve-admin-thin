@@ -266,7 +266,7 @@ const columns = ref<Column<any>[]>([
 ])
 const tableData = ref<any[]>([])
 
-const getHistory = async() => {
+const getHistory = async () => {
   loading.value = true
   findUserLoginHistoryListApi({})
     .then((response) => {
@@ -280,7 +280,7 @@ const getHistory = async() => {
 getHistory()
 
 // 1 绑定手机, 2 实名认证, 3 绑定邮箱, 4 完善个人信息
-const bindHandle = async(step: number) => {
+const bindHandle = async (step: number) => {
   if (step != 2) {
     ElMessage({
       message: "此组件还未开发",

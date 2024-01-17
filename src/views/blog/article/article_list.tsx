@@ -100,9 +100,13 @@ function getColumnFields(): Column[] {
       dataKey: "type",
       width: 0,
       align: align,
-        cellRenderer: (scope: any) => {
-            return <el-tag type={typeOptions(scope.row.type).value}>{typeOptions(scope.row.type).label}</el-tag>
-        },
+      cellRenderer: (scope: any) => {
+        return (
+          <el-tag type={typeOptions(scope.row.type).value}>
+            {typeOptions(scope.row.type).label}
+          </el-tag>
+        )
+      },
     },
     {
       key: "is_top",

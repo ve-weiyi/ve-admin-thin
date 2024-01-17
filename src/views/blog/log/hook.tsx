@@ -4,7 +4,7 @@ import { FormField, RenderType } from "@/utils/render"
 import { FixedDir } from "element-plus/es/components/table-v2/src/constants"
 import { Timer } from "@element-plus/icons-vue"
 
-import JsonViewer from 'vue-json-viewer'
+import JsonViewer from "vue-json-viewer"
 
 import {
   createOperationLogApi,
@@ -254,14 +254,14 @@ function getFormFields(model: OperationLog): FormField[] {
       field: "request_data",
       label: "请求参数",
       render: (field, model) => {
-        return <JsonViewer value={JSON.parse(model.request_data)} copyable boxed expanded/>
+        return <JsonViewer value={JSON.parse(model.request_data)} copyable boxed expanded />
       },
     },
     {
       field: "response_data",
       label: "返回数据",
       render: (field, model) => {
-        return <JsonViewer value={JSON.parse(model.response_data)} copyable boxed expanded/>
+        return <JsonViewer value={JSON.parse(model.response_data)} copyable boxed expanded />
       },
     },
     {

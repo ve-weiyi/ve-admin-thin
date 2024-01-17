@@ -135,7 +135,7 @@
                         </el-icon>
                         <el-checkbox
                           v-if="element"
-                          :label="element.title"
+                          :label="element.key"
                           @change="(value) => handleCheckFieldChange(value, element)"
                         >
                           <span
@@ -546,7 +546,7 @@ function resetTable() {
   columnFields.value = props.getColumnFields()
   columnFieldsVisibility.value = columnFields.value
     .filter((column) => column.hidden != true)
-    .map((column) => column.title)
+    .map((column) => column.key)
   // console.log("columnFields", columnFields.value)
   // console.log("columnFieldsVisibility", columnFieldsVisibility.value)
 }
@@ -584,7 +584,7 @@ function handleDragFieldChange(evt: any): void {
 function handleCheckAllFieldChange(val: boolean) {
   isIndeterminate.value = false
   // 改变按钮状态
-  columnFieldsVisibility.value = val ? columnFields.value.map((column) => column.title) : []
+  columnFieldsVisibility.value = val ? columnFields.value.map((column) => column.key) : []
   // 改变列显示状态
   columnFields.value.map((column) => (val ? (column.hidden = false) : (column.hidden = true)))
   console.log("handleCheckAllFieldChange ", val, columnFieldsVisibility.value)

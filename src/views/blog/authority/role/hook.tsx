@@ -310,7 +310,7 @@ const activeMenus = ref([])
 const activeResources = ref([])
 const formData = ref<RoleDetailsDTO>()
 
-const openDrawer = (row:RoleDetailsDTO) => {
+const openDrawer = (row: RoleDetailsDTO) => {
   console.log("row", row)
   if (row) {
     formData.value = row
@@ -329,6 +329,6 @@ export function useTableHook() {
     activeMenus,
     activeResources,
     formData,
-    openDrawer
+    openDrawer,
   }
 }

@@ -139,7 +139,7 @@ const colors = ref([
   { color: "#f56c6c", percentage: 80 },
 ])
 
-const reload = async() => {
+const reload = async () => {
   getSystemStateApi().then((res) => {
     state.value = res.data
   })

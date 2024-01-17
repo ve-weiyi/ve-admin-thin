@@ -1,6 +1,7 @@
 <template>
   <div>
     <TablePage
+      ref="tableRef"
       :default-order="defaultOrder"
       :get-column-fields="getColumnFields"
       :get-form-fields="getFormFields"
@@ -9,7 +10,8 @@
       :show-add-button="false"
       :show-edit-button="false"
       model-name="日志"
-    />
+    >
+    </TablePage>
   </div>
 </template>
 
