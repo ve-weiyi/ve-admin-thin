@@ -2,14 +2,15 @@
   <div>
     <div class="clearfix sticky-button">
       <el-input v-model="filterText" class="filter" placeholder="筛选" />
+      <el-checkbox class="fl-right" @change="(value) => checkAll(value)">全选</el-checkbox>
     </div>
     <div class="tree-content">
       <el-tree
-        ref="menuTreeRef"
-        :data="menuTreeData"
+        ref="treeRef"
+        :data="treeData"
         :default-checked-keys="defaultCheckIds"
         :filter-node-method="filterNode"
-        :props="menuDefaultProps"
+        :props="treeProps"
         default-expand-all
         highlight-current
         node-key="id"
@@ -28,15 +29,16 @@
 
 <script lang="ts" setup>
 import { defineComponent, ref, watch } from "vue"
-import { ElTree } from "element-plus"
+import { CheckboxValueType, ElTree } from "element-plus"
 import { findMenuDetailsListApi } from "@/api/menu"
+import { MenuDetailsDTO } from "@/api/types"
 
 // 父组件向子组件传输的数据
 const props = defineProps({
   row: {
     type: Array,
     required: false,
-    default: function() {
+    default: function () {
       return []
     },
   },
@@ -46,27 +48,43 @@ const props = defineProps({
 const emit = defineEmits(["changeRow"])
 
 const filterText = ref("")
-const menuTreeRef = ref<InstanceType<typeof ElTree>>()
-const menuTreeData = ref([])
+const treeRef = ref<InstanceType<typeof ElTree>>()
+const treeData = ref<MenuDetailsDTO[]>([])
 const defaultCheckIds = ref([])
-const menuDefaultProps = ref({
+const treeProps = ref({
   children: "children",
-  label: function(data) {
+  label: function (data) {
     return data.name
   },
 })
 
+const checkAll = (value: CheckboxValueType) => {
+  defaultCheckIds.value = []
+  if (value == true) {
+    treeData.value.forEach((item) => {
+      defaultCheckIds.value.push(item.id)
+      if (item.children) {
+        item.children.forEach((item) => {
+          defaultCheckIds.value.push(item.id)
+        })
+      }
+    })
+  }
+  treeRef.value.setCheckedKeys(defaultCheckIds.value)
+  emit("changeRow", "resourceTreeRef", treeRef.value.getCheckedKeys())
+}
+
 const getTableData = () => {
   defaultCheckIds.value = props.row
   findMenuDetailsListApi({}).then((res) => {
-    menuTreeData.value = res.data.list
+    treeData.value = res.data.list
   })
 }
 getTableData()
 
 const needConfirm = ref(false)
 const nodeChange = () => {
-  emit("changeRow", "menuTreeRef", menuTreeRef.value.getCheckedKeys())
+  emit("changeRow", "treeRef", treeRef.value.getCheckedKeys())
   needConfirm.value = true
 }
 
@@ -84,7 +102,7 @@ const filterNode = (value, data) => {
 }
 
 watch(filterText, (val) => {
-  menuTreeRef.value.filter(val)
+  treeRef.value.filter(val)
 })
 
 defineComponent({

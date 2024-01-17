@@ -9,7 +9,9 @@ import {
 } from "@/api/role"
 
 import { Timer } from "@element-plus/icons-vue"
-import { getCurrentInstance } from "vue"
+import { getCurrentInstance, ref } from "vue"
+import { FixedDir } from "element-plus/es/components/table-v2/src/constants"
+import { RoleDetailsDTO } from "@/api/types"
 
 const align = "center"
 
@@ -191,11 +193,22 @@ function getColumnFields(): Column[] {
       key: "operation",
       title: "操作",
       dataKey: "operation",
-      width: 160,
+      width: 200,
       align: align,
+      fixed: FixedDir.RIGHT,
       cellRenderer: (scope: any) => {
         return (
           <div>
+            <el-button
+              class="table-text-button"
+              text
+              type="primary"
+              size="small"
+              icon="editPen"
+              onClick={() => openDrawer(scope.row)}
+            >
+              重置权限
+            </el-button>
             <el-button
               class="table-text-button"
               text
@@ -292,11 +305,30 @@ function handleApi(event: string, data: any) {
   }
 }
 
+const drawer = ref(false)
+const activeMenus = ref([])
+const activeResources = ref([])
+const formData = ref<RoleDetailsDTO>()
+
+const openDrawer = (row:RoleDetailsDTO) => {
+  console.log("row", row)
+  if (row) {
+    formData.value = row
+  } else {
+  }
+  drawer.value = true
+}
+
 export function useTableHook() {
   return {
     getColumnFields,
     getSearchFields,
     getFormFields,
     handleApi,
+    drawer,
+    activeMenus,
+    activeResources,
+    formData,
+    openDrawer
   }
 }

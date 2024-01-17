@@ -423,7 +423,7 @@ function onFindList(page: PageQuery) {
   props.handleApi("list", page).then((res) => {
     if (res.data.page_size !== pagination.pageSize) {
       pagination.currentPage = res.data.page
-      pagination.pageSize = res.data.page_size
+      // pagination.pageSize = res.data.page_size
     }
 
     tableData.value = res.data.list

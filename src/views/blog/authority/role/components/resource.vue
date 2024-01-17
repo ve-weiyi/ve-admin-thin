@@ -2,14 +2,15 @@
   <div>
     <div class="clearfix sticky-button">
       <el-input v-model="filterText" class="filter" placeholder="筛选" />
+      <el-checkbox class="fl-right" @change="(value) => checkAll(value)">全选</el-checkbox>
     </div>
     <div class="tree-content">
       <el-tree
-        ref="resourceTreeRef"
-        :data="resourceTreeData"
+        ref="treeRef"
+        :data="treeData"
         :default-checked-keys="defaultCheckIds"
         :filter-node-method="filterNode"
-        :props="resourceDefaultProps"
+        :props="treeProps"
         default-expand-all
         highlight-current
         node-key="id"
@@ -28,8 +29,9 @@
 
 <script lang="ts" setup>
 import { defineComponent, ref, watch } from "vue"
-import { ElTree } from "element-plus"
+import { CheckboxValueType, ElTree } from "element-plus"
 import { findApiDetailsListApi } from "@/api/api"
+import { ApiDetailsDTO } from "@/api/types"
 
 // 父组件向子组件传输的数据
 const props = defineProps({
@@ -46,27 +48,43 @@ const props = defineProps({
 const emit = defineEmits(["changeRow"])
 
 const filterText = ref("")
-const resourceTreeRef = ref<InstanceType<typeof ElTree>>()
-const resourceTreeData = ref([])
+const treeRef = ref<InstanceType<typeof ElTree>>()
+const treeData = ref<ApiDetailsDTO[]>([])
 const defaultCheckIds = ref([])
-const resourceDefaultProps = ref({
+const treeProps = ref({
   children: "children",
   label: function(data) {
     return data.name
   },
 })
 
+const checkAll = (value: CheckboxValueType) => {
+  defaultCheckIds.value = []
+  if (value == true) {
+    treeData.value.forEach((item) => {
+      defaultCheckIds.value.push(item.id)
+      if (item.children) {
+        item.children.forEach((item) => {
+          defaultCheckIds.value.push(item.id)
+        })
+      }
+    })
+  }
+  treeRef.value.setCheckedKeys(defaultCheckIds.value)
+  emit("changeRow", "treeRef", treeRef.value.getCheckedKeys())
+}
+
 const getTableData = () => {
   defaultCheckIds.value = props.row
   findApiDetailsListApi({}).then((res) => {
-    resourceTreeData.value = res.data.list
+    treeData.value = res.data.list
   })
 }
 getTableData()
 
 const needConfirm = ref(false)
 const nodeChange = () => {
-  emit("changeRow", "resourceTreeRef", resourceTreeRef.value.getCheckedKeys())
+  emit("changeRow", "treeRef", treeRef.value.getCheckedKeys())
   needConfirm.value = true
 }
 // 暴露给外层使用的切换拦截统一方法
@@ -83,7 +101,7 @@ const filterNode = (value, data) => {
 }
 
 watch(filterText, (val) => {
-  resourceTreeRef.value.filter(val)
+  treeRef.value.filter(val)
 })
 
 defineComponent({
