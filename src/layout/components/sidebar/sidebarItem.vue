@@ -184,13 +184,14 @@ function resolvePath(routePath) {
     :style="getNoDropdownStyle"
   >
     <div v-if="toRaw(props.item.meta.icon)" class="sub-menu-icon" :style="getsubMenuIconStyle">
-      <component
-        :is="
-          useRenderIcon(
-            toRaw(onlyOneChild.meta.icon) || (props.item.meta && toRaw(props.item.meta.icon))
-          )
-        "
-      />
+<!--      <component-->
+<!--        :is="-->
+<!--          useRenderIcon(-->
+<!--            toRaw(onlyOneChild.meta.icon) || (props.item.meta && toRaw(props.item.meta.icon))-->
+<!--          )-->
+<!--        "-->
+<!--      />-->
+      <component :is="props.item.meta.icon" style="width: 16px; height: 16px"></component>
     </div>
     <span
       v-if="
@@ -246,7 +247,8 @@ function resolvePath(routePath) {
   >
     <template #title>
       <div v-if="toRaw(props.item.meta.icon)" :style="getsubMenuIconStyle" class="sub-menu-icon">
-        <component :is="useRenderIcon(props.item.meta && toRaw(props.item.meta.icon))" />
+        <!--        <component :is="useRenderIcon(props.item.meta && toRaw(props.item.meta.icon))" />-->
+        <component :is="props.item.meta.icon" style="width: 16px; height: 16px"></component>
       </div>
       <span v-if="layout === 'horizontal'">
         {{ transformI18n(props.item.meta.title) }}
