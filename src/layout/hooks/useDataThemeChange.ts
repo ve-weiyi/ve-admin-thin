@@ -10,7 +10,6 @@ import { useEpThemeStoreHook } from "@/store/modules/epTheme"
 import { useMultiTagsStoreHook } from "@/store/modules/multiTags"
 import { darken, lighten, toggleTheme } from "@pureadmin/theme/dist/browser-utils"
 import { useAdminStoreHook } from "@/store/modules/admin"
-const store = useAdminStoreHook()
 
 export function useDataThemeChange() {
   const { layoutTheme, layout } = useLayout()
@@ -111,7 +110,7 @@ export function useDataThemeChange() {
 
   /** 清空缓存并返回登录页 */
   function onReset() {
-    store.logout()
+    useAdminStoreHook().logout()
     storageLocal().clear()
     storageSession().clear()
     const { Grey, Weak, MultiTagsCache, EpThemeColor, Layout } = getConfig()

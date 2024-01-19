@@ -29,6 +29,7 @@ import Check from "@iconify-icons/ep/check"
 import User from "@iconify-icons/ri/user-3-fill"
 import { loginApi } from "@/api/auth"
 import { useAdminStoreHook } from "@/store/modules/admin"
+import { getUserMenusApi } from "@/api/user"
 import { usePermissionStoreHook } from "@/store/modules/permission"
 
 defineOptions({
@@ -69,6 +70,10 @@ const onLogin = async(formEl: FormInstance | undefined) => {
           // 保存token
           useAdminStoreHook().login(res.data)
           // 拉取用户菜单
+          getUserMenusApi().then((res) => {
+            console.log("getUserMenusApi res", res)
+          })
+          // handleAsyncRoutes(asyncRoutes)
           usePermissionStoreHook().handleWholeMenus([])
           // 跳转到首页
           router.push({ path: "/welcome" })

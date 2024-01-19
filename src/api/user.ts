@@ -47,16 +47,16 @@ export function deleteUserLoginHistoryByIdsApi(data: number[]): Promise<IApiResp
 }
 
 /** 获取用户菜单权限 */
-export function getUserMenusApi(): Promise<IApiResponseData<MenuDetailsDTO>> {
-  return http.request<IApiResponseData<MenuDetailsDTO>>({
+export function getUserMenusApi(): Promise<IApiResponseData<MenuDetailsDTO[]>> {
+  return http.request<IApiResponseData<MenuDetailsDTO[]>>({
     url: `/api/v1/user/menus`,
     method: "get",
   })
 }
 
 /** 获取用户接口权限 */
-export function getUserApisApi(): Promise<IApiResponseData<ApiDetailsDTO>> {
-  return http.request<IApiResponseData<ApiDetailsDTO>>({
+export function getUserApisApi(): Promise<IApiResponseData<ApiDetailsDTO[]>> {
+  return http.request<IApiResponseData<ApiDetailsDTO[]>>({
     url: `/api/v1/user/apis`,
     method: "get",
   })

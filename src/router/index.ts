@@ -4,12 +4,7 @@ import NProgress from "@/utils/progress"
 import { transformI18n } from "@/plugins/i18n"
 import { useMultiTagsStoreHook } from "@/store/modules/multiTags"
 import { usePermissionStoreHook } from "@/store/modules/permission"
-import {
-  Router,
-  createRouter,
-  RouteRecordRaw,
-  RouteComponent,
-} from "vue-router"
+import { Router, createRouter, RouteRecordRaw, RouteComponent } from "vue-router"
 import {
   ascending,
   getTopMenu,
@@ -46,17 +41,36 @@ Object.keys(modules).forEach((key) => {
 })
 
 /** 动态路由 */
-export const asyncRoutes: Array<RouteRecordRaw> = []
+const asyncModules: Record<string, any> = import.meta.glob(["./blog/**/*.ts"], {
+  eager: true,
+})
+
+const dynamicRoutes = []
+
+Object.keys(asyncModules).forEach((key) => {
+  dynamicRoutes.push(asyncModules[key].default)
+})
+
+export const asyncRoutes: Array<RouteRecordRaw> = formatTwoStageRoutes(
+  formatFlatteningRoutes(buildHierarchyTree(ascending(routes.flat(Infinity))))
+)
 
 /** 导出处理后的静态路由（三级及以上的路由全部拍成二级） */
 export const constantRoutes: Array<RouteRecordRaw> = formatTwoStageRoutes(
   formatFlatteningRoutes(buildHierarchyTree(ascending(routes.flat(Infinity))))
 )
+console.log("modules", modules)
+console.log("asyncModules", asyncModules)
 
+console.log("routes", routes)
+console.log("dynamicRoutes", dynamicRoutes)
+
+console.log("constantRoutes", constantRoutes)
+console.log("asyncRoutes", asyncRoutes)
 /** 用于渲染菜单，保持原始层级 */
-export const constantMenus: Array<RouteComponent> = ascending(
-  routes.flat(Infinity)
-).concat(...remainingRouter)
+export const constantMenus: Array<RouteComponent> = ascending(routes.flat(Infinity)).concat(
+  ...remainingRouter
+)
 
 /** 不参与菜单的路由 */
 export const remainingPaths = Object.keys(remainingRouter).map((v) => {
@@ -74,8 +88,7 @@ export const router: Router = createRouter({
         return savedPosition
       } else {
         if (from.meta.saveSrollTop) {
-          const top: number =
-            document.documentElement.scrollTop || document.body.scrollTop
+          const top: number = document.documentElement.scrollTop || document.body.scrollTop
           resolve({ left: 0, top })
         }
       }
@@ -90,20 +103,19 @@ export function resetRouter() {
     if (name && router.hasRoute(name) && meta?.backstage) {
       router.removeRoute(name)
       router.options.routes = formatTwoStageRoutes(
-        formatFlatteningRoutes(
-          buildHierarchyTree(ascending(routes.flat(Infinity)))
-        )
+        formatFlatteningRoutes(buildHierarchyTree(ascending(routes.flat(Infinity))))
       )
     }
   })
+  console.log("resetRouter", router.getRoutes())
   usePermissionStoreHook().clearAllCachePage()
 }
 
 /** 路由白名单 */
-const whiteList = ["/login"]
+const whiteList = ["/login", "/error/403", "/error/404"]
 
 router.beforeEach((to: ToRouteType, _from, next) => {
-  console.log("to", to)
+  console.log("router.before", to,_from)
   NProgress.start()
   if (to.meta?.keepAlive) {
     handleAliveRoute(to, "add")
@@ -124,6 +136,12 @@ router.beforeEach((to: ToRouteType, _from, next) => {
       }
     })
   }
+
+  // 无此页面的路由
+  // if (router.getRoutes().filter((item) => item.path == to.path).length == 0) {
+  //   next({ path: "/error/404" })
+  //   return
+  // }
 
   const tk = useAdminStoreHook().getToken()
   if (tk) {

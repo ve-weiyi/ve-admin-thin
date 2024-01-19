@@ -5,7 +5,7 @@ import {
   createWebHistory,
   createWebHashHistory,
 } from "vue-router"
-import { router } from "./index"
+import { asyncRoutes, router } from "./index"
 import { isProxy, toRaw } from "vue"
 import { useTimeoutFn } from "@vueuse/core"
 import {
@@ -31,8 +31,7 @@ import { getUserMenusApi } from "@/api/user"
 function handRank(routeInfo: any) {
   const { name, path, parentId, meta } = routeInfo
   return isAllEmpty(parentId)
-    ? isAllEmpty(meta?.rank) ||
-      (meta?.rank === 0 && name !== "Home" && path !== "/")
+    ? isAllEmpty(meta?.rank) || (meta?.rank === 0 && name !== "Home" && path !== "/")
       ? true
       : false
     : false
@@ -44,11 +43,9 @@ function ascending(arr: any[]) {
     // 当rank不存在时，根据顺序自动创建，首页路由永远在第一位
     if (handRank(v)) v.meta.rank = index + 2
   })
-  return arr.sort(
-    (a: { meta: { rank: number } }, b: { meta: { rank: number } }) => {
-      return a?.meta.rank - b?.meta.rank
-    }
-  )
+  return arr.sort((a: { meta: { rank: number } }, b: { meta: { rank: number } }) => {
+    return a?.meta.rank - b?.meta.rank
+  })
 }
 
 /** 过滤meta中showLink为false的菜单 */
@@ -56,18 +53,14 @@ function filterTree(data: RouteComponent[]) {
   const newTree = cloneDeep(data).filter(
     (v: { meta: { showLink: boolean } }) => v.meta?.showLink !== false
   )
-  newTree.forEach(
-    (v: { children }) => v.children && (v.children = filterTree(v.children))
-  )
+  newTree.forEach((v: { children }) => v.children && (v.children = filterTree(v.children)))
   return newTree
 }
 
 /** 过滤children长度为0的的目录，当目录下没有菜单时，会过滤此目录，目录没有赋予roles权限，当目录下只要有一个菜单有显示权限，那么此目录就会显示 */
 function filterChildrenTree(data: RouteComponent[]) {
   const newTree = cloneDeep(data).filter((v: any) => v?.children?.length !== 0)
-  newTree.forEach(
-    (v: { children }) => v.children && (v.children = filterTree(v.children))
-  )
+  newTree.forEach((v: { children }) => v.children && (v.children = filterTree(v.children)))
   return newTree
 }
 
@@ -127,10 +120,7 @@ function findRouteByPath(path: string, routes: RouteRecordRaw[]) {
     return isProxy(res) ? toRaw(res) : res
   } else {
     for (let i = 0; i < routes.length; i++) {
-      if (
-        routes[i].children instanceof Array &&
-        routes[i].children.length > 0
-      ) {
+      if (routes[i].children instanceof Array && routes[i].children.length > 0) {
         res = findRouteByPath(path, routes[i].children)
         if (res) {
           return isProxy(res) ? toRaw(res) : res
@@ -156,61 +146,42 @@ function handleAsyncRoutes(routeList) {
   if (routeList.length === 0) {
     usePermissionStoreHook().handleWholeMenus(routeList)
   } else {
-    formatFlatteningRoutes(addAsyncRoutes(routeList)).map(
-      (v: RouteRecordRaw) => {
-        // 防止重复添加路由
-        if (
-          router.options.routes[0].children.findIndex(
-            (value) => value.path === v.path
-          ) !== -1
-        ) {
-          return
-        } else {
-          // 切记将路由push到routes后还需要使用addRoute，这样路由才能正常跳转
-          router.options.routes[0].children.push(v)
-          // 最终路由进行升序
-          ascending(router.options.routes[0].children)
-          if (!router.hasRoute(v?.name)) router.addRoute(v)
-          const flattenRouters: any = router
-            .getRoutes()
-            .find((n) => n.path === "/")
+    formatFlatteningRoutes(addAsyncRoutes(routeList)).map((v: RouteRecordRaw) => {
+      // 防止重复添加路由
+      if (router.options.routes[0].children.findIndex((value) => value.path === v.path) !== -1) {
+        return
+      } else {
+        // 切记将路由push到routes后还需要使用addRoute，这样路由才能正常跳转
+        router.options.routes[0].children.push(v)
+        // 最终路由进行升序
+        ascending(router.options.routes[0].children)
+        if (!router.hasRoute(v?.name)) router.addRoute(v)
+        const flattenRouters: any = router.getRoutes().find((n) => n.path === "/")
+        if (flattenRouters) {
           router.addRoute(flattenRouters)
         }
       }
-    )
+    })
     usePermissionStoreHook().handleWholeMenus(routeList)
   }
   addPathMatch()
 }
 
 /** 初始化路由（`new Promise` 写法防止在异步请求中造成无限循环）*/
-function initRouter() {
-  if (getConfig()?.CachingAsyncRoutes) {
-    // 开启动态路由缓存本地sessionStorage
-    const key = "async-routes"
-    const asyncRouteList = storageSession().getItem(key) as any
-    if (asyncRouteList && asyncRouteList?.length > 0) {
-      return new Promise((resolve) => {
-        handleAsyncRoutes(asyncRouteList)
-        resolve(router)
-      })
-    } else {
-      return new Promise((resolve) => {
-        getUserMenusApi().then(({ data }) => {
-          handleAsyncRoutes(cloneDeep(data))
-          storageSession().setItem(key, data)
-          resolve(router)
-        })
-      })
-    }
-  } else {
-    return new Promise((resolve) => {
-      getUserMenusApi().then(({ data }) => {
-        handleAsyncRoutes(cloneDeep(data))
-        resolve(router)
-      })
+function initRouter(): Promise<any> {
+  return new Promise((resolve) => {
+    getUserMenusApi().then((res) => {
+      console.log("getUserMenusApi res.data", res.data)
+      if (res.data == null) {
+        console.log("router", asyncRoutes)
+        handleAsyncRoutes(asyncRoutes)
+      } else {
+        handleAsyncRoutes(res.data)
+      }
+      console.log("router.getRoutes()", router.getRoutes())
+      resolve(router)
     })
-  }
+  })
 }
 
 /**
@@ -314,7 +285,12 @@ function addAsyncRoutes(arrRoutes: Array<RouteRecordRaw>) {
       const index = v?.component
         ? modulesRoutesKeys.findIndex((ev) => ev.includes(v.component as any))
         : modulesRoutesKeys.findIndex((ev) => ev.includes(v.path))
-      v.component = modulesRoutes[modulesRoutesKeys[index]]
+      console.log("v?.component", v?.component)
+      console.log("index", index)
+      console.log("modulesRoutesKeys[index]", modulesRoutesKeys[index])
+      if (index != -1) {
+        v.component = modulesRoutes[modulesRoutesKeys[index]]
+      }
     }
     if (v?.children && v.children.length) {
       addAsyncRoutes(v.children)
@@ -386,4 +362,5 @@ export {
   formatTwoStageRoutes,
   formatFlatteningRoutes,
   filterNoPermissionTree,
+  handleAsyncRoutes,
 }
