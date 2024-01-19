@@ -2,8 +2,9 @@
   "compilerOptions": {
     "target": "ESNext",
     "module": "ESNext",
-    "moduleResolution": "bundler",
+    "moduleResolution": "Node",
     "strict": false,
+    "allowImportingTsExtensions": true,
     "jsx": "preserve",
     "importHelpers": true,
     "experimentalDecorators": true,

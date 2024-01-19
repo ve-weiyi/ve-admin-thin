@@ -26,7 +26,7 @@ export default {
     {
       path: "/website/about",
       component: () => import("@/views/blog/website/about/About.vue"),
-      name: "About",
+      name: "AboutMe",
       meta: { title: "关于我" },
     },
   ],

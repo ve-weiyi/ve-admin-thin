@@ -127,6 +127,7 @@ export interface Menu {
   id?: number // 主键
   name?: string // 菜单名
   path?: string // 菜单路径
+  title?: string // 菜单标题
   component?: string // 组件
   icon?: string // 菜单icon
   rank?: number // 排序
@@ -377,7 +378,7 @@ export interface ChangePasswordReq {
 
 export interface CustomizeRouteMeta {
   title?: string // 菜单名称
-  icon?: any // 菜单图标
+  icon?: string // 菜单图标
   extra_icon?: any // 菜单名称右侧的额外图标
   show_link?: boolean // 是否在菜单中显示
   show_parent?: boolean // 是否显示父级菜单
