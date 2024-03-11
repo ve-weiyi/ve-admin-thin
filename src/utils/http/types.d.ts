@@ -1,9 +1,4 @@
-import type {
-  Method,
-  AxiosError,
-  AxiosResponse,
-  AxiosRequestConfig
-} from "axios";
+import type { AxiosError, AxiosRequestConfig, AxiosResponse, Method } from "axios"
 
 export type resultType = {
   accessToken?: string;
@@ -32,16 +27,18 @@ export default class PureHttp {
     method: RequestMethods,
     url: string,
     param?: AxiosRequestConfig,
-    axiosConfig?: PureHttpRequestConfig
+    axiosConfig?: PureHttpRequestConfig,
   ): Promise<T>;
+
   post<T, P>(
     url: string,
     params?: T,
-    config?: PureHttpRequestConfig
+    config?: PureHttpRequestConfig,
   ): Promise<P>;
+
   get<T, P>(
     url: string,
     params?: T,
-    config?: PureHttpRequestConfig
+    config?: PureHttpRequestConfig,
   ): Promise<P>;
 }

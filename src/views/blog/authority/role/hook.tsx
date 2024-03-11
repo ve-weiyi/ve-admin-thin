@@ -1,12 +1,6 @@
 import { Column, ElMessage } from "element-plus"
 import { FormField, RenderType } from "@/utils/render"
-import {
-  createRoleApi,
-  deleteRoleApi,
-  deleteRoleByIdsApi,
-  findRoleDetailsListApi,
-  updateRoleApi,
-} from "@/api/role"
+import { createRoleApi, deleteRoleApi, deleteRoleByIdsApi, findRoleDetailsListApi, updateRoleApi } from "@/api/role"
 
 import { Timer } from "@element-plus/icons-vue"
 import { getCurrentInstance, ref } from "vue"

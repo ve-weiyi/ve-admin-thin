@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { ref, unref, watch, reactive, computed, nextTick, onUnmounted, onBeforeMount } from "vue"
+import { computed, nextTick, onBeforeMount, onUnmounted, reactive, ref, unref, watch } from "vue"
 import panel from "../panel/index.vue"
 import { emitter } from "@/utils/mitt"
 import { useNav } from "@/layout/hooks/useNav"
 import { useAppStoreHook } from "@/store/modules/app"
-import { useDark, debounce, useGlobal } from "@pureadmin/utils"
+import { debounce, useDark, useGlobal } from "@pureadmin/utils"
 import { toggleTheme } from "@pureadmin/theme/dist/browser-utils"
 import { useMultiTagsStoreHook } from "@/store/modules/multiTags"
 import Segmented, { type OptionsType } from "@/components/ReSegmented"

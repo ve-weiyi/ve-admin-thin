@@ -11,7 +11,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, watchEffect, computed, onMounted, watch } from "vue"
+import { ref, watch, watchEffect } from "vue"
 
 const props = defineProps({
   modelValue: {

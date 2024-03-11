@@ -9,16 +9,7 @@
 <script lang="ts" setup>
 import * as echarts from "echarts"
 import { EChartsOption } from "echarts"
-import {
-  nextTick,
-  onBeforeUnmount,
-  onMounted,
-  ref,
-  Ref,
-  ShallowRef,
-  shallowRef,
-  watchEffect,
-} from "vue"
+import { nextTick, onBeforeUnmount, onMounted, ref, Ref, ShallowRef, shallowRef, watchEffect } from "vue"
 
 type ECharts = echarts.ECharts
 
@@ -99,7 +90,7 @@ const updateCharts = () => {
     },
     tooltip: {
       trigger: "item", // 设置触发方式为项触发
-      formatter: function (data: any) {
+      formatter: function(data: any) {
         // 定义提示框的内容
         return `${data.value[0]},${data.value[1]}次提交`
       },
@@ -116,7 +107,7 @@ const updateCharts = () => {
       inRange: {
         color: colorRange,
       },
-      formatter: function (value) {
+      formatter: function(value) {
         // 自定义单位显示
         return value + " 次/日"
       },

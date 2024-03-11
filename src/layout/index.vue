@@ -7,8 +7,8 @@ import { useLayout } from "./hooks/useLayout"
 import { useAppStoreHook } from "@/store/modules/app"
 import { useSettingStoreHook } from "@/store/modules/settings"
 import { useDataThemeChange } from "@/layout/hooks/useDataThemeChange"
-import { h, ref, reactive, computed, onMounted, onBeforeMount, defineComponent } from "vue"
-import { useDark, useGlobal, deviceDetection, useResizeObserver } from "@pureadmin/utils"
+import { computed, defineComponent, h, onBeforeMount, onMounted, reactive, ref } from "vue"
+import { deviceDetection, useDark, useGlobal, useResizeObserver } from "@pureadmin/utils"
 
 import navbar from "./components/navbar.vue"
 import tag from "./components/tag/index.vue"
@@ -133,7 +133,7 @@ const layoutHeader = defineComponent({
           !pureSetting.hiddenSideBar && layout.value.includes("horizontal") ? h(Horizontal) : null,
           h(tag),
         ],
-      }
+      },
     )
   },
 })

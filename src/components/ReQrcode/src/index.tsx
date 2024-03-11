@@ -1,7 +1,7 @@
-import { ref, unref, watch, nextTick, computed, type PropType, defineComponent } from "vue"
+import { computed, defineComponent, nextTick, type PropType, ref, unref, watch } from "vue"
 import "./index.scss"
 import propTypes from "@/utils/propTypes"
-import { isString, cloneDeep } from "@pureadmin/utils"
+import { cloneDeep, isString } from "@pureadmin/utils"
 import QRCode, { type QRCodeRenderersOptions } from "qrcode"
 import RefreshRight from "@iconify-icons/ep/refresh-right"
 
@@ -56,7 +56,7 @@ export default defineComponent({
         height: props.width + "px",
       }
     })
-    const initQrcode = async () => {
+    const initQrcode = async() => {
       await nextTick()
       const options = cloneDeep(props.options || {})
       if (props.tag === "canvas") {
@@ -68,7 +68,7 @@ export default defineComponent({
         const canvasRef: any = await toCanvas(
           unref(wrapRef) as HTMLCanvasElement,
           unref(renderText),
-          options
+          options,
         )
         if (props.logo) {
           const url = await createLogoCode(canvasRef)
@@ -80,10 +80,10 @@ export default defineComponent({
         }
       } else {
         const url = await toDataURL(renderText.value, {
-          errorCorrectionLevel: "H",
-          width: props.width,
-          ...options,
-        })
+            errorCorrectionLevel: "H",
+            width: props.width,
+            ...options,
+          })
         ;(unref(wrapRef) as any).src = url
         emit("done", url)
         loading.value = false
@@ -98,7 +98,7 @@ export default defineComponent({
       {
         deep: true,
         immediate: true,
-      }
+      },
     )
     const createLogoCode = (canvasRef: HTMLCanvasElement) => {
       const canvasWidth = canvasRef.width
@@ -111,7 +111,7 @@ export default defineComponent({
           borderRadius: 8,
           logoRadius: 0,
         },
-        isString(props.logo) ? {} : props.logo
+        isString(props.logo) ? {} : props.logo,
       )
       const {
         logoSize = 0.15,
@@ -167,7 +167,7 @@ export default defineComponent({
       })
     }
     // 得到原QrCode的大小，以便缩放得到正确的QrCode大小
-    const getOriginWidth = async (content: string, options: QRCodeRenderersOptions) => {
+    const getOriginWidth = async(content: string, options: QRCodeRenderersOptions) => {
       const _canvas = document.createElement("canvas")
       await toCanvas(_canvas, content, options)
       return _canvas.width

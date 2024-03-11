@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed } from "vue"
+import { computed, ref } from "vue"
 import { useGlobal } from "@pureadmin/utils"
 import { useNav } from "@/layout/hooks/useNav"
 import MenuFold from "@iconify-icons/ri/menu-fold-fill"
@@ -31,7 +31,8 @@ const iconClass = computed(() => {
 const { $storage } = useGlobal<GlobalPropertiesApi>()
 const themeColor = computed(() => $storage.layout?.themeColor)
 
-const emit = defineEmits<{(e: "toggleClick"): void
+const emit = defineEmits<{
+  (e: "toggleClick"): void
 }>()
 
 const toggleClick = () => {

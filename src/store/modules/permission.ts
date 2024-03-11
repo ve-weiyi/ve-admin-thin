@@ -4,7 +4,7 @@ import { cacheType } from "./types"
 import { constantMenus } from "@/router"
 import { useMultiTagsStoreHook } from "./multiTags"
 import { debounce, getKeyList } from "@pureadmin/utils"
-import { ascending, filterTree, filterNoPermissionTree } from "@/router/utils"
+import { ascending, filterNoPermissionTree, filterTree } from "@/router/utils"
 
 export const usePermissionStore = defineStore({
   id: "pure-permission",
@@ -20,7 +20,7 @@ export const usePermissionStore = defineStore({
     /** 组装整体路由生成的菜单 */
     handleWholeMenus(routes: any[]) {
       this.wholeMenus = filterNoPermissionTree(
-        filterTree(ascending(this.constantMenus.concat(routes)))
+        filterTree(ascending(this.constantMenus.concat(routes))),
       )
     },
     cacheOperate({ mode, name }: cacheType) {
@@ -42,12 +42,12 @@ export const usePermissionStore = defineStore({
         const nameList = getKeyList(useMultiTagsStoreHook().multiTags, "name")
         while (cacheLength > 0) {
           nameList.findIndex(
-            (v) => v === this.cachePageList[cacheLength - 1]
+            (v) => v === this.cachePageList[cacheLength - 1],
           ) === -1 &&
-            this.cachePageList.splice(
-              this.cachePageList.indexOf(this.cachePageList[cacheLength - 1]),
-              1
-            )
+          this.cachePageList.splice(
+            this.cachePageList.indexOf(this.cachePageList[cacheLength - 1]),
+            1,
+          )
           cacheLength--
         }
       })()

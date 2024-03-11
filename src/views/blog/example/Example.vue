@@ -8,7 +8,8 @@
 <script lang="ts" setup>
 import { onMounted } from "vue"
 
-onMounted(() => {})
+onMounted(() => {
+})
 </script>
 
 <style lang="scss" scoped></style>

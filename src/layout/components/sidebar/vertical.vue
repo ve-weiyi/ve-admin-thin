@@ -6,15 +6,15 @@ import SidebarItem from "./sidebarItem.vue"
 import leftCollapse from "./leftCollapse.vue"
 import { useNav } from "@/layout/hooks/useNav"
 import { responsiveStorageNameSpace } from "@/config"
-import { storageLocal, isAllEmpty } from "@pureadmin/utils"
+import { isAllEmpty, storageLocal } from "@pureadmin/utils"
 import { findRouteByPath, getParentPaths } from "@/router/utils"
 import { usePermissionStoreHook } from "@/store/modules/permission"
-import { ref, computed, watch, onMounted, onBeforeUnmount } from "vue"
+import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue"
 
 const route = useRoute()
 const showLogo = ref(
   storageLocal().getItem<StorageConfigs>(`${responsiveStorageNameSpace()}configure`)?.showLogo ??
-    true
+  true,
 )
 
 const { device, pureApp, isCollapse, tooltipEffect, menuSelect, toggleSideBar } = useNav()
@@ -28,11 +28,11 @@ const menuData = computed(() => {
 })
 
 const loading = computed(() =>
-  pureApp.layout === "mix" ? false : menuData.value.length === 0 ? true : false
+  pureApp.layout === "mix" ? false : menuData.value.length === 0 ? true : false,
 )
 
 const defaultActive = computed(() =>
-  !isAllEmpty(route.meta?.activePath) ? route.meta.activePath : route.path
+  !isAllEmpty(route.meta?.activePath) ? route.meta.activePath : route.path,
 )
 
 function getSubMenuData() {
@@ -44,7 +44,7 @@ function getSubMenuData() {
   // 当前路由的父级路由信息
   const parenetRoute = findRouteByPath(
     parentPathArr[0] || path,
-    usePermissionStoreHook().wholeMenus
+    usePermissionStoreHook().wholeMenus,
   )
   if (!parenetRoute?.children) return
   subMenuData.value = parenetRoute?.children
@@ -56,7 +56,7 @@ watch(
     if (route.path.includes("/redirect")) return
     getSubMenuData()
     menuSelect(route.path)
-  }
+  },
 )
 
 onMounted(() => {

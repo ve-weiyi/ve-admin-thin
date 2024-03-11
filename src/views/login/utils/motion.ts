@@ -18,7 +18,7 @@ export default defineComponent({
         {},
         {
           default: () => [this.$slots.default()],
-        }
+        },
       ),
       [
         [
@@ -34,7 +34,7 @@ export default defineComponent({
             },
           },
         ],
-      ]
+      ],
     )
   },
 })

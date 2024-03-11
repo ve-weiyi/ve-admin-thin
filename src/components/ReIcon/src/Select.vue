@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { IconJson } from "@/components/ReIcon/data"
 import { cloneDeep, isAllEmpty } from "@pureadmin/utils"
-import { ref, computed, CSSProperties, toRef, watch } from "vue"
+import { computed, CSSProperties, ref, watch } from "vue"
 import Search from "@iconify-icons/ri/search-eye-line"
 
 type ParameterCSSProperties = (item?: string) => CSSProperties | undefined
@@ -43,7 +43,7 @@ const tabsList = [
 const pageList = computed(() =>
   copyIconList[currentActiveType.value]
     .filter((i) => i.includes(filterValue.value))
-    .slice((currentPage.value - 1) * pageSize.value, currentPage.value * pageSize.value)
+    .slice((currentPage.value - 1) * pageSize.value, currentPage.value * pageSize.value),
 )
 
 const iconItemStyle = computed((): ParameterCSSProperties => {
@@ -97,18 +97,18 @@ watch(
   () => pageList.value,
   () =>
     (totalPage.value = copyIconList[currentActiveType.value].filter((i) =>
-      i.includes(filterValue.value)
+      i.includes(filterValue.value),
     ).length),
-  { immediate: true }
+  { immediate: true },
 )
 watch(
   () => inputValue.value,
   (val) => val && setVal(),
-  { immediate: true }
+  { immediate: true },
 )
 watch(
   () => filterValue.value,
-  () => (currentPage.value = 1)
+  () => (currentPage.value = 1),
 )
 </script>
 

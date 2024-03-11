@@ -1,6 +1,6 @@
 import { useEpThemeStoreHook } from "@/store/modules/epTheme"
-import { defineComponent, ref, computed, type PropType, nextTick } from "vue"
-import { delay, cloneDeep, isBoolean, isFunction, getKeyList } from "@pureadmin/utils"
+import { computed, defineComponent, nextTick, type PropType, ref } from "vue"
+import { cloneDeep, delay, getKeyList, isBoolean, isFunction } from "@pureadmin/utils"
 
 import Sortable from "sortablejs"
 import DragIcon from "./svg/drag.svg?component"
@@ -38,7 +38,7 @@ export default defineComponent({
     const checkAll = ref(true)
     const isIndeterminate = ref(false)
     const filterColumns = cloneDeep(props?.columns).filter((column) =>
-      isBoolean(column?.hide) ? !column.hide : !(isFunction(column?.hide) && column?.hide())
+      isBoolean(column?.hide) ? !column.hide : !(isFunction(column?.hide) && column?.hide()),
     )
     let checkColumnList = getKeyList(cloneDeep(props?.columns), "label")
     const checkedColumns = ref(getKeyList(cloneDeep(filterColumns), "label"))
@@ -168,7 +168,7 @@ export default defineComponent({
               } else {
                 wrapperElem.insertBefore(
                   targetThElem,
-                  oldThElem ? oldThElem.nextElementSibling : oldThElem
+                  oldThElem ? oldThElem.nextElementSibling : oldThElem,
                 )
               }
               return

@@ -38,7 +38,7 @@ const props = defineProps({
   row: {
     type: Array,
     required: false,
-    default: function () {
+    default: function() {
       return []
     },
   },
@@ -53,7 +53,7 @@ const treeData = ref<MenuDetailsDTO[]>([])
 const defaultCheckIds = ref([])
 const treeProps = ref({
   children: "children",
-  label: function (data) {
+  label: function(data) {
     return data.name
   },
 })

@@ -1,4 +1,4 @@
-import { isFunction, isObject, isArray, debounce, throttle } from "@pureadmin/utils"
+import { debounce, isArray, isFunction, isObject, throttle } from "@pureadmin/utils"
 import { useEventListener } from "@vueuse/core"
 import type { Directive, DirectiveBinding } from "vue"
 
@@ -24,15 +24,15 @@ export const optimize: Directive = {
           value.event,
           type === "debounce"
             ? debounce(
-                params ? () => value.fn(...params) : value.fn,
-                value?.timeout ?? 200,
-                value?.immediate ?? false
-              )
-            : throttle(params ? () => value.fn(...params) : value.fn, value?.timeout ?? 1000)
+              params ? () => value.fn(...params) : value.fn,
+              value?.timeout ?? 200,
+              value?.immediate ?? false,
+            )
+            : throttle(params ? () => value.fn(...params) : value.fn, value?.timeout ?? 1000),
         )
       } else {
         throw new Error(
-          "[Directive: optimize]: `event` and `fn` are required, and `fn` must be a function"
+          "[Directive: optimize]: `event` and `fn` are required, and `fn` must be a function",
         )
       }
     } else {

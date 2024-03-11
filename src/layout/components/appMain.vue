@@ -2,7 +2,7 @@
 import Footer from "./footer/index.vue"
 import { useGlobal } from "@pureadmin/utils"
 import backTop from "@/assets/svg/back_top.svg?component"
-import { h, computed, Transition, defineComponent } from "vue"
+import { computed, defineComponent, h, Transition } from "vue"
 import { usePermissionStoreHook } from "@/store/modules/permission"
 
 const props = defineProps({
@@ -42,8 +42,8 @@ const getSectionStyle = computed(() => {
     props.fixedHeader
       ? ""
       : `padding-top: 0;${
-          hideTabs.value ? "min-height: calc(100vh - 48px);" : "min-height: calc(100vh - 86px);"
-        }`,
+        hideTabs.value ? "min-height: calc(100vh - 48px);" : "min-height: calc(100vh - 86px);"
+      }`,
   ]
 })
 
@@ -69,7 +69,7 @@ const transitionMain = defineComponent({
       },
       {
         default: () => [this.$slots.default()],
-      }
+      },
     )
   },
 })

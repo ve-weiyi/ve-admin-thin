@@ -1,13 +1,7 @@
 import { getCurrentInstance, h, resolveDynamicComponent } from "vue"
 import { Column } from "element-plus"
 import { FormField, RenderType } from "@/utils/render"
-import {
-  createMenuApi,
-  deleteMenuApi,
-  deleteMenuByIdsApi,
-  findMenuDetailsListApi,
-  updateMenuApi,
-} from "@/api/menu"
+import { createMenuApi, deleteMenuApi, deleteMenuByIdsApi, findMenuDetailsListApi, updateMenuApi } from "@/api/menu"
 import { Timer } from "@element-plus/icons-vue"
 
 const align = "center"

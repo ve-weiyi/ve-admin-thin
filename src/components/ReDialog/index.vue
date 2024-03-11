@@ -1,12 +1,6 @@
 <script setup lang="ts">
-import {
-  closeDialog,
-  dialogStore,
-  type EventType,
-  type ButtonProps,
-  type DialogOptions,
-} from "./index"
-import { ref, computed } from "vue"
+import { type ButtonProps, closeDialog, type DialogOptions, dialogStore, type EventType } from "./index"
+import { computed, ref } from "vue"
 import { isFunction } from "@pureadmin/utils"
 import Fullscreen from "@iconify-icons/ri/fullscreen-fill"
 import ExitFullscreen from "@iconify-icons/ri/fullscreen-exit-fill"
@@ -18,34 +12,34 @@ const footerButtons = computed(() => {
     return options?.footerButtons?.length > 0
       ? options.footerButtons
       : ([
-          {
-            label: "取消",
-            text: true,
-            bg: true,
-            btnClick: ({ dialog: { options, index } }) => {
-              const done = () => closeDialog(options, index, { command: "cancel" })
-              if (options?.beforeCancel && isFunction(options?.beforeCancel)) {
-                options.beforeCancel(done, { options, index })
-              } else {
-                done()
-              }
-            },
+        {
+          label: "取消",
+          text: true,
+          bg: true,
+          btnClick: ({ dialog: { options, index } }) => {
+            const done = () => closeDialog(options, index, { command: "cancel" })
+            if (options?.beforeCancel && isFunction(options?.beforeCancel)) {
+              options.beforeCancel(done, { options, index })
+            } else {
+              done()
+            }
           },
-          {
-            label: "确定",
-            type: "primary",
-            text: true,
-            bg: true,
-            btnClick: ({ dialog: { options, index } }) => {
-              const done = () => closeDialog(options, index, { command: "sure" })
-              if (options?.beforeSure && isFunction(options?.beforeSure)) {
-                options.beforeSure(done, { options, index })
-              } else {
-                done()
-              }
-            },
+        },
+        {
+          label: "确定",
+          type: "primary",
+          text: true,
+          bg: true,
+          btnClick: ({ dialog: { options, index } }) => {
+            const done = () => closeDialog(options, index, { command: "sure" })
+            if (options?.beforeSure && isFunction(options?.beforeSure)) {
+              options.beforeSure(done, { options, index })
+            } else {
+              done()
+            }
           },
-        ] as Array<ButtonProps>)
+        },
+      ] as Array<ButtonProps>)
   }
 })
 

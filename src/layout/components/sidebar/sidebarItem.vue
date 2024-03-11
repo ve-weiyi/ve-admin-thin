@@ -6,7 +6,7 @@ import extraIcon from "./extraIcon.vue"
 import { useNav } from "@/layout/hooks/useNav"
 import { transformI18n } from "@/plugins/i18n"
 import { useRenderIcon } from "@/components/ReIcon/src/hooks"
-import { ref, toRaw, PropType, nextTick, computed, CSSProperties } from "vue"
+import { computed, CSSProperties, nextTick, PropType, ref, toRaw } from "vue"
 
 import ArrowUp from "@iconify-icons/ep/arrow-up-bold"
 import EpArrowDown from "@iconify-icons/ep/arrow-down-bold"
@@ -79,21 +79,21 @@ const getSubMenuDivStyle = computed((): any => {
   return (item) => {
     return !isCollapse.value
       ? {
-          width: "100%",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          overflow: "hidden",
-        }
+        width: "100%",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        overflow: "hidden",
+      }
       : {
-          width: "100%",
-          textAlign:
-            item?.parentId === null
-              ? "center"
-              : layout.value === "mix" && item?.pathList?.length === 2
+        width: "100%",
+        textAlign:
+          item?.parentId === null
+            ? "center"
+            : layout.value === "mix" && item?.pathList?.length === 2
               ? "center"
               : "",
-        }
+      }
   }
 })
 
@@ -121,11 +121,11 @@ function hoverMenu(key) {
     // 如果文本内容的整体宽度大于其可视宽度，则文本溢出
     menuTextRef.value?.scrollWidth > menuTextRef.value?.clientWidth
       ? Object.assign(key, {
-          showTooltip: true,
-        })
+        showTooltip: true,
+      })
       : Object.assign(key, {
-          showTooltip: false,
-        })
+        showTooltip: false,
+      })
     hoverMenuMap.set(key, true)
   })
 }
@@ -184,13 +184,13 @@ function resolvePath(routePath) {
     :style="getNoDropdownStyle"
   >
     <div v-if="toRaw(props.item.meta.icon)" class="sub-menu-icon" :style="getsubMenuIconStyle">
-<!--      <component-->
-<!--        :is="-->
-<!--          useRenderIcon(-->
-<!--            toRaw(onlyOneChild.meta.icon) || (props.item.meta && toRaw(props.item.meta.icon))-->
-<!--          )-->
-<!--        "-->
-<!--      />-->
+      <!--      <component-->
+      <!--        :is="-->
+      <!--          useRenderIcon(-->
+      <!--            toRaw(onlyOneChild.meta.icon) || (props.item.meta && toRaw(props.item.meta.icon))-->
+      <!--          )-->
+      <!--        "-->
+      <!--      />-->
       <component :is="props.item.meta.icon" style="width: 16px; height: 16px"></component>
     </div>
     <span

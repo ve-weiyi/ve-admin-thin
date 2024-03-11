@@ -23,7 +23,8 @@ const { getSearchFields, getColumnFields, getFormFields, handleApi, statusList, 
 
 const defaultOrder = { id: "desc" }
 
-onMounted(() => {})
+onMounted(() => {
+})
 </script>
 
 <style lang="scss" scoped></style>

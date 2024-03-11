@@ -1,6 +1,6 @@
-import type { VNode } from "vue";
-import { isFunction } from "@pureadmin/utils";
-import { type MessageHandler, ElMessage } from "element-plus";
+import type { VNode } from "vue"
+import { isFunction } from "@pureadmin/utils"
+import { ElMessage, type MessageHandler } from "element-plus"
 
 type messageStyle = "el" | "antd";
 type messageTypes = "info" | "success" | "warning" | "error";
@@ -37,13 +37,13 @@ interface MessageParams {
  */
 const message = (
   message: string | VNode | (() => VNode),
-  params?: MessageParams
+  params?: MessageParams,
 ): MessageHandler => {
   if (!params) {
     return ElMessage({
       message,
-      customClass: "pure-message"
-    });
+      customClass: "pure-message",
+    })
   } else {
     const {
       icon,
@@ -56,8 +56,8 @@ const message = (
       offset = 20,
       appendTo = document.body,
       grouping = false,
-      onClose
-    } = params;
+      onClose,
+    } = params
 
     return ElMessage({
       message,
@@ -72,14 +72,14 @@ const message = (
       grouping,
       // 全局搜 pure-message 即可知道该类的样式位置
       customClass: customClass === "antd" ? "pure-message" : "",
-      onClose: () => (isFunction(onClose) ? onClose() : null)
-    });
+      onClose: () => (isFunction(onClose) ? onClose() : null),
+    })
   }
-};
+}
 
 /**
  * 关闭所有 `Message` 消息提示函数
  */
-const closeAllMessage = (): void => ElMessage.closeAll();
+const closeAllMessage = (): void => ElMessage.closeAll()
 
-export { message, closeAllMessage };
+export { message, closeAllMessage }

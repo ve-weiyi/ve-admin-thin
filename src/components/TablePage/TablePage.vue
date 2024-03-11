@@ -262,7 +262,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, defineComponent, getCurrentInstance, onMounted, reactive, ref } from "vue"
+import { computed, onMounted, reactive, ref } from "vue"
 import { builderFormRender, defaultPaginationData, FormField, Pagination } from "@/utils/render"
 import {
   CheckboxGroupValueType,
@@ -276,7 +276,6 @@ import {
 import draggable from "vuedraggable/src/vuedraggable"
 import { useRoute } from "vue-router"
 import "@/style/table.scss"
-import { copy } from "@/directives"
 
 type StatusTag = {
   value: number | string
@@ -345,7 +344,8 @@ const props = defineProps({
   },
   onStatusChange: {
     type: Function,
-    default: (): any => {},
+    default: (): any => {
+    },
   },
   defaultOrder: {
     type: Object,

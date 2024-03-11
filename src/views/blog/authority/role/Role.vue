@@ -65,7 +65,8 @@ const {
 } = useTableHook()
 
 const tableRef = ref<InstanceType<typeof TablePage>>()
-onMounted(() => {})
+onMounted(() => {
+})
 
 const onMenusChange = (key: any, value: any) => {
   console.log("onMenusChange", key, value)

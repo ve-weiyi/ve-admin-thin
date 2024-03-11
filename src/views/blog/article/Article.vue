@@ -203,16 +203,10 @@ import { MdEditor } from "md-editor-v3"
 import "md-editor-v3/lib/style.css"
 import { findCategoryListApi } from "@/api/category"
 import { findTagListApi } from "@/api/tag"
-import { saveArticleApi, findArticleApi } from "@/api/article"
+import { findArticleApi, saveArticleApi } from "@/api/article"
 import { uploadFileApi } from "@/api/file"
 import { ArticleBack, Category, Tag } from "@/api/types"
-import {
-  ElMessage,
-  UploadFile,
-  UploadFiles,
-  UploadRawFile,
-  UploadRequestOptions,
-} from "element-plus"
+import { ElMessage, UploadRawFile, UploadRequestOptions } from "element-plus"
 
 const route = useRoute()
 const router = useRouter()

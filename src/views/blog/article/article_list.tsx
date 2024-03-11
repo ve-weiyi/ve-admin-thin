@@ -1,12 +1,7 @@
 import { FormField, RenderType } from "@/utils/render"
 import { Column, ElMessage } from "element-plus"
 import { Timer } from "@element-plus/icons-vue"
-import {
-  findArticleListApi,
-  deleteArticleApi,
-  updateArticleTopApi,
-  updateArticleDeleteApi,
-} from "@/api/article"
+import { deleteArticleApi, findArticleListApi, updateArticleDeleteApi, updateArticleTopApi } from "@/api/article"
 import { getCurrentInstance } from "vue"
 import router from "@/router"
 

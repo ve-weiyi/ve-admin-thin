@@ -7,9 +7,8 @@ import vueJsx from "@vitejs/plugin-vue-jsx"
 import { viteMockServe } from "vite-plugin-mock"
 import { configCompressPlugin } from "./compress"
 // import ElementPlus from "unplugin-element-plus/vite";
-import { visualizer } from "rollup-plugin-visualizer"
 import removeConsole from "vite-plugin-remove-console"
-import { themePreprocessorPlugin } from "@pureadmin/theme";
+import { themePreprocessorPlugin } from "@pureadmin/theme"
 import VueI18nPlugin from "@intlify/unplugin-vue-i18n/vite"
 import { genScssMultipleScopeVars } from "../src/layout/theme"
 import eslintPlugin from "vite-plugin-eslint"
@@ -17,7 +16,7 @@ import eslintPlugin from "vite-plugin-eslint"
 export function getPluginsList(
   command: string,
   VITE_CDN: boolean,
-  VITE_COMPRESSION: ViteCompression
+  VITE_COMPRESSION: ViteCompression,
 ) {
   const prodMock = true
   const lifecycle = process.env.npm_lifecycle_event

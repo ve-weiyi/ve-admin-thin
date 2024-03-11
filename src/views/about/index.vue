@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { computed } from "vue";
-import { useColumns } from "./columns";
+import { computed } from "vue"
+import { useColumns } from "./columns"
 
 export interface schemaItem {
   field: string;
@@ -8,16 +8,16 @@ export interface schemaItem {
 }
 
 defineOptions({
-  name: "About"
-});
+  name: "About",
+})
 
-const { pkg } = __APP_INFO__;
-const { dependencies, devDependencies } = pkg;
+const { pkg } = __APP_INFO__
+const { dependencies, devDependencies } = pkg
 
-const schema: schemaItem[] = [];
-const devSchema: schemaItem[] = [];
+const schema: schemaItem[] = []
+const devSchema: schemaItem[] = []
 
-const { columns } = useColumns();
+const { columns } = useColumns()
 
 const words = [
   "@pureadmin/descriptions",
@@ -42,20 +42,20 @@ const words = [
   "tailwindcss",
   "typescript",
   "vite",
-  "vue-tsc"
-];
+  "vue-tsc",
+]
 
 const getMainLabel = computed(
-  () => (label: string) => words.find(w => w === label) && "main-label"
-);
+  () => (label: string) => words.find(w => w === label) && "main-label",
+)
 
 Object.keys(dependencies).forEach(key => {
-  schema.push({ field: dependencies[key], label: key });
-});
+  schema.push({ field: dependencies[key], label: key })
+})
 
 Object.keys(devDependencies).forEach(key => {
-  devSchema.push({ field: devDependencies[key], label: key });
-});
+  devSchema.push({ field: devDependencies[key], label: key })
+})
 </script>
 
 <template>

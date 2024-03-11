@@ -6,9 +6,9 @@ import SearchResult from "./SearchResult.vue"
 import SearchFooter from "./SearchFooter.vue"
 import { useNav } from "@/layout/hooks/useNav"
 import { transformI18n } from "@/plugins/i18n"
-import { ref, computed, shallowRef } from "vue"
+import { computed, ref, shallowRef } from "vue"
 import { cloneDeep, isAllEmpty } from "@pureadmin/utils"
-import { useDebounceFn, onKeyStroke } from "@vueuse/core"
+import { onKeyStroke, useDebounceFn } from "@vueuse/core"
 import { usePermissionStoreHook } from "@/store/modules/permission"
 import Search from "@iconify-icons/ri/search-line"
 
@@ -52,12 +52,14 @@ const show = computed({
 /** 将菜单树形结构扁平化为一维数组，用于菜单查询 */
 function flatTree(arr) {
   const res = []
+
   function deep(arr) {
     arr.forEach((item) => {
       res.push(item)
       item.children && deep(item.children)
     })
   }
+
   deep(arr)
   return res
 }
@@ -68,16 +70,16 @@ function search() {
   resultOptions.value = flatMenusData.filter((menu) =>
     keyword.value
       ? transformI18n(menu.meta?.title)
-          .toLocaleLowerCase()
-          .includes(keyword.value.toLocaleLowerCase().trim()) ||
-        (locale.value === "zh" &&
-          !isAllEmpty(
-            match(
-              transformI18n(menu.meta?.title).toLocaleLowerCase(),
-              keyword.value.toLocaleLowerCase().trim()
-            )
-          ))
-      : false
+        .toLocaleLowerCase()
+        .includes(keyword.value.toLocaleLowerCase().trim()) ||
+      (locale.value === "zh" &&
+        !isAllEmpty(
+          match(
+            transformI18n(menu.meta?.title).toLocaleLowerCase(),
+            keyword.value.toLocaleLowerCase().trim(),
+          ),
+        ))
+      : false,
   )
   if (resultOptions.value?.length > 0) {
     activePath.value = resultOptions.value[0].path

@@ -54,7 +54,8 @@ const tabList = [
 
 const { getSearchFields, getColumnFields, getFormFields, handleApi } = useTableHook()
 
-onMounted(() => {})
+onMounted(() => {
+})
 </script>
 
 <style lang="scss" scoped></style>

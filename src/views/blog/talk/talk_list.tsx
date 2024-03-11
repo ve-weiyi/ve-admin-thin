@@ -1,13 +1,7 @@
 import { onMounted, reactive, ref } from "vue"
 import { Column, ElMessage, FormInstance, FormRules, TableInstance } from "element-plus"
 import { defaultPaginationData, FormField, Pagination } from "@/utils/render"
-import {
-  createTalkApi,
-  deleteTalkApi,
-  deleteTalkByIdsApi,
-  findTalkDetailsListApi,
-  updateTalkApi,
-} from "@/api/talk"
+import { createTalkApi, deleteTalkApi, deleteTalkByIdsApi, findTalkDetailsListApi, updateTalkApi } from "@/api/talk"
 
 import { TalkDetailsDTO } from "@/api/types"
 
@@ -207,7 +201,7 @@ export function useTableHook() {
   }
 
   /** ******** start 新增、修改 **********/
-  // 表单数据定义
+    // 表单数据定义
   const formFields = ref<FormField[]>([])
   const formVisibility = ref(false)
   const formStatus = ref("")
@@ -260,7 +254,7 @@ export function useTableHook() {
   /** ******** end 新增、修改 **********/
 
   /** ******** start 批量删除 **********/
-  // 批量移除提示框
+    // 批量移除提示框
   const batchDeleteVisibility = ref(false)
 
   // 取消批量删除

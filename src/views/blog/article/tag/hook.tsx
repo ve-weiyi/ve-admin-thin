@@ -3,13 +3,7 @@ import { Column } from "element-plus"
 import { FormField, RenderType } from "@/utils/render"
 import { Timer } from "@element-plus/icons-vue"
 
-import {
-  createTagApi,
-  deleteTagApi,
-  deleteTagByIdsApi,
-  findTagDetailsListApi,
-  updateTagApi,
-} from "@/api/tag"
+import { createTagApi, deleteTagApi, deleteTagByIdsApi, findTagDetailsListApi, updateTagApi } from "@/api/tag"
 import { Tag } from "@/api/types"
 
 const align = "center"

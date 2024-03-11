@@ -3,13 +3,7 @@ import { Column, ElMessage } from "element-plus"
 import { FormField, RenderType } from "@/utils/render"
 import { Timer } from "@element-plus/icons-vue"
 
-import {
-  createApiApi,
-  deleteApiApi,
-  deleteApiByIdsApi,
-  findApiDetailsListApi,
-  updateApiApi,
-} from "@/api/api"
+import { createApiApi, deleteApiApi, deleteApiByIdsApi, findApiDetailsListApi, updateApiApi } from "@/api/api"
 
 const align = "center"
 

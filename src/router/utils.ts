@@ -1,32 +1,18 @@
-import {
-  RouterHistory,
-  RouteRecordRaw,
-  RouteComponent,
-  createWebHistory,
-  createWebHashHistory,
-} from "vue-router"
+import { createWebHashHistory, createWebHistory, RouteComponent, RouteRecordRaw, RouterHistory } from "vue-router"
 import { asyncRoutes, router } from "./index"
 import { isProxy, toRaw } from "vue"
 import { useTimeoutFn } from "@vueuse/core"
-import {
-  isString,
-  cloneDeep,
-  isAllEmpty,
-  intersection,
-  storageSession,
-  isIncludeAllChildren,
-} from "@pureadmin/utils"
-import { getConfig } from "@/config"
+import { cloneDeep, intersection, isAllEmpty, isIncludeAllChildren, isString } from "@pureadmin/utils"
 import { menuType } from "@/layout/types"
 import { buildHierarchyTree } from "@/utils/tree"
 import { useMultiTagsStoreHook } from "@/store/modules/multiTags"
 import { usePermissionStoreHook } from "@/store/modules/permission"
+// 动态路由
+import { getUserMenusApi } from "@/api/user"
+
 const IFrame = () => import("@/layout/frameView.vue")
 // https://cn.vitejs.dev/guide/features.html#glob-import
 const modulesRoutes = import.meta.glob("/src/views/**/*.{vue,tsx}")
-
-// 动态路由
-import { getUserMenusApi } from "@/api/user"
 
 function handRank(routeInfo: any) {
   const { name, path, parentId, meta } = routeInfo
@@ -51,7 +37,7 @@ function ascending(arr: any[]) {
 /** 过滤meta中showLink为false的菜单 */
 function filterTree(data: RouteComponent[]) {
   const newTree = cloneDeep(data).filter(
-    (v: { meta: { showLink: boolean } }) => v.meta?.showLink !== false
+    (v: { meta: { showLink: boolean } }) => v.meta?.showLink !== false,
   )
   newTree.forEach((v: { children }) => v.children && (v.children = filterTree(v.children)))
   return newTree

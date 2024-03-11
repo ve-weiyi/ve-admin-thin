@@ -2,22 +2,11 @@
 import { getConfig } from "@/config"
 import NProgress from "@/utils/progress"
 import { transformI18n } from "@/plugins/i18n"
-import { useMultiTagsStoreHook } from "@/store/modules/multiTags"
 import { usePermissionStoreHook } from "@/store/modules/permission"
-import { Router, createRouter, RouteRecordRaw, RouteComponent } from "vue-router"
-import {
-  ascending,
-  getTopMenu,
-  initRouter,
-  isOneOfArray,
-  getHistoryMode,
-  findRouteByPath,
-  handleAliveRoute,
-  formatTwoStageRoutes,
-  formatFlatteningRoutes,
-} from "./utils"
+import { createRouter, RouteComponent, Router, RouteRecordRaw } from "vue-router"
+import { ascending, formatFlatteningRoutes, formatTwoStageRoutes, getHistoryMode, handleAliveRoute } from "./utils"
 import { buildHierarchyTree } from "@/utils/tree"
-import { isUrl, openLink, storageSession, isAllEmpty } from "@pureadmin/utils"
+import { isUrl } from "@pureadmin/utils"
 
 import remainingRouter from "./modules/remaining"
 import { useAdminStoreHook } from "@/store/modules/admin"
@@ -30,7 +19,7 @@ const modules: Record<string, any> = import.meta.glob(
   ["./blog/**/*.ts", "./modules/**/*.ts", "!./modules/**/remaining.ts"],
   {
     eager: true,
-  }
+  },
 )
 
 /** 原始静态路由（未做任何处理） */
@@ -52,12 +41,12 @@ Object.keys(asyncModules).forEach((key) => {
 })
 
 export const asyncRoutes: Array<RouteRecordRaw> = formatTwoStageRoutes(
-  formatFlatteningRoutes(buildHierarchyTree(ascending(routes.flat(Infinity))))
+  formatFlatteningRoutes(buildHierarchyTree(ascending(routes.flat(Infinity)))),
 )
 
 /** 导出处理后的静态路由（三级及以上的路由全部拍成二级） */
 export const constantRoutes: Array<RouteRecordRaw> = formatTwoStageRoutes(
-  formatFlatteningRoutes(buildHierarchyTree(ascending(routes.flat(Infinity))))
+  formatFlatteningRoutes(buildHierarchyTree(ascending(routes.flat(Infinity)))),
 )
 console.log("modules", modules)
 console.log("asyncModules", asyncModules)
@@ -69,7 +58,7 @@ console.log("constantRoutes", constantRoutes)
 console.log("asyncRoutes", asyncRoutes)
 /** 用于渲染菜单，保持原始层级 */
 export const constantMenus: Array<RouteComponent> = ascending(routes.flat(Infinity)).concat(
-  ...remainingRouter
+  ...remainingRouter,
 )
 
 /** 不参与菜单的路由 */
@@ -103,7 +92,7 @@ export function resetRouter() {
     if (name && router.hasRoute(name) && meta?.backstage) {
       router.removeRoute(name)
       router.options.routes = formatTwoStageRoutes(
-        formatFlatteningRoutes(buildHierarchyTree(ascending(routes.flat(Infinity))))
+        formatFlatteningRoutes(buildHierarchyTree(ascending(routes.flat(Infinity)))),
       )
     }
   })
@@ -115,7 +104,7 @@ export function resetRouter() {
 const whiteList = ["/login", "/error/403", "/error/404"]
 
 router.beforeEach((to: ToRouteType, _from, next) => {
-  console.log("router.before", to,_from)
+  console.log("router.before", to, _from)
   NProgress.start()
   if (to.meta?.keepAlive) {
     handleAliveRoute(to, "add")

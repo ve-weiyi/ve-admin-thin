@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { emitter } from "@/utils/mitt"
 import { onClickOutside } from "@vueuse/core"
-import { ref, computed, onMounted, onBeforeUnmount } from "vue"
+import { computed, onBeforeUnmount, onMounted, ref } from "vue"
 import { useDataThemeChange } from "@/layout/hooks/useDataThemeChange"
 import Close from "@iconify-icons/ep/close"
 

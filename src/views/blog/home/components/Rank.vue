@@ -9,16 +9,7 @@
 <script lang="ts" setup>
 import * as echarts from "echarts"
 import { EChartsOption } from "echarts"
-import {
-  nextTick,
-  onBeforeUnmount,
-  onMounted,
-  ref,
-  Ref,
-  ShallowRef,
-  shallowRef,
-  watchEffect,
-} from "vue"
+import { nextTick, onBeforeUnmount, onMounted, ref, Ref, ShallowRef, shallowRef, watchEffect } from "vue"
 
 type ECharts = echarts.ECharts
 

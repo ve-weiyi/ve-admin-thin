@@ -49,7 +49,8 @@ function Sync(evt: MouseEvent) {
     })
 }
 
-onMounted(() => {})
+onMounted(() => {
+})
 </script>
 
 <style lang="scss" scoped></style>

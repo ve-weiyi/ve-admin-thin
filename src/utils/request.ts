@@ -7,7 +7,7 @@
  * @LastEditTime: 2021-07-06 11:49:40
  */
 "use strict"
-import axios, { AxiosRequestConfig, AxiosInstance, AxiosResponse } from "axios"
+import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from "axios"
 import { ElMessage } from "element-plus"
 import { useAdminStoreHook } from "@/store/modules/admin"
 
@@ -141,7 +141,7 @@ class HttpRequest {
       },
       (error) => {
         return Promise.reject(new Error(error))
-      }
+      },
     )
 
     // 响应拦截
@@ -183,7 +183,7 @@ class HttpRequest {
           duration: 2 * 1000,
         })
         return Promise.reject(new Error(error.message))
-      }
+      },
     )
     return instance
   }

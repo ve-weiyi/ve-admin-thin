@@ -1,6 +1,6 @@
 import { useEventListener } from "@vueuse/core"
 import type { Directive, DirectiveBinding } from "vue"
-import { subBefore, subAfter, isFunction } from "@pureadmin/utils"
+import { isFunction, subAfter, subBefore } from "@pureadmin/utils"
 
 export const longpress: Directive = {
   mounted(el: HTMLElement, binding: DirectiveBinding) {
@@ -43,9 +43,9 @@ export const longpress: Directive = {
         if (timer === null) {
           timer = isInter
             ? setTimeout(() => {
-                cb()
-                onDownInter(ev)
-              }, num)
+              cb()
+              onDownInter(ev)
+            }, num)
             : setTimeout(() => cb(), num)
         }
       }
@@ -56,7 +56,7 @@ export const longpress: Directive = {
       useEventListener(el, "pointerleave", clear)
     } else {
       throw new Error(
-        '[Directive: longpress]: need callback and callback must be a function! Like v-longpress="callback"'
+        "[Directive: longpress]: need callback and callback must be a function! Like v-longpress=\"callback\"",
       )
     }
   },

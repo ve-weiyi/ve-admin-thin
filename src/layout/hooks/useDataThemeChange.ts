@@ -2,10 +2,10 @@ import { ref } from "vue"
 import { getConfig } from "@/config"
 import { useLayout } from "./useLayout"
 import { routerArrays } from "@/layout/types"
-import { router, resetRouter } from "@/router"
+import { resetRouter, router } from "@/router"
 import type { themeColorsType } from "../types"
 import { useAppStoreHook } from "@/store/modules/app"
-import { useGlobal, storageLocal, storageSession } from "@pureadmin/utils"
+import { storageLocal, storageSession, useGlobal } from "@pureadmin/utils"
 import { useEpThemeStoreHook } from "@/store/modules/epTheme"
 import { useMultiTagsStoreHook } from "@/store/modules/multiTags"
 import { darken, lighten, toggleTheme } from "@pureadmin/theme/dist/browser-utils"
@@ -73,7 +73,7 @@ export function useDataThemeChange() {
   function setPropertyPrimary(mode: string, i: number, color: string) {
     document.documentElement.style.setProperty(
       `--el-color-primary-${mode}-${i}`,
-      dataTheme.value ? darken(color, i / 10) : lighten(color, i / 10)
+      dataTheme.value ? darken(color, i / 10) : lighten(color, i / 10),
     )
   }
 

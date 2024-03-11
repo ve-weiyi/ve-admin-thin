@@ -167,7 +167,7 @@ function changeStatus(status) {
 }
 
 const isActive = computed(() => {
-  return function (status) {
+  return function(status) {
     return status === searchData.value.status ? "active-status" : "status"
   }
 })

@@ -1,4 +1,4 @@
-import { $t } from "@/plugins/i18n";
+import { $t } from "@/plugins/i18n"
 
 export default {
   path: "/about",
@@ -6,7 +6,7 @@ export default {
   meta: {
     icon: "info",
     title: $t("menus.hsAbout"),
-    rank: 999
+    rank: 999,
   },
   children: [
     {
@@ -14,8 +14,8 @@ export default {
       name: "About",
       component: () => import("@/views/about/index.vue"),
       meta: {
-        title: $t("menus.hsAbout")
-      }
-    }
-  ]
-} satisfies RouteConfigsTable;
+        title: $t("menus.hsAbout"),
+      },
+    },
+  ],
+} satisfies RouteConfigsTable

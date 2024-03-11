@@ -4,12 +4,12 @@ import { emitter } from "@/utils/mitt"
 import { RouteConfigs } from "../../types"
 import { useTags } from "../../hooks/useTag"
 import { routerArrays } from "@/layout/types"
-import { useFullscreen, onClickOutside } from "@vueuse/core"
-import { handleAliveRoute, getTopMenu } from "@/router/utils"
+import { onClickOutside, useFullscreen } from "@vueuse/core"
+import { getTopMenu, handleAliveRoute } from "@/router/utils"
 import { useSettingStoreHook } from "@/store/modules/settings"
 import { useMultiTagsStoreHook } from "@/store/modules/multiTags"
-import { ref, watch, unref, toRaw, nextTick, onBeforeUnmount } from "vue"
-import { isEqual, isAllEmpty, useResizeObserver } from "@pureadmin/utils"
+import { nextTick, onBeforeUnmount, ref, toRaw, unref, watch } from "vue"
+import { isAllEmpty, isEqual, useResizeObserver } from "@pureadmin/utils"
 
 import ExitFullscreen from "@iconify-icons/ri/fullscreen-exit-fill"
 import Fullscreen from "@iconify-icons/ri/fullscreen-fill"
@@ -95,7 +95,7 @@ const moveToView = async(index: number): Promise<void> => {
     // 标签在可视区域
     translateX.value = Math.min(
       0,
-      scrollbarDomWidth - tabItemOffsetWidth - tabItemElOffsetLeft - tabNavPadding
+      scrollbarDomWidth - tabItemOffsetWidth - tabItemElOffsetLeft - tabNavPadding,
     )
   } else {
     // 标签在可视区域右侧
@@ -144,6 +144,7 @@ function dynamicRouteTag(value: string): void {
       })
     }
   }
+
   concatPath(router.options.routes as any, value)
 }
 
@@ -465,8 +466,11 @@ onMounted(() => {
 
   // 触发隐藏标签页
   emitter.on("tagViewsChange", (key: any) => {
-    if (unref(showTags as any) === key) return
-    ;(showTags as any).value = key
+    if (unref(showTags as any) === key) {
+      return
+
+    }
+    (showTags as any).value = key
   })
 
   // 改变标签风格

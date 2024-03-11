@@ -9,16 +9,7 @@
 <script lang="ts" setup>
 import * as echarts from "echarts"
 import { EChartsOption } from "echarts"
-import {
-  nextTick,
-  onBeforeUnmount,
-  onMounted,
-  ref,
-  Ref,
-  ShallowRef,
-  shallowRef,
-  watchEffect,
-} from "vue"
+import { nextTick, onBeforeUnmount, onMounted, ref, Ref, ShallowRef, shallowRef, watchEffect } from "vue"
 import chinaJson from "@/assets/china.json"
 
 type ECharts = echarts.ECharts
@@ -47,7 +38,7 @@ const option: Ref<EChartsOption | null> = ref(null)
 
 option.value = {
   tooltip: {
-    formatter: function (e) {
+    formatter: function(e) {
       var value = e.value ? e.value : 0
       return e.seriesName + "<br />" + e.name + "：" + value
     },

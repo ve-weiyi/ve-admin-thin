@@ -1,5 +1,5 @@
 import "./index.css"
-import { h, ref, toRef, watch, nextTick, defineComponent, getCurrentInstance } from "vue"
+import { defineComponent, getCurrentInstance, h, nextTick, ref, toRef, watch } from "vue"
 import type { OptionsType } from "./type"
 import { useRenderIcon } from "@/components/ReIcon/src/hooks"
 import { isFunction, isNumber, useDark } from "@pureadmin/utils"
@@ -73,7 +73,7 @@ export default defineComponent({
       {
         deep: true,
         immediate: true,
-      }
+      },
     )
 
     const rendLabel = () => {
@@ -111,7 +111,7 @@ export default defineComponent({
                   {h(
                     useRenderIcon(option.icon, {
                       ...option?.iconAttrs,
-                    })
+                    }),
                   )}
                 </span>
               ) : null}

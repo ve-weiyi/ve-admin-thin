@@ -22,7 +22,7 @@
 import TablePage from "@/components/TablePage/TablePage.vue"
 import { useTableHook } from "./hook"
 import { onMounted, ref } from "vue"
-import router, { constantMenus } from "@/router"
+import { constantMenus } from "@/router"
 import { ElMessage, ElMessageBox } from "element-plus"
 import { syncMenuListApi } from "@/api/menu"
 import { RouteConfigsTable } from "@/api/types"
@@ -54,7 +54,8 @@ function Sync(evt: MouseEvent) {
   console.log("menu-->", constantMenus)
 }
 
-onMounted(() => {})
+onMounted(() => {
+})
 </script>
 
 <style lang="scss" scoped></style>

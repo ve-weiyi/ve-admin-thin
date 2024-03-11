@@ -26,7 +26,7 @@ watch(
   () => props.code,
   (newValue) => {
     setImgCode(newValue)
-  }
+  },
 )
 watch(imgCode, (newValue) => {
   emit("update:code", newValue)

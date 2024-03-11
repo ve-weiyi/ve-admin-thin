@@ -108,7 +108,6 @@ import { useRoute } from "vue-router"
 import { createTalkApi, findTalkApi, updateTalkApi } from "@/api/talk"
 import { Talk } from "@/api/types"
 import { ElMessage } from "element-plus"
-import { number } from "echarts/core"
 
 const route = useRoute()
 const emojiList = ref<any>(EmojiList)
