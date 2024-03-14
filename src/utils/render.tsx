@@ -121,7 +121,7 @@ export function formRender(field: FormField, model: any): VNode {
       return (
         <el-radio-group v-model={model[field.field]}>
           {field.options.map((item) => (
-            <el-radio key={item.value} label={item.value}>
+            <el-radio key={item.value} label={item.value} value={item.value}>
               {item.label}
             </el-radio>
           ))}

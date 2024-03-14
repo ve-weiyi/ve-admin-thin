@@ -106,6 +106,7 @@
               <div class="flex-between">
                 <el-checkbox
                   label="列展示"
+                  value="列展示"
                   v-model="checkAllColumns"
                   :indeterminate="isIndeterminate"
                   @change="handleCheckAllFieldChange"
@@ -136,6 +137,7 @@
                         <el-checkbox
                           v-if="element"
                           :label="element.key"
+                          :value="element.key"
                           @change="(value) => handleCheckFieldChange(value, element)"
                         >
                           <span
@@ -344,8 +346,7 @@ const props = defineProps({
   },
   onStatusChange: {
     type: Function,
-    default: (): any => {
-    },
+    default: (): any => {},
   },
   defaultOrder: {
     type: Object,

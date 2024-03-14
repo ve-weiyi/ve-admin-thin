@@ -58,7 +58,7 @@
         <el-empty v-if="tableData.length === 0" description="暂无照片" />
         <el-checkbox-group v-model="selectionIds" @change="handleCheckedPhotoChange">
           <el-col v-for="item in tableData" :key="item.id" :md="4">
-            <el-checkbox :label="item.id">
+            <el-checkbox :label="item.id" :value="item.id">
               <div class="photo-item">
                 <!-- 照片操作 -->
                 <div class="photo-operation">
