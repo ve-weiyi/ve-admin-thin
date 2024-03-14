@@ -96,14 +96,7 @@ declare global {
     CachingAsyncRoutes?: boolean
     TooltipEffect?: Effect
     ResponsiveStorageNameSpace?: string
-    MapConfigure?: {
-      amapKey?: string
-      options: {
-        resizeEnable?: boolean
-        center?: number[]
-        zoom?: number
-      }
-    }
+    MenuSearchHistory?: number
   }
 
   /**
@@ -131,14 +124,7 @@ declare global {
     overallStyle?: string
     showLogo?: boolean
     showModel?: string
-    mapConfigure?: {
-      amapKey?: string
-      options: {
-        resizeEnable?: boolean
-        center?: number[]
-        zoom?: number
-      }
-    }
+    menuSearchHistory?: number
     username?: string
   }
 
@@ -177,5 +163,19 @@ declare global {
     $echarts: ECharts
     $storage: ResponsiveStorage
     $config: PlatformConfigs
+  }
+
+  /**
+   * 扩展 `Element`
+   */
+  interface Element {
+    // v-ripple 作用于 src/directives/ripple/index.ts 文件
+    _ripple?: {
+      enabled?: boolean
+      centered?: boolean
+      class?: string
+      circle?: boolean
+      touched?: boolean
+    }
   }
 }

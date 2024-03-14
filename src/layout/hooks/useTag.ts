@@ -1,4 +1,12 @@
-import { computed, type CSSProperties, getCurrentInstance, onMounted, reactive, ref, unref } from "vue"
+import {
+  computed,
+  type CSSProperties,
+  getCurrentInstance,
+  onMounted,
+  reactive,
+  ref,
+  unref,
+} from "vue"
 import type { tagsViewsType } from "../types"
 import { useRoute, useRouter } from "vue-router"
 import { $t, transformI18n } from "@/plugins/i18n"
@@ -28,16 +36,17 @@ export function useTags() {
   const activeIndex = ref(-1)
   // 当前右键选中的路由信息
   const currentSelect = ref({})
+  const isScrolling = ref(false)
 
   /** 显示模式，默认灵动模式 */
   const showModel = ref(
     storageLocal().getItem<StorageConfigs>(`${responsiveStorageNameSpace()}configure`)?.showModel ||
-    "smart",
+      "smart"
   )
   /** 是否隐藏标签页，默认显示 */
   const showTags =
     ref(
-      storageLocal().getItem<StorageConfigs>(`${responsiveStorageNameSpace()}configure`).hideTabs,
+      storageLocal().getItem<StorageConfigs>(`${responsiveStorageNameSpace()}configure`).hideTabs
     ) ?? ref("false")
   const multiTags: any = computed(() => {
     return useMultiTagsStoreHook().multiTags
@@ -136,6 +145,7 @@ export function useTags() {
   const getTabStyle = computed((): CSSProperties => {
     return {
       transform: `translateX(${translateX.value}px)`,
+      transition: isScrolling.value ? "none" : "transform 0.5s ease-in-out",
     }
   })
 
@@ -184,7 +194,7 @@ export function useTags() {
   onMounted(() => {
     if (!showModel.value) {
       const configure = storageLocal().getItem<StorageConfigs>(
-        `${responsiveStorageNameSpace()}configure`,
+        `${responsiveStorageNameSpace()}configure`
       )
       configure.showModel = "card"
       storageLocal().setItem(`${responsiveStorageNameSpace()}configure`, configure)
@@ -192,6 +202,7 @@ export function useTags() {
   })
 
   return {
+    Close,
     route,
     router,
     visible,
@@ -206,6 +217,7 @@ export function useTags() {
     pureSetting,
     activeIndex,
     getTabStyle,
+    isScrolling,
     iconIsActive,
     linkIsActive,
     currentSelect,

@@ -9,16 +9,16 @@ import { getTopMenu, handleAliveRoute } from "@/router/utils"
 import { useSettingStoreHook } from "@/store/modules/settings"
 import { useMultiTagsStoreHook } from "@/store/modules/multiTags"
 import { nextTick, onBeforeUnmount, ref, toRaw, unref, watch } from "vue"
-import { isAllEmpty, isEqual, useResizeObserver } from "@pureadmin/utils"
+import { delay, isAllEmpty, isEqual, useResizeObserver } from "@pureadmin/utils"
 
 import ExitFullscreen from "@iconify-icons/ri/fullscreen-exit-fill"
 import Fullscreen from "@iconify-icons/ri/fullscreen-fill"
 import ArrowDown from "@iconify-icons/ri/arrow-down-s-line"
 import ArrowRightSLine from "@iconify-icons/ri/arrow-right-s-line"
 import ArrowLeftSLine from "@iconify-icons/ri/arrow-left-s-line"
-import CloseBold from "@iconify-icons/ep/close-bold"
 
 const {
+  Close,
   route,
   router,
   visible,
@@ -33,6 +33,7 @@ const {
   pureSetting,
   activeIndex,
   getTabStyle,
+  isScrolling,
   iconIsActive,
   linkIsActive,
   currentSelect,
@@ -55,7 +56,7 @@ const topPath = getTopMenu()?.path
 const { VITE_HIDE_HOME } = import.meta.env
 const { isFullscreen, toggle } = useFullscreen()
 
-const dynamicTagView = async() => {
+const dynamicTagView = async () => {
   await nextTick()
   const index = multiTags.value.findIndex((item) => {
     if (!isAllEmpty(route.query)) {
@@ -69,7 +70,7 @@ const dynamicTagView = async() => {
   moveToView(index)
 }
 
-const moveToView = async(index: number): Promise<void> => {
+const moveToView = async (index: number): Promise<void> => {
   await nextTick()
   const tabNavPadding = 10
   if (!instance.refs["dynamic" + index]) return
@@ -95,7 +96,7 @@ const moveToView = async(index: number): Promise<void> => {
     // 标签在可视区域
     translateX.value = Math.min(
       0,
-      scrollbarDomWidth - tabItemOffsetWidth - tabItemElOffsetLeft - tabNavPadding,
+      scrollbarDomWidth - tabItemOffsetWidth - tabItemElOffsetLeft - tabNavPadding
     )
   } else {
     // 标签在可视区域右侧
@@ -120,6 +121,38 @@ const handleScroll = (offset: number): void => {
       translateX.value = 0
     }
   }
+  isScrolling.value = false
+}
+
+const handleWheel = (event: WheelEvent): void => {
+  isScrolling.value = true
+  const scrollIntensity = Math.abs(event.deltaX) + Math.abs(event.deltaY)
+  let offset = 0
+  if (event.deltaX < 0) {
+    offset = scrollIntensity > 0 ? scrollIntensity : 100
+  } else {
+    offset = scrollIntensity > 0 ? -scrollIntensity : -100
+  }
+
+  smoothScroll(offset)
+}
+
+const smoothScroll = (offset: number): void => {
+  // 每帧滚动的距离
+  const scrollAmount = 20
+  let remaining = Math.abs(offset)
+
+  const scrollStep = () => {
+    const scrollOffset = Math.sign(offset) * Math.min(scrollAmount, remaining)
+    handleScroll(scrollOffset)
+    remaining -= Math.abs(scrollOffset)
+
+    if (remaining > 0) {
+      requestAnimationFrame(scrollStep)
+    }
+  }
+
+  requestAnimationFrame(scrollStep)
 }
 
 function dynamicRouteTag(value: string): void {
@@ -403,7 +436,7 @@ function openMenu(tag, e) {
   }
 
   currentSelect.value = tag
-  const menuMinWidth = 105
+  const menuMinWidth = 140
   const offsetLeft = unref(containerDom).getBoundingClientRect().left
   const offsetWidth = unref(containerDom).offsetWidth
   const maxLeft = offsetWidth - menuMinWidth
@@ -468,9 +501,8 @@ onMounted(() => {
   emitter.on("tagViewsChange", (key: any) => {
     if (unref(showTags as any) === key) {
       return
-
     }
-    (showTags as any).value = key
+    ;(showTags as any).value = key
   })
 
   // 改变标签风格
@@ -487,6 +519,7 @@ onMounted(() => {
   })
 
   useResizeObserver(scrollbarDom, dynamicTagView)
+  delay().then(() => dynamicTagView())
 })
 
 onBeforeUnmount(() => {
@@ -502,7 +535,7 @@ onBeforeUnmount(() => {
     <span v-show="isShowArrow" class="arrow-left">
       <IconifyIconOffline :icon="ArrowLeftSLine" @click="handleScroll(200)" />
     </span>
-    <div ref="scrollbarDom" class="scroll-container">
+    <div ref="scrollbarDom" class="scroll-container" @wheel.prevent="handleWheel">
       <div ref="tabDom" class="tab select-none" :style="getTabStyle">
         <div
           v-for="(item, index) in multiTags"
@@ -522,9 +555,9 @@ onBeforeUnmount(() => {
             class="el-icon-close"
             @click.stop="deleteMenu(item)"
           >
-            <IconifyIconOffline :icon="CloseBold" />
+            <IconifyIconOffline :icon="Close" />
           </span>
-          <div
+          <span
             v-if="showModel !== 'card'"
             :ref="'schedule' + index"
             :class="[scheduleIsActive(item)]"

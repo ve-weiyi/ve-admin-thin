@@ -79,13 +79,15 @@ function storageConfigureChange<T>(key: string, val: T): void {
 
 /** 灰色模式设置 */
 const greyChange = (value): void => {
-  toggleClass(settings.greyVal, "html-grey", document.querySelector("html"))
+  const htmlEl = document.querySelector("html")
+  toggleClass(settings.greyVal, "html-grey", htmlEl)
   storageConfigureChange("grey", value)
 }
 
 /** 色弱模式设置 */
 const weekChange = (value): void => {
-  toggleClass(settings.weakVal, "html-weakness", document.querySelector("html"))
+  const htmlEl = document.querySelector("html")
+  toggleClass(settings.weakVal, "html-weakness", htmlEl)
   storageConfigureChange("weak", value)
 }
 
@@ -246,8 +248,8 @@ onBeforeMount(() => {
   /* 初始化项目配置 */
   nextTick(() => {
     watchSystemThemeChange()
-    settings.greyVal && document.querySelector("html")?.setAttribute("class", "html-grey")
-    settings.weakVal && document.querySelector("html")?.setAttribute("class", "html-weakness")
+    settings.greyVal && document.querySelector("html")?.classList.add("html-grey")
+    settings.weakVal && document.querySelector("html")?.classList.add("html-weakness")
     settings.tabsVal && tagsChange()
     settings.hideFooter && hideFooterChange()
   })

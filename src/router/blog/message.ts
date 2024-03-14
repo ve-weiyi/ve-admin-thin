@@ -30,4 +30,4 @@ export default {
       meta: { title: "友链管理", keepAlive: true },
     },
   ],
-}
+} satisfies RouteConfigsTable

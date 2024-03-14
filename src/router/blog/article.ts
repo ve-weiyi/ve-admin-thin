@@ -11,12 +11,12 @@ export default {
     rank: 10,
   },
   children: [
-    {
-      path: "/article/publish/:articleId",
-      name: "article/publish",
-      component: () => import("@/views/blog/article/Article.vue"),
-      meta: { title: "发布文章" },
-    },
+    // {
+    //   path: "/article/publish/:articleId",
+    //   name: "article/publish",
+    //   component: () => import("@/views/blog/article/Article.vue"),
+    //   meta: { title: "发布文章" },
+    // },
     {
       path: "/article/list",
       name: "article/list",
@@ -36,4 +36,4 @@ export default {
       meta: { title: "标签管理" },
     },
   ],
-}
+} satisfies RouteConfigsTable

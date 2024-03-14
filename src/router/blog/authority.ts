@@ -30,4 +30,4 @@ export default {
       meta: { title: "接口管理" },
     },
   ],
-}
+} satisfies RouteConfigsTable

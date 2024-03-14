@@ -24,4 +24,4 @@ export default {
       meta: { title: "在线用户", icon: "user-filled" },
     },
   ],
-}
+} satisfies RouteConfigsTable

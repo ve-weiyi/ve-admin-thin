@@ -30,4 +30,4 @@ export default {
       meta: { title: "照片回收站" },
     },
   ],
-}
+} satisfies RouteConfigsTable

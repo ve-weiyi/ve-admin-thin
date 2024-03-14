@@ -30,4 +30,4 @@ export default {
       meta: { title: "说说列表" },
     },
   ],
-}
+} satisfies RouteConfigsTable

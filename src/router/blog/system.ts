@@ -18,4 +18,4 @@ export default {
       meta: { title: "网站设置" },
     },
   ],
-}
+} satisfies RouteConfigsTable

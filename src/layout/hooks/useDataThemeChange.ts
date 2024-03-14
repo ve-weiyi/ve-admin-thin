@@ -5,7 +5,7 @@ import { routerArrays } from "@/layout/types"
 import { resetRouter, router } from "@/router"
 import type { themeColorsType } from "../types"
 import { useAppStoreHook } from "@/store/modules/app"
-import { storageLocal, storageSession, useGlobal } from "@pureadmin/utils"
+import { storageLocal, useGlobal } from "@pureadmin/utils"
 import { useEpThemeStoreHook } from "@/store/modules/epTheme"
 import { useMultiTagsStoreHook } from "@/store/modules/multiTags"
 import { darken, lighten, toggleTheme } from "@pureadmin/theme/dist/browser-utils"
@@ -41,7 +41,7 @@ export function useDataThemeChange() {
     const targetEl = target || document.body
     let { className } = targetEl
     className = className.replace(clsName, "").trim()
-    targetEl.className = flag ? `${className} ${clsName} ` : className
+    targetEl.className = flag ? `${className} ${clsName}` : className
   }
 
   /** 设置导航主题色 */
@@ -73,7 +73,7 @@ export function useDataThemeChange() {
   function setPropertyPrimary(mode: string, i: number, color: string) {
     document.documentElement.style.setProperty(
       `--el-color-primary-${mode}-${i}`,
-      dataTheme.value ? darken(color, i / 10) : lighten(color, i / 10),
+      dataTheme.value ? darken(color, i / 10) : lighten(color, i / 10)
     )
   }
 
@@ -112,7 +112,6 @@ export function useDataThemeChange() {
   function onReset() {
     useAdminStoreHook().logout()
     storageLocal().clear()
-    storageSession().clear()
     const { Grey, Weak, MultiTagsCache, EpThemeColor, Layout } = getConfig()
     useAppStoreHook().setLayout(Layout)
     setEpThemeColor(EpThemeColor)

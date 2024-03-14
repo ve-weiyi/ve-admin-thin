@@ -30,4 +30,4 @@ export default {
       meta: { title: "登录历史", keepAlive: true },
     },
   ],
-}
+} satisfies RouteConfigsTable

@@ -18,4 +18,4 @@ export default {
       meta: { title: "操作日志", showParent: true, keepAlive: true },
     },
   ],
-}
+} satisfies RouteConfigsTable
