@@ -3,7 +3,7 @@ import type { Component, CSSProperties, VNode } from "vue"
 type DoneFn = (cancel?: boolean) => void
 type EventType = "open" | "close" | "openAutoFocus" | "closeAutoFocus"
 type ArgsType = {
-  /** `cancel` 点击取消按钮、`sure` 点击确定按钮、`close` 点击右上角关闭按钮或者空白页 */
+  /** `cancel` 点击取消按钮、`sure` 点击确定按钮、`close` 点击右上角关闭按钮或空白页或按下了esc键 */
   command: "cancel" | "sure" | "close"
 }
 
@@ -103,9 +103,9 @@ type ButtonProps = {
   tag?: string | Component
   /** 点击按钮后触发的回调 */
   btnClick?: ({
-                dialog,
-                button,
-              }: {
+    dialog,
+    button,
+  }: {
     /** 当前 `Dialog` 信息 */
     dialog: BtnClickDialog
     /** 当前 `button` 信息 */
@@ -123,27 +123,27 @@ interface DialogOptions extends DialogProps {
    * @see {@link https://element-plus.org/zh-CN/component/dialog.html#%E8%87%AA%E5%AE%9A%E4%B9%89%E5%A4%B4%E9%83%A8}
    */
   headerRenderer?: ({
-                      close,
-                      titleId,
-                      titleClass,
-                    }: {
+    close,
+    titleId,
+    titleClass,
+  }: {
     close: Function
     titleId: string
     titleClass: string
   }) => VNode | Component
   /** 自定义内容渲染器 */
   contentRenderer?: ({
-                       options,
-                       index,
-                     }: {
+    options,
+    index,
+  }: {
     options: DialogOptions
     index: number
   }) => VNode | Component
   /** 自定义按钮操作区的内容渲染器，会覆盖`footerButtons`以及默认的 `取消` 和 `确定` 按钮 */
   footerRenderer?: ({
-                      options,
-                      index,
-                    }: {
+    options,
+    index,
+  }: {
     options: DialogOptions
     index: number
   }) => VNode | Component
@@ -151,14 +151,14 @@ interface DialogOptions extends DialogProps {
   footerButtons?: Array<ButtonProps>
   /** `Dialog` 打开后的回调 */
   open?: ({ options, index }: { options: DialogOptions; index: number }) => void
-  /** `Dialog` 关闭后的回调（只有点击右上角关闭按钮或者空白页关闭页面时才会触发） */
+  /** `Dialog` 关闭后的回调（只有点击右上角关闭按钮或空白页或按下了esc键关闭页面时才会触发） */
   close?: ({ options, index }: { options: DialogOptions; index: number }) => void
-  /** `Dialog` 关闭后的回调。 `args` 返回的 `command` 值解析：`cancel` 点击取消按钮、`sure` 点击确定按钮、`close` 点击右上角关闭按钮或者空白页  */
+  /** `Dialog` 关闭后的回调。 `args` 返回的 `command` 值解析：`cancel` 点击取消按钮、`sure` 点击确定按钮、`close` 点击右上角关闭按钮或空白页或按下了esc键  */
   closeCallBack?: ({
-                     options,
-                     index,
-                     args,
-                   }: {
+    options,
+    index,
+    args,
+  }: {
     options: DialogOptions
     index: number
     args: any
@@ -176,7 +176,7 @@ interface DialogOptions extends DialogProps {
     }: {
       options: DialogOptions
       index: number
-    },
+    }
   ) => void
   /** 点击底部确定按钮的回调，会暂停 `Dialog` 的关闭. 回调函数内执行 `done` 参数方法的时候才是真正关闭对话框的时候 */
   beforeSure?: (
@@ -187,7 +187,7 @@ interface DialogOptions extends DialogProps {
     }: {
       options: DialogOptions
       index: number
-    },
+    }
   ) => void
 }
 
