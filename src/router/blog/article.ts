@@ -11,12 +11,18 @@ export default {
     rank: 10,
   },
   children: [
-    // {
-    //   path: "/article/publish/:articleId",
-    //   name: "article/publish",
-    //   component: () => import("@/views/blog/article/Article.vue"),
-    //   meta: { title: "发布文章" },
-    // },
+    {
+      path: "/article/publish",
+      name: "article/publish",
+      component: () => import("@/views/blog/article/Article.vue"),
+      meta: { title: "发布文章" },
+    },
+    {
+      path: "/article/edit/:articleId",
+      name: "article/edit",
+      component: () => import("@/views/blog/article/Article.vue"),
+      meta: { title: "查看文章", showLink: false },
+    },
     {
       path: "/article/list",
       name: "article/list",

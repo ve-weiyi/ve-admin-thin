@@ -18,7 +18,7 @@ export default defineComponent({
           class: "iconfont",
           ...attrs,
         },
-        this.icon,
+        this.icon
       )
     } else if (Object.keys(attrs).includes("svg") || attrs?.iconType === "svg") {
       return h(
@@ -33,7 +33,7 @@ export default defineComponent({
               "xlink:href": `#${this.icon}`,
             }),
           ],
-        },
+        }
       )
     } else {
       return h("i", {

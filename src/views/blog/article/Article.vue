@@ -484,8 +484,9 @@ const getArticle = (articleId: number) => {
 }
 
 onMounted(() => {
-  const articleId = route.params.articleId ? parseInt(route.params.articleId as string) : 0 // 获取路由参数
-  if (articleId) {
+  console.log("route.params.talkId", route.params.articleId)
+  if (route.params.articleId) {
+    const articleId = parseInt(route.params.articleId as string) // 获取路由参数
     getArticle(Number(articleId))
   } else {
     const articleData = sessionStorage.getItem("article")

@@ -4,7 +4,7 @@ export default {
   path: "/about",
   redirect: "/about/index",
   meta: {
-    icon: "info",
+    icon: "ri:file-info-line",
     title: $t("menus.hsAbout"),
     rank: 999,
   },

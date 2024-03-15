@@ -49,7 +49,7 @@ app.component("Auth", Auth)
 app.use(VueTippy, {
   defaultProps: { animation: "perspective" },
 })
-getPlatformConfig(app).then(async(config) => {
+getPlatformConfig(app).then(async (config) => {
   setupStore(app)
   app.use(router)
   await router.isReady()

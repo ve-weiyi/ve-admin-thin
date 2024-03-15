@@ -1,6 +1,9 @@
 {
-  "name": "pure-admin-thin",
-  "version": "5.0.0",
+  "name": "ve-admin-vite",
+  "version": "1.0.0",
+  "description": "前后端分离博客系统",
+  "author": "791422171@qq.com",
+  "license": "MIT",
   "private": true,
   "scripts": {
     "dev": "NODE_OPTIONS=--max-old-space-size=4096 vite",
@@ -61,7 +64,7 @@
     "@iconify-icons/ep": "^1.2.12",
     "@iconify-icons/ri": "^1.2.10",
     "@iconify/vue": "^4.1.1",
-    "@intlify/unplugin-vue-i18n": "^3.0.1",
+    "@intlify/unplugin-vue-i18n": "^2.0.0",
     "@pureadmin/theme": "^3.2.0",
     "@types/js-cookie": "^3.0.6",
     "@types/mockjs": "^1.0.10",
@@ -125,8 +128,5 @@
       "w3c-hr-time": "*",
       "stable": "*"
     }
-  },
-  "repository": "git@github.com:pure-admin/pure-admin-thin.git",
-  "author": "xiaoxian521",
-  "license": "MIT"
+  }
 }

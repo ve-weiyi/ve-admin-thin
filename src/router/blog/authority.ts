@@ -24,6 +24,12 @@ export default {
       meta: { title: "菜单管理" },
     },
     {
+      path: "/authority/menuv2",
+      component: () => import("@/views/blog/authority/menuv2/index.vue"),
+      name: "Menuv2",
+      meta: { title: "菜单管理v2" },
+    },
+    {
       path: "/authority/resource",
       component: () => import("@/views/blog/authority/resource/Resource.vue"),
       name: "Resource",

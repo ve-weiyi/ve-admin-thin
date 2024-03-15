@@ -1,7 +1,12 @@
 import { FormField, RenderType } from "@/utils/render"
 import { Column, ElMessage } from "element-plus"
 import { Timer } from "@element-plus/icons-vue"
-import { deleteArticleApi, findArticleListApi, updateArticleDeleteApi, updateArticleTopApi } from "@/api/article"
+import {
+  deleteArticleApi,
+  findArticleListApi,
+  updateArticleDeleteApi,
+  updateArticleTopApi,
+} from "@/api/article"
 import { getCurrentInstance } from "vue"
 import router from "@/router"
 
@@ -165,7 +170,7 @@ function getColumnFields(): Column[] {
                   type="primary"
                   size="default"
                   onClick={() => {
-                    router.push({ path: `/article/publish/${scope.row.id}` })
+                    router.push({ path: `/article/edit/${scope.row.id}` })
                   }}
                 >
                   编辑
