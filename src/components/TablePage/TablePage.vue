@@ -415,9 +415,6 @@ const searchFields = ref<FormField[]>(props.getSearchFields())
 const searchData = ref<any>({})
 // 排序条件,{k:v}
 const orderData = ref<any>({})
-// 条件查询 (key,value)
-const conditions = reactive<Condition[]>([])
-const sorts = reactive<Sort[]>([])
 
 function onFindList(page: PageQuery) {
   console.log("onFindList", page)
@@ -483,6 +480,9 @@ function handleCurrentChange(val: number) {
 }
 
 function refreshList() {
+  // 条件查询 (key,value)
+  const conditions = reactive<Condition[]>([])
+  const sorts = reactive<Sort[]>([])
   conditions.length = 0
   sorts.length = 0
 

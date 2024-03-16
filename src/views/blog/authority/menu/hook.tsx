@@ -1,7 +1,13 @@
-import { getCurrentInstance, h, resolveDynamicComponent } from "vue"
+import { getCurrentInstance } from "vue"
 import { Column } from "element-plus"
 import { FormField, RenderType } from "@/utils/render"
-import { createMenuApi, deleteMenuApi, deleteMenuByIdsApi, findMenuDetailsListApi, updateMenuApi } from "@/api/menu"
+import {
+  createMenuApi,
+  deleteMenuApi,
+  deleteMenuByIdsApi,
+  findMenuDetailsListApi,
+  updateMenuApi,
+} from "@/api/menu"
 import { Timer } from "@element-plus/icons-vue"
 
 const align = "center"
@@ -70,6 +76,7 @@ function getColumnFields(): Column[] {
       dataKey: "id",
       width: 100,
       align: align,
+      hidden: true,
       sortable: true,
     },
     {
@@ -95,10 +102,10 @@ function getColumnFields(): Column[] {
       cellRenderer: (scope: any) => {
         return (
           <div>
-            <el-icon class="table-icon">
-              {" "}
-              {h(resolveDynamicComponent(scope.row.icon) as string)}{" "}
-            </el-icon>
+            {/* <el-icon class="table-icon"> */}
+            {/*   {" "} */}
+            {/*   {h(resolveDynamicComponent(scope.row.icon) as string)}{" "} */}
+            {/* </el-icon> */}
             {scope.row.icon}
           </div>
         )

@@ -47,10 +47,7 @@ export function useColumns() {
       className: "pure-version",
       cellRenderer: () => {
         return (
-          <a
-            href="https://github.com/pure-admin/vue-pure-admin"
-            target="_blank"
-          >
+          <a href="https://github.com/pure-admin/vue-pure-admin" target="_blank">
             <span style="color: var(--el-color-primary)">完整版代码链接</span>
           </a>
         )
@@ -61,10 +58,7 @@ export function useColumns() {
       className: "pure-version",
       cellRenderer: () => {
         return (
-          <a
-            href="https://github.com/pure-admin/pure-admin-thin"
-            target="_blank"
-          >
+          <a href="https://github.com/pure-admin/pure-admin-thin" target="_blank">
             <span style="color: var(--el-color-primary)">精简版代码链接</span>
           </a>
         )
@@ -75,10 +69,7 @@ export function useColumns() {
       className: "pure-version",
       cellRenderer: () => {
         return (
-          <a
-            href="https://yiming_chang.gitee.io/pure-admin-doc"
-            target="_blank"
-          >
+          <a href="https://yiming_chang.gitee.io/pure-admin-doc" target="_blank">
             <span style="color: var(--el-color-primary)">文档链接</span>
           </a>
         )
@@ -89,10 +80,7 @@ export function useColumns() {
       className: "pure-version",
       cellRenderer: () => {
         return (
-          <a
-            href="https://yiming_chang.gitee.io/vue-pure-admin"
-            target="_blank"
-          >
+          <a href="https://yiming_chang.gitee.io/vue-pure-admin" target="_blank">
             <span style="color: var(--el-color-primary)">预览链接</span>
           </a>
         )

@@ -95,7 +95,7 @@ export function formRender(field: FormField, model: any): VNode {
       )
     case RenderType.Select:
       return (
-        <el-select v-model={model[field.field]} placeholder={`请选择${field.label}`}>
+        <el-select v-model={model[field.field]} clearable placeholder={`请选择${field.label}`}>
           {field.options.map((item) => (
             <el-option key={item.value} label={item.label} value={item.value} />
           ))}

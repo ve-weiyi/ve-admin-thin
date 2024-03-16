@@ -3,7 +3,7 @@
 /** VS code部分prettier配置及注释 https://www.jianshu.com/p/65fb2b018612*/
 module.exports = {
   /** 指定代码换行的字符长度，默认为 80，超过该长度会换行*/
-  printWidth: 120,
+  printWidth: 100,
   /** 指定缩进长度，默认为 2*/
   tabWidth: 2,
   /** 指定缩进的方式：空格 或 Tab，默认为 false，即使用空格缩进。 */
