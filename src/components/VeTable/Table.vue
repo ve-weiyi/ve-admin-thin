@@ -54,11 +54,6 @@ import { defaultPaginationData, Pagination } from "@/utils/render"
 import { CheckboxGroupValueType, Column, TableInstance } from "element-plus"
 import defaultProps from "element-plus/es/components/table/src/table/defaults"
 
-type StatusTag = {
-  value: number | string
-  label: string
-}
-
 // 父组件向子组件传输的数据
 const props = defineProps({
   columnFields: {
@@ -73,6 +68,14 @@ const props = defineProps({
     type: Function as PropType<(orderData: any, pagination: Pagination) => void>,
     default: () => {},
   },
+  orderData: {
+    type: Object,
+    default: () => ({}),
+  },
+  paginationData: {
+    type: Object as PropType<Pagination>,
+    default: () => defaultPaginationData,
+  },
   ...defaultProps,
 })
 
@@ -80,6 +83,7 @@ const props = defineProps({
 const emit = defineEmits([
   // 定义事件
   "selection-change",
+  "refresh",
 ])
 
 // 表格ref
@@ -93,25 +97,25 @@ const columnsVisibility = ref<CheckboxGroupValueType>(props.columnsVisibility)
 
 // 表格数据定义
 const tableData = ref<any[]>(props.data)
+// 排序条件,{k:v}
+const orderData = ref<any>(props.orderData)
+// 分页参数
+const paginationData = ref<Pagination>(props.paginationData)
 
 // 选择的id
 const selectionIds = reactive<number[]>([])
-// 排序条件,{k:v}
-const orderData = ref<any>({})
-
-const paginationData = reactive<Pagination>({ ...defaultPaginationData })
 
 // 分页大小改变回调
 function handleSizeChange(val: number) {
   console.log(`${val} items per page`)
-  paginationData.pageSize = val
+  paginationData.value.pageSize = val
   refreshList()
 }
 
 // 分页回调
 function handleCurrentChange(val: number) {
   console.log(`current page: ${val}`)
-  paginationData.currentPage = val
+  paginationData.value.currentPage = val
   refreshList()
 }
 
@@ -131,17 +135,18 @@ function handleSelectionChange(rows: any[]) {
  * prop就是该列的prop。
  * */
 function handleSortChange({ column, prop, order }) {
-  console.log("handleSortChange", prop, order)
+  // console.log("handleSortChange", prop, order)
 
   const value = order === "ascending" ? "asc" : "desc"
   orderData.value = Object.assign({ [prop]: value }, orderData.value)
   orderData.value[prop] = value
-  refreshList()
+  console.log("handleSortChange orderData", orderData.value)
+  emit("refresh")
 }
 
 function refreshList() {
-  console.log("refreshList")
-  // props.onRefreshList?.(orderData, paginationData)
+  // console.log("refreshList")
+  emit("refresh")
 }
 
 // 重置表格
@@ -151,8 +156,8 @@ function resetTable() {
   columnsVisibility.value = columns.value
     .filter((column) => column.hidden != true)
     .map((column) => column.key)
-  console.log("columns", columns.value)
-  console.log("columnsVisibility", columnsVisibility.value)
+  // console.log("columns", columns.value)
+  // console.log("columnsVisibility", columnsVisibility.value)
 }
 
 function getTableRef() {
@@ -171,6 +176,8 @@ watchEffect(() => {
   size.value = props.size
   columns.value = props.columnFields
   tableData.value = props.data
+  orderData.value = props.orderData
+  paginationData.value = props.paginationData
   // columnsVisibility.value = props.columnsVisibility
 })
 
@@ -178,10 +185,21 @@ defineOptions({
   name: "VeTable",
 })
 
+function getTableData() {
+  return tableData.value
+}
+
+function getOrderData() {
+  return orderData.value
+}
+
+function getPaginationData() {
+  return paginationData.value
+}
+
 defineExpose({
-  tableData,
-  orderData,
-  paginationData,
+  getOrderData,
+  getPaginationData,
   selectionIds,
   getTableRef,
   resetTable,

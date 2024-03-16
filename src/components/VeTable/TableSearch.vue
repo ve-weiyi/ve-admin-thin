@@ -38,6 +38,14 @@ function resetSearch() {
   searchData.value = {}
 }
 
+function getSearchData() {
+  return searchData.value
+}
+
+defineExpose({
+  getSearchData,
+})
+
 watchEffect(() => {
   loading.value = props.loading
 })
@@ -45,7 +53,7 @@ watchEffect(() => {
 <template>
   <div>
     <!-- 表格搜索条件 -->
-    <el-card v-loading="loading" shadow="never" class="search-container">
+    <el-card shadow="never" class="search-container">
       <el-form
         ref="searchRef"
         :inline="true"
@@ -88,14 +96,14 @@ watchEffect(() => {
   margin-bottom: 8px;
 
   :deep(.el-card__body) {
-    padding-top: 2px;
-    padding-bottom: 2px;
+    padding: 2px;
     width: 100%;
   }
 }
 
 .search-form {
   :deep(.el-form-item) {
+    margin-top: 4px;
     margin-bottom: 12px;
   }
 }

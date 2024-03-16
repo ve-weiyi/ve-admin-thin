@@ -65,7 +65,7 @@ const isIndeterminate = ref(false)
 
 // 重置表格
 function resetTable() {
-  console.log("resetTable: ")
+  // console.log("resetTable: ")
   checkAllColumns.value = true
   isIndeterminate.value = false
   columns.value = props.columnFields
@@ -76,7 +76,7 @@ function resetTable() {
     .map((column) => column.title)
   // console.log("columns", columns.value)
   // console.log("columnsVisibility", columnsVisibility.value)
-  onRefresh()
+  // onRefresh()
 }
 
 // 拖拽列显示排序
@@ -118,7 +118,6 @@ function handleFieldsVisibilityChange(element: any[]) {
 }
 
 function onRefresh() {
-  console.log("onRefresh: ")
   emit("refresh")
 }
 
