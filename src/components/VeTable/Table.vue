@@ -11,7 +11,7 @@
     @sort-change="handleSortChange"
   >
     <el-table-column
-      v-for="item of columns.filter((item) => item.hidden !== true)"
+      v-for="item of columnFields.filter((item) => item.hidden !== true)"
       :type="item.type"
       :key="item.key"
       :prop="item.dataKey as string"
@@ -51,7 +51,7 @@
 import type { PropType } from "vue"
 import { onMounted, reactive, ref, watchEffect } from "vue"
 import { defaultPaginationData, Pagination } from "@/utils/render"
-import { CheckboxGroupValueType, Column, TableInstance } from "element-plus"
+import { Column, TableInstance } from "element-plus"
 import defaultProps from "element-plus/es/components/table/src/table/defaults"
 
 // 父组件向子组件传输的数据
@@ -59,14 +59,6 @@ const props = defineProps({
   columnFields: {
     type: Array<Column>,
     default: [],
-  },
-  columnsVisibility: {
-    type: Array as PropType<CheckboxGroupValueType>,
-    default: () => [],
-  },
-  onRefreshList: {
-    type: Function as PropType<(orderData: any, pagination: Pagination) => void>,
-    default: () => {},
   },
   orderData: {
     type: Object,
@@ -82,7 +74,6 @@ const props = defineProps({
 // 父组件向子组件传输的事件
 const emit = defineEmits([
   // 定义事件
-  "selection-change",
   "refresh",
 ])
 
@@ -92,8 +83,7 @@ const tableRef = ref<TableInstance | null>(null)
 // 表格加载状态
 const size = ref<"" | "default" | "small" | "large">(props.size)
 // 表格结构定义
-const columns = ref<Column[]>(props.columnFields)
-const columnsVisibility = ref<CheckboxGroupValueType>(props.columnsVisibility)
+const columnFields = ref<Column[]>(props.columnFields)
 
 // 表格数据定义
 const tableData = ref<any[]>(props.data)
@@ -149,41 +139,9 @@ function refreshList() {
   emit("refresh")
 }
 
-// 重置表格
-function resetTable() {
-  tableRef.value?.clearSort()
-  tableRef.value?.clearSelection()
-  columnsVisibility.value = columns.value
-    .filter((column) => column.hidden != true)
-    .map((column) => column.key)
-  // console.log("columns", columns.value)
-  // console.log("columnsVisibility", columnsVisibility.value)
-}
-
 function getTableRef() {
   return tableRef.value
 }
-
-onMounted(() => {
-  console.log("onMounted")
-  resetTable()
-  refreshList()
-})
-
-// watchEffect 会自动追踪依赖并在其变化时执行回调函数。
-watchEffect(() => {
-  // console.log("watchEffect", props.columns)
-  size.value = props.size
-  columns.value = props.columnFields
-  tableData.value = props.data
-  orderData.value = props.orderData
-  paginationData.value = props.paginationData
-  // columnsVisibility.value = props.columnsVisibility
-})
-
-defineOptions({
-  name: "VeTable",
-})
 
 function getTableData() {
   return tableData.value
@@ -202,12 +160,29 @@ defineExpose({
   getPaginationData,
   selectionIds,
   getTableRef,
-  resetTable,
   refreshList,
   handleSortChange,
   handleSelectionChange,
   handleSizeChange,
   handleCurrentChange,
+})
+
+onMounted(() => {
+  // console.log("onMounted")
+})
+
+// watchEffect 会自动追踪依赖并在其变化时执行回调函数。
+watchEffect(() => {
+  // console.log("watchEffect", props.columns)
+  size.value = props.size
+  columnFields.value = props.columnFields
+  tableData.value = props.data
+  // orderData.value = props.orderData
+  // paginationData.value = props.paginationData
+})
+
+defineOptions({
+  name: "VeTable",
 })
 </script>
 

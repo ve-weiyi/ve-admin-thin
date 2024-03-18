@@ -7,9 +7,9 @@
       :get-form-fields="getFormFields"
       :get-search-fields="getSearchFields"
       :handle-api="handleApi"
-      :show-add-button="false"
-      :show-edit-button="true"
-      model-name="用户"
+      :add-enable="false"
+      :edit-enable="true"
+      table-name="用户"
     />
   </div>
 </template>
@@ -23,8 +23,7 @@ const defaultOrder = { id: "desc" }
 
 const { getSearchFields, getColumnFields, getFormFields, handleApi } = useTableHook()
 
-onMounted(() => {
-})
+onMounted(() => {})
 </script>
 
 <style lang="scss" scoped></style>

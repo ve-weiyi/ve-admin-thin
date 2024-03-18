@@ -7,10 +7,10 @@
       :get-form-fields="getFormFields"
       :get-search-fields="getSearchFields"
       :handle-api="handleApi"
-      :show-add-button="false"
-      :show-edit-button="false"
+      :add-enable="false"
+      :edit-enable="false"
       :tab-list="tabList"
-      model-name="留言管理"
+      table-name="留言管理"
     >
       <template #operation="{ selectionIds, columnFieldsVisibility }">
         <el-button
@@ -54,8 +54,7 @@ const tabList = [
 
 const { getSearchFields, getColumnFields, getFormFields, handleApi } = useTableHook()
 
-onMounted(() => {
-})
+onMounted(() => {})
 </script>
 
 <style lang="scss" scoped></style>

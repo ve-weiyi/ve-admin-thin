@@ -7,9 +7,9 @@
       :get-form-fields="getFormFields"
       :get-search-fields="getSearchFields"
       :handle-api="handleApi"
-      :show-add-button="false"
-      :show-edit-button="false"
-      model-name="登录历史"
+      :add-enable="false"
+      :edit-enable="false"
+      table-name="登录历史"
     >
     </TablePage>
   </div>
@@ -23,8 +23,7 @@ import { onMounted } from "vue"
 const { getSearchFields, getColumnFields, getFormFields, handleApi } = useTableHook()
 const defaultOrder = { id: "desc" }
 
-onMounted(() => {
-})
+onMounted(() => {})
 </script>
 
 <style lang="scss" scoped></style>

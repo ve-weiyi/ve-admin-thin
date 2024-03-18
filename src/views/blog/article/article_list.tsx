@@ -288,30 +288,12 @@ function handleApi(event: string, data: any) {
 }
 
 const statusList = [
-  { value: "all", label: "全部" },
-  { value: "public", label: "公开" },
-  { value: "private", label: "私密" },
-  { value: "draft", label: "草稿" },
-  { value: "delete", label: "回收站" },
+  { value: "all", label: "全部", condition: { is_delete: 0 } },
+  { value: "public", label: "公开", condition: { is_delete: 0, status: 0 } },
+  { value: "private", label: "私密", condition: { is_delete: 0, status: 1 } },
+  { value: "draft", label: "草稿", condition: { is_delete: 0, status: 2 } },
+  { value: "delete", label: "回收站", condition: { is_delete: 1 } },
 ]
-
-const onStatusChange = (value: any) => {
-  console.log("onStatusChange", value)
-  switch (value) {
-    case "all":
-      return { is_delete: 0 }
-    case "public":
-      return { is_delete: 0, status: 0 }
-    case "private":
-      return { is_delete: 0, status: 1 }
-    case "draft":
-      return { is_delete: 0, status: 2 }
-    case "delete":
-      return { is_delete: 1 }
-    default:
-      return
-  }
-}
 
 export function useTableHook() {
   return {
@@ -320,6 +302,5 @@ export function useTableHook() {
     getFormFields,
     handleApi,
     statusList,
-    onStatusChange,
   }
 }

@@ -7,9 +7,9 @@
       :get-form-fields="getFormFields"
       :get-search-fields="getSearchFields"
       :handle-api="handleApi"
-      :show-add-button="false"
-      :show-edit-button="false"
-      model-name="日志"
+      :add-enable="false"
+      :edit-enable="false"
+      table-name="日志"
     >
     </TablePage>
   </div>
@@ -24,8 +24,7 @@ const defaultOrder = { id: "desc" }
 
 const { getSearchFields, getColumnFields, getFormFields, handleApi } = useTableHook()
 
-onMounted(() => {
-})
+onMounted(() => {})
 </script>
 
 <style lang="scss" scoped></style>

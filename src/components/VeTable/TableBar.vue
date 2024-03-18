@@ -9,23 +9,23 @@ import CollapseIcon from "./svg/collapse.svg?component"
 import SettingIcon from "./svg/settings.svg?component"
 
 const props = defineProps({
-  /** 头部最左边的标题 */
-  title: {
-    type: String,
-    default: "列表",
-  },
-  /** 对于树形表格，如果想启用展开和折叠功能，传入当前表格的ref即可 */
-  tableRef: {
-    type: Object as PropType<any>,
+  loading: {
+    type: Boolean,
+    default: false,
   },
   /** 需要展示的列 */
   columnFields: {
     type: Array as PropType<TableColumnList>,
     default: () => [],
   },
-  loading: {
-    type: Boolean,
-    default: false,
+  /** 对于树形表格，如果想启用展开和折叠功能，传入当前表格的ref即可 */
+  tableRef: {
+    type: Object as PropType<any>,
+  },
+  /** 头部最左边的标题 */
+  title: {
+    type: String,
+    default: "列表",
   },
   isExpandAll: {
     type: Boolean,
@@ -76,7 +76,6 @@ function resetTable() {
     .map((column) => column.title)
   // console.log("columns", columns.value)
   // console.log("columnsVisibility", columnsVisibility.value)
-  // onRefresh()
 }
 
 // 拖拽列显示排序
@@ -117,7 +116,8 @@ function handleFieldsVisibilityChange(element: any[]) {
   isIndeterminate.value = element.length > 0 && !checkAllColumns.value
 }
 
-function onRefresh() {
+function refreshList() {
+  // console.log("refreshList")
   emit("refresh")
 }
 
@@ -182,10 +182,10 @@ watchEffect(() => {
       <!-- 表格操作 -->
       <div class="flex items-center justify-around">
         <div style="margin-right: 1rem">
-          <slot name="buttons"></slot>
+          <slot name="buttons" :size="size" :dynamicColumns="dynamicColumns"></slot>
         </div>
 
-        <el-tooltip content="展开表格" placement="top">
+        <el-tooltip v-if="props.tableRef?.hasChildren" content="展开表格" placement="top">
           <ExpandIcon
             :style="{ transform: isExpandAll ? 'none' : 'rotate(-90deg)' }"
             :class="iconClass"
@@ -196,7 +196,7 @@ watchEffect(() => {
         <el-divider direction="vertical" />
 
         <el-tooltip content="刷新表格" placement="top">
-          <RefreshIcon :class="iconClass" @click="onRefresh" />
+          <RefreshIcon :class="iconClass" @click="refreshList" />
         </el-tooltip>
 
         <el-divider direction="vertical" />
@@ -293,6 +293,7 @@ watchEffect(() => {
 .table-bar {
   margin-top: 0.5rem;
   min-height: calc(100vh - 126px);
+
   :deep(.el-card__body) {
     padding-top: 0.5rem;
   }
@@ -302,7 +303,7 @@ watchEffect(() => {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.8rem;
   margin-top: 0.5rem;
 }
 

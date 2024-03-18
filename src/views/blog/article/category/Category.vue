@@ -7,7 +7,7 @@
       :get-form-fields="getFormFields"
       :get-search-fields="getSearchFields"
       :handle-api="handleApi"
-      model-name="分类"
+      table-name="分类"
     >
     </TablePage>
   </div>
@@ -22,8 +22,7 @@ const defaultOrder = { id: "desc" }
 
 const { getSearchFields, getColumnFields, getFormFields, handleApi } = useTableHook()
 
-onMounted(() => {
-})
+onMounted(() => {})
 </script>
 
 <style lang="scss" scoped></style>

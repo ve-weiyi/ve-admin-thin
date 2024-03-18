@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { builderFormRender, FormField } from "@/utils/render.tsx"
-import { PropType, ref, watchEffect } from "vue"
+import { onMounted, PropType, ref, watchEffect } from "vue"
 import { FormInstance } from "element-plus"
 
 const props = defineProps({
@@ -29,8 +29,8 @@ const searchFields = ref<FormField[]>(props.searchFields)
 // 搜索条件,{k:v}
 const searchData = ref<any>({})
 
-function onSearch() {
-  console.log("onRefresh: ")
+function refreshList() {
+  // console.log("refreshList")
   emit("refresh")
 }
 
@@ -46,8 +46,15 @@ defineExpose({
   getSearchData,
 })
 
+onMounted(() => {
+  // console.log("onMounted")
+})
 watchEffect(() => {
   loading.value = props.loading
+})
+
+defineOptions({
+  name: "VeTableSearch",
 })
 </script>
 <template>
@@ -74,14 +81,8 @@ watchEffect(() => {
             />
           </template>
         </el-form-item>
-        <!--        <el-form-item label="状态：" prop="status">-->
-        <!--          <el-select v-model="searchData" placeholder="请选择" clearable class="!w-[180px]">-->
-        <!--            <el-option key="1" label="已开启" value="1" />-->
-        <!--            <el-option key="0" label="已关闭" value="0" />-->
-        <!--          </el-select>-->
-        <!--        </el-form-item>-->
         <el-form-item class="align-right">
-          <el-button type="primary" :loading="loading" icon="Search" @click="onSearch">
+          <el-button type="primary" :loading="loading" icon="Search" @click="refreshList">
             搜索
           </el-button>
           <el-button icon="Refresh" @click="resetSearch">重置</el-button>

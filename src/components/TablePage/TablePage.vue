@@ -39,7 +39,7 @@
               :columnFieldsVisibility="columnFieldsVisibility"
             ></slot>
             <el-button
-              v-if="props.showAddButton"
+              v-if="props.addEnable"
               type="primary"
               size="default"
               icon="plus"
@@ -255,7 +255,7 @@
           </template>
         </el-form-item>
       </el-form>
-      <template #footer v-if="showEditButton">
+      <template #footer v-if="editEnable">
         <el-button @click="closeForm">取消</el-button>
         <el-button type="primary" @click="submitForm(formData)">确定</el-button>
       </template>
@@ -322,11 +322,11 @@ const props = defineProps({
     type: Function,
     required: true,
   },
-  showAddButton: {
+  addEnable: {
     type: Boolean,
     default: true,
   },
-  showEditButton: {
+  editEnable: {
     type: Boolean,
     default: true,
   },
@@ -334,7 +334,7 @@ const props = defineProps({
     type: String,
     default: "",
   },
-  modelName: {
+  tableName: {
     type: String,
     default: "",
   },
@@ -363,7 +363,7 @@ const emit = defineEmits([
 ])
 
 const tableTitle = props.tableTitle ? props.tableTitle : useRoute().meta.title
-const tableName = props.modelName ? props.modelName : useRoute().meta.title
+const tableName = props.tableName ? props.tableName : useRoute().meta.title
 
 const buttonRef = ref()
 const size = ref<"" | "default" | "small" | "large">("default")
@@ -607,7 +607,7 @@ function handleFieldsVisibilityChange(element: any[]) {
 /** ******** start 新增、修改 **********/
 const formTitle = computed(() => {
   if (formData.value.id) {
-    if (props.showEditButton) {
+    if (props.editEnable) {
       return `编辑${tableName}`
     }
     return `查看${tableName}`

@@ -1,5 +1,6 @@
 <template>
   <div>
+    <!-- 表格搜索条件 -->
     <VeTableSearch
       ref="searchRef"
       :searchFields="searchFields"
@@ -8,7 +9,7 @@
     ></VeTableSearch>
 
     <VeTableBar
-      title="菜单管理（初版，持续完善中）"
+      :title="tableTitle"
       :columnFields="tableFields"
       :loading="loading"
       :isExpandAll="false"
@@ -16,18 +17,48 @@
       @refresh="refreshList"
     >
       <template #buttons>
-        <el-button
-          type="danger"
-          size="default"
-          icon="Delete"
-          :disabled="tableRef?.selectionIds.length === 0"
-          @click="openBatchDelete()"
-        >
-          批量删除
+        <el-button v-if="addEnable" type="primary" icon="Plus" @click="openForm(null)">
+          新增{{ tableName }}
         </el-button>
-        <el-button type="primary" icon="Plus" @click="openForm(null)"> 新增菜单</el-button>
       </template>
       <template v-slot="{ size, dynamicColumns }">
+        <!-- 表格菜单 -->
+        <div class="status-menu" v-if="statusList.length !== 0">
+          <span>状态</span>
+          <template v-for="item of statusList" :key="item.value">
+            <span @click="handleStatusCheck(item.value)" :class="isActive(item.value)">
+              {{ item.label }}
+            </span>
+          </template>
+        </div>
+        <div
+          v-if="tableRef?.selectionIds.length > 0"
+          class="bg-[var(--el-fill-color-light)] w-full h-[46px] mb-2 pl-4 flex items-center"
+        >
+          <div class="flex-auto">
+            <span
+              style="font-size: var(--el-font-size-base)"
+              class="text-[rgba(42,46,54,0.5)] dark:text-[rgba(220,220,242,0.5)]"
+            >
+              已选 {{ tableRef?.selectionIds.length }} 项
+            </span>
+            <el-button type="primary" text @click="cancelBatchDelete()"> 取消选择</el-button>
+          </div>
+          <el-popconfirm title="是否确认删除?" @confirm="confirmBatchDelete()">
+            <template #reference>
+              <el-button
+                v-if="dynamicColumns.filter((item) => item.key === 'selection').length > 0"
+                type="danger"
+                size="default"
+                icon="Delete"
+                text
+                :disabled="tableRef?.selectionIds.length === 0"
+              >
+                批量删除
+              </el-button>
+            </template>
+          </el-popconfirm>
+        </div>
         <VeTable
           ref="tableRef"
           row-key="id"
@@ -40,33 +71,14 @@
       </template>
     </VeTableBar>
 
-    <!-- 批量彻底删除对话框 -->
-    <el-dialog v-model="batchDeleteVisibility" class="dialog-container">
-      <template #header>
-        <div class="dialog-title-container">
-          <el-icon style="color: #ff9900">
-            <WarningFilled />
-          </el-icon>
-          删除提示
-        </div>
-      </template>
-      <div style="font-size: 1rem">是否彻底删除选中项？</div>
-      <template #footer>
-        <el-button @click="cancelBatchDelete()">取 消</el-button>
-        <el-button type="primary" @click="confirmBatchDelete(tableRef.selectionIds)">
-          确 定
-        </el-button>
-      </template>
-    </el-dialog>
-
     <!-- 添加、修改对话框 -->
-    <el-dialog v-model="formVisibility">
+    <el-dialog v-model="formVisibility" class="dialog-container">
       <template #header>
         <div style="font-weight: bold">
           {{ formTitle }}
         </div>
       </template>
-      <template #footer>
+      <template #footer v-if="editEnable">
         <el-button @click="closeForm()">取消</el-button>
         <el-button type="primary" @click="submitForm(formData)">确定</el-button>
       </template>
@@ -93,13 +105,14 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, reactive, ref } from "vue"
+import { computed, onMounted, reactive, ref } from "vue"
 import { Column, ElMessage, FormInstance, FormRules } from "element-plus"
 import { builderFormRender, FormField } from "@/utils/render.tsx"
 import VeTable from "@/components/VeTable/Table.vue"
 import VeTableBar from "@/components/VeTable/TableBar.vue"
 import VeTableSearch from "@/components/VeTable/TableSearch.vue"
 import cloneDeep from "lodash/cloneDeep"
+import "@/style/table.scss"
 
 const props = defineProps({
   getColumnFields: {
@@ -124,11 +137,33 @@ const props = defineProps({
       return { id: "desc" }
     },
   },
+  tableTitle: {
+    type: String,
+    default: "表格管理",
+  },
+  tableName: {
+    type: String,
+    default: "表格",
+  },
+  addEnable: {
+    type: Boolean,
+    default: true,
+  },
+  editEnable: {
+    type: Boolean,
+    default: true,
+  },
+  statusList: {
+    type: Array<StatusTag>,
+    default: () => {
+      return []
+    },
+  },
 })
 
 // 需要包装基本类型数据，使用 ref；如果你需要包装对象，使用 reactive。
 // 表格加载状态
-const loading = ref(true)
+const loading = ref(false)
 
 // 表格结构定义
 const tableRef = ref()
@@ -138,28 +173,31 @@ const tableFields = ref<Column[]>(props.getColumnFields())
 /** ******** start 搜索 **********/
 // 搜索表单定义
 const searchRef = ref(null)
+const searchData = ref<any>({})
 const searchFields = ref<FormField[]>(props.getSearchFields())
 
 /** ******** end 搜索 **********/
 
 /** ******** start 新增、修改 表单 **********/
+// 添加表单定义
+const formRef = ref<FormInstance | null>(null)
+const formRules: FormRules = reactive({})
+const formData = ref<any>({})
+const formFields = ref<FormField[]>(props.getFormFields({}))
+const formVisibility = ref(false)
+
 const formTitle = computed(() => {
-  const tableName = "菜单"
+  const tableName = props.tableName
   if (formData.value.id) {
-    return `查看${tableName}`
+    if (props.editEnable) {
+      return `修改${tableName}`
+    } else {
+      return `查看${tableName}`
+    }
   } else {
     return `新增${tableName}`
   }
 })
-
-// 表单规则定义
-const formRef = ref<FormInstance | null>(null)
-const formRules: FormRules = reactive({})
-
-// 表单数据定义
-const formData = ref<any>({})
-const formFields = ref<FormField[]>(props.getFormFields({}))
-const formVisibility = ref(false)
 
 // 打开表单
 function openForm(row: any) {
@@ -204,29 +242,73 @@ function submitForm(row: any) {
 /** ******** end 新增、修改 **********/
 
 /** ******** start 批量删除 **********/
-// 批量移除提示框
-const batchDeleteVisibility = ref(false)
-
-function openBatchDelete() {
-  batchDeleteVisibility.value = true
-}
 
 // 取消批量删除
 function cancelBatchDelete() {
-  batchDeleteVisibility.value = false
+  tableRef?.value.getTableRef().clearSelection()
 }
 
 // 确认批量删除
-function confirmBatchDelete(ids: number[]) {
-  batchDeleteVisibility.value = false
+function confirmBatchDelete() {
+  const ids = tableRef?.value.selectionIds
   onDeleteByIds(ids)
 }
 
-function confirmDelete(id: number) {
-  onDelete(id)
+/** ******** end 批量删除 **********/
+
+/** ******** start status menu **********/
+type StatusTag = {
+  value: number | string
+  label: string
+  condition: any
 }
 
-/** ******** end 批量删除 **********/
+const status = ref<any>(props.statusList.length > 0 ? props.statusList[0].value : 0)
+
+const isActive = (value: string | number) => {
+  return value === status.value ? "status-menu-active" : "status-menu-normal"
+}
+// 选择了状态
+const handleStatusCheck = (value: string | number) => {
+  status.value = value
+  refreshList()
+}
+
+/** ******** start status menu **********/
+
+function onCreate(row: any) {
+  console.log("onCreate", row)
+  props.handleApi(row, "create").then((res) => {
+    ElMessage.success("创建成功")
+    closeForm()
+    refreshList()
+  })
+}
+
+function onUpdate(row: any) {
+  console.log("onUpdate", row)
+  props.handleApi("update", row).then((res) => {
+    ElMessage.success("更新成功")
+    closeForm()
+    refreshList()
+  })
+}
+
+function onDelete(id: number) {
+  console.log("onDelete", id)
+  props.handleApi("delete", id).then((res) => {
+    ElMessage.success("删除成功")
+    refreshList()
+  })
+}
+
+function onDeleteByIds(ids: number[]) {
+  console.log("onDeleteByIds", ids)
+  props.handleApi("deleteByIds", ids).then((res) => {
+    ElMessage.success("批量删除成功")
+    refreshList()
+  })
+}
 
 function refreshList() {
   const searchData = searchRef.value?.getSearchData()
@@ -237,6 +319,18 @@ function refreshList() {
 
   const conditions = []
   const sorts = []
+
+  const statusData = props.statusList.find((v) => v.value === status.value)?.condition || {}
+  // 状态条件
+  for (const key in statusData) {
+    const value = statusData[key]
+    conditions.push({
+      flag: "and",
+      field: key,
+      value: value,
+      rule: "=",
+    })
+  }
 
   // 搜索条件
   for (const key in searchData) {
@@ -286,52 +380,29 @@ function refreshList() {
 
     tableData.value = res.data.list
     paginationData.total = res.data.total
-    setTimeout(() => {
-      loading.value = false
-    }, 300)
+    loading.value = false
+    // setTimeout(() => {
+    //   loading.value = false
+    // }, 300)
   })
 }
 
-function onCreate(row: any) {
-  console.log("onCreate", row)
-  props.handleApi(row, "create").then((res) => {
-    ElMessage.success("创建成功")
-    closeForm()
-    refreshList()
-  })
+function resetSearch() {
+  searchData.value = {}
 }
 
-function onUpdate(row: any) {
-  console.log("onUpdate", row)
-  props.handleApi("update", row).then((res) => {
-    ElMessage.success("更新成功")
-    closeForm()
-    refreshList()
-  })
+// 重置表格
+function resetTable() {
+  tableRef.value?.getTableRef().clearSort()
+  tableRef.value?.getTableRef().clearSelection()
+  // console.log("columns", columns.value)
 }
 
-function onDelete(id: number) {
-  console.log("onDelete", id)
-  props.handleApi("delete", id).then((res) => {
-    ElMessage.success("删除成功")
-    refreshList()
-  })
-}
-
-function onDeleteByIds(ids: number[]) {
-  console.log("onDeleteByIds", ids)
-  props.handleApi("deleteByIds", ids).then((res) => {
-    ElMessage.success("批量删除成功")
-    batchDeleteVisibility.value = false
-    refreshList()
-  })
-}
-
-// onMounted(() => {
-//   resetSearch()
-//   resetTable()
-//   refreshList()
-// })
+onMounted(() => {
+  resetSearch()
+  resetTable()
+  refreshList()
+})
 
 defineExpose({
   onCreate,
@@ -343,9 +414,6 @@ defineExpose({
   openForm,
   closeForm,
   submitForm,
-  confirmDelete,
-  cancelBatchDelete,
-  confirmBatchDelete,
 })
 </script>
 

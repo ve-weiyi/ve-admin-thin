@@ -7,7 +7,7 @@
       :get-form-fields="getFormFields"
       :get-search-fields="getSearchFields"
       :handle-api="handleApi"
-      model-name="接口"
+      table-name="接口"
     >
       <template #operation="{ selectionIds, columnFieldsVisibility }">
         <el-button icon="CircleCheck" size="default" type="success" @click="Sync">
@@ -49,8 +49,7 @@ function Sync(evt: MouseEvent) {
     })
 }
 
-onMounted(() => {
-})
+onMounted(() => {})
 </script>
 
 <style lang="scss" scoped></style>
