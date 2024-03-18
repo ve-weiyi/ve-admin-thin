@@ -69,7 +69,7 @@ watchEffect(() => {
           <template v-if="item.field">
             <component
               class="!w-[180px]"
-              style="display: flex; justify-content: center; align-items: center"
+              style="justify-content: center; align-items: center"
               :is="builderFormRender(item, searchData)"
             />
           </template>

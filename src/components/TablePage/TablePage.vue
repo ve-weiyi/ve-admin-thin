@@ -11,7 +11,7 @@
         >
           <template v-if="item.field">
             <component
-              style="display: flex; justify-content: center; align-items: center"
+              style="justify-content: center; align-items: center"
               :is="builderFormRender(item, searchData)"
             />
           </template>
