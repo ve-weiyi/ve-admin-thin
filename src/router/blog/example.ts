@@ -1,5 +1,3 @@
-import { $t } from "@/plugins/i18n"
-
 const Layout = () => import("@/layout/index.vue")
 
 export default {
@@ -9,8 +7,8 @@ export default {
   redirect: "/example",
   meta: {
     icon: "homeFilled",
-    title: $t("menus.hshome"),
-    rank: 0,
+    title: "示例",
+    rank: 100,
   },
   children: [
     {

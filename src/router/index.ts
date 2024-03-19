@@ -4,7 +4,13 @@ import NProgress from "@/utils/progress"
 import { transformI18n } from "@/plugins/i18n"
 import { usePermissionStoreHook } from "@/store/modules/permission"
 import { createRouter, RouteComponent, Router, RouteRecordRaw } from "vue-router"
-import { ascending, formatFlatteningRoutes, formatTwoStageRoutes, getHistoryMode, handleAliveRoute } from "./utils"
+import {
+  ascending,
+  formatFlatteningRoutes,
+  formatTwoStageRoutes,
+  getHistoryMode,
+  handleAliveRoute,
+} from "./utils"
 import { buildHierarchyTree } from "@/utils/tree"
 import { isUrl } from "@pureadmin/utils"
 
@@ -19,7 +25,7 @@ const modules: Record<string, any> = import.meta.glob(
   ["./blog/**/*.ts", "./modules/**/*.ts", "!./modules/**/remaining.ts"],
   {
     eager: true,
-  },
+  }
 )
 
 /** 原始静态路由（未做任何处理） */
@@ -41,24 +47,24 @@ Object.keys(asyncModules).forEach((key) => {
 })
 
 export const asyncRoutes: Array<RouteRecordRaw> = formatTwoStageRoutes(
-  formatFlatteningRoutes(buildHierarchyTree(ascending(routes.flat(Infinity)))),
+  formatFlatteningRoutes(buildHierarchyTree(ascending(routes.flat(Infinity))))
 )
 
 /** 导出处理后的静态路由（三级及以上的路由全部拍成二级） */
 export const constantRoutes: Array<RouteRecordRaw> = formatTwoStageRoutes(
-  formatFlatteningRoutes(buildHierarchyTree(ascending(routes.flat(Infinity)))),
+  formatFlatteningRoutes(buildHierarchyTree(ascending(routes.flat(Infinity))))
 )
-console.log("modules", modules)
-console.log("asyncModules", asyncModules)
-
-console.log("routes", routes)
-console.log("dynamicRoutes", dynamicRoutes)
-
-console.log("constantRoutes", constantRoutes)
-console.log("asyncRoutes", asyncRoutes)
+// console.log("modules", modules)
+// console.log("asyncModules", asyncModules)
+//
+// console.log("routes", routes)
+// console.log("dynamicRoutes", dynamicRoutes)
+//
+// console.log("constantRoutes", constantRoutes)
+// console.log("asyncRoutes", asyncRoutes)
 /** 用于渲染菜单，保持原始层级 */
 export const constantMenus: Array<RouteComponent> = ascending(routes.flat(Infinity)).concat(
-  ...remainingRouter,
+  ...remainingRouter
 )
 
 /** 不参与菜单的路由 */
@@ -92,7 +98,7 @@ export function resetRouter() {
     if (name && router.hasRoute(name) && meta?.backstage) {
       router.removeRoute(name)
       router.options.routes = formatTwoStageRoutes(
-        formatFlatteningRoutes(buildHierarchyTree(ascending(routes.flat(Infinity)))),
+        formatFlatteningRoutes(buildHierarchyTree(ascending(routes.flat(Infinity))))
       )
     }
   })

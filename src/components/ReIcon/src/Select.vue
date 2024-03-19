@@ -40,11 +40,15 @@ const tabsList = [
   },
 ]
 
-const pageList = computed(() =>
-  copyIconList[currentActiveType.value]
+const pageList = computed(() => {
+  if (!copyIconList[currentActiveType.value]) {
+    return []
+  }
+
+  return copyIconList[currentActiveType.value]
     .filter((i) => i.includes(filterValue.value))
     .slice((currentPage.value - 1) * pageSize.value, currentPage.value * pageSize.value)
-)
+})
 
 const iconItemStyle = computed((): ParameterCSSProperties => {
   return (item) => {
@@ -66,7 +70,7 @@ function onBeforeEnter() {
   if (isAllEmpty(icon.value)) return
   setVal()
   // 寻找当前图标在第几页
-  const curIconIndex = copyIconList[currentActiveType.value].findIndex((i) => i === icon.value)
+  const curIconIndex = copyIconList[currentActiveType.value]?.findIndex((i) => i === icon.value)
   currentPage.value = Math.ceil((curIconIndex + 1) / pageSize.value)
 }
 
@@ -96,7 +100,7 @@ function onClear() {
 watch(
   () => pageList.value,
   () =>
-    (totalPage.value = copyIconList[currentActiveType.value].filter((i) =>
+    (totalPage.value = copyIconList[currentActiveType.value]?.filter((i) =>
       i.includes(filterValue.value)
     ).length),
   { immediate: true }
@@ -171,7 +175,7 @@ watch(
           <div class="w-full h-9 flex items-center overflow-auto border-t border-[#e5e7eb]">
             <el-pagination
               class="flex-auto ml-2"
-              :total="totalPage"
+              :total="totalPage || 0"
               :current-page="currentPage"
               :page-size="pageSize"
               :pager-count="5"

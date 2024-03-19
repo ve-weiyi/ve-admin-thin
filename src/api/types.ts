@@ -86,6 +86,20 @@ export interface Category {
   updated_at?: string // 更新时间
 }
 
+export interface ChatMessage {
+  id?: number // 主键
+  chat_id?: string // 群聊id
+  user_id?: number // 用户id
+  reply_msg_id?: number // 回复消息id
+  content?: string // 聊天内容
+  ip_address?: string // ip地址
+  ip_source?: string // ip来源
+  type?: number // 类型
+  status?: number // 0正常 1撤回 2已编辑
+  created_at?: string // 创建时间
+  updated_at?: string // 更新时间
+}
+
 export interface ChatRecord {
   id?: number // 主键
   user_id?: number // 用户id
@@ -95,6 +109,16 @@ export interface ChatRecord {
   ip_address?: string // ip地址
   ip_source?: string // ip来源
   type?: number // 类型
+  created_at?: string // 创建时间
+  updated_at?: string // 更新时间
+}
+
+export interface ChatSession {
+  id?: number // 主键
+  chat_id?: string // 群聊id
+  chat_title?: string // 标题
+  type?: string // 类型
+  status?: number // 0正常 1删除
   created_at?: string // 创建时间
   updated_at?: string // 更新时间
 }
@@ -125,14 +149,14 @@ export interface FriendLink {
 
 export interface Menu {
   id?: number // 主键
-  name?: string // 菜单名
-  path?: string // 菜单路径
-  title?: string // 菜单标题
-  component?: string // 组件
-  icon?: string // 菜单icon
-  rank?: number // 排序
   parent_id?: number // 父id
-  is_hidden?: number // 是否隐藏  0否1是
+  title?: string // 菜单标题
+  path?: string // 路由路径
+  name?: string // 路由名称
+  component?: string // 路由组件
+  redirect?: string // 路由重定向
+  type?: number // 菜单类型（0代表菜单、1代表iframe、2代表外链、3代表按钮）
+  meta?: string // 菜单元数据
   created_at?: string // 创建时间
   updated_at?: string // 更新时间
 }
@@ -373,31 +397,41 @@ export interface CaptchaVerifyReq {
 export interface ChangePasswordReq {
   id?: number // 从 JWT 中提取 user id，避免越权
   password?: string // 旧密码
-  new_password?: string // 新密码
+  newPassword?: string // 新密码
 }
 
-export interface CustomizeRouteMeta {
-  title?: string // 菜单名称
-  icon?: string // 菜单图标
-  extra_icon?: any // 菜单名称右侧的额外图标
-  show_link?: boolean // 是否在菜单中显示
-  show_parent?: boolean // 是否显示父级菜单
-  roles?: string[] // 页面级别权限设置
-  auths?: string[] // 按钮级别权限设置
-  keep_alive?: boolean // 路由组件缓存
-  frame_src?: string // 内嵌的iframe链接
-  frame_loading?: boolean // iframe页是否开启首次加载动画
-  transition?: Transition // 页面加载动画
-  hidden_tag?: boolean // 是否不添加信息到标签页
-  dynamic_level?: number // 动态路由可打开的最大数量
-  active_path?: string // 将某个菜单激活
+export interface ChatHistory {
+  chat_id?: string // 聊天ID
+  after?: number // 从这个时间点之后的消息
+  before?: number // 从这个时间点之前的消息
+}
+
+export interface ChatMessage {
+  chat_id?: string
+  content?: string
+}
+
+export interface ChatStream {
+  chat_id?: string
+  content?: string
 }
 
 export interface Meta {
   title?: string // 菜单名称
   icon?: string // 菜单图标
-  show_link?: boolean // 是否在菜单中显示
+  showLink?: boolean // 是否在菜单中显示
   rank?: number // 菜单升序排序
+  extraIcon?: any // 菜单名称右侧的额外图标
+  showParent?: boolean // 是否显示父级菜单
+  roles?: string[] // 页面级别权限设置
+  auths?: string[] // 按钮级别权限设置
+  keepAlive?: boolean // 路由组件缓存
+  frameSrc?: string // 内嵌的iframe链接
+  frameLoading?: boolean // iframe页是否开启首次加载动画
+  transition?: Transition // 页面加载动画
+  hiddenTag?: boolean // 是否不添加信息到标签页
+  dynamicLevel?: number // 动态路由可打开的最大数量
+  activePath?: string // 将某个菜单激活
 }
 
 export interface OauthLoginReq {
@@ -412,22 +446,14 @@ export interface ResetPasswordReq {
   code?: string
 }
 
-export interface RouteChildrenConfigsTable {
-  path?: string // 子路由地址
-  name?: string // 路由名字
-  redirect?: string // 路由重定向
-  component?: any // 按需加载组件
-  meta?: CustomizeRouteMeta // meta配置
-  children?: RouteChildrenConfigsTable[] // 子路由配置项
-}
-
 export interface RouteConfigsTable {
+  type?: number // 菜单类型（0代表菜单、1代表iframe、2代表外链、3代表按钮）
   path?: string // 路由地址
   name?: string // 路由名字
   component?: any // Layout组件
   redirect?: string // 路由重定向
   meta?: Meta // meta配置
-  children?: RouteChildrenConfigsTable[] // 子路由配置项
+  children?: RouteConfigsTable[] // 子路由配置项
 }
 
 export interface SyncMenuRequest {
@@ -436,8 +462,8 @@ export interface SyncMenuRequest {
 
 export interface Transition {
   name?: string // 当前路由动画效果
-  enter_transition?: string // 进场动画
-  leave_transition?: string // 离场动画
+  enterTransition?: string // 进场动画
+  leaveTransition?: string // 离场动画
 }
 
 export interface UpdateRoleApisReq {
@@ -627,8 +653,37 @@ export interface LoginHistory {
   login_time?: string // 创建时间
 }
 
-export interface MenuDetailsDTO extends Menu {
+export interface MenuDetailsDTO {
+  id?: number // 主键
+  parent_id?: number // 父id
+  title?: string // 菜单标题
+  type?: number // 菜单类型（0代表菜单、1代表iframe、2代表外链、3代表按钮）
+  path?: string // 路由地址
+  name?: string // 路由名字
+  component?: any // Layout组件
+  redirect?: string // 路由重定向
+  meta?: Meta // meta配置
   children?: MenuDetailsDTO[]
+  created_at?: string // 创建时间
+  updated_at?: string // 更新时间
+}
+
+export interface Meta {
+  title?: string // 菜单名称
+  icon?: string // 菜单图标
+  showLink?: boolean // 是否在菜单中显示
+  rank?: number // 菜单升序排序
+  extraIcon?: any // 菜单名称右侧的额外图标
+  showParent?: boolean // 是否显示父级菜单
+  roles?: string[] // 页面级别权限设置
+  auths?: string[] // 按钮级别权限设置
+  keepAlive?: boolean // 路由组件缓存
+  frameSrc?: string // 内嵌的iframe链接
+  frameLoading?: boolean // iframe页是否开启首次加载动画
+  transition?: Transition // 页面加载动画
+  hiddenTag?: boolean // 是否不添加信息到标签页
+  dynamicLevel?: number // 动态路由可打开的最大数量
+  activePath?: string // 将某个菜单激活
 }
 
 export interface OauthLoginUrl {
@@ -709,6 +764,12 @@ export interface Token {
   uid?: number // 用户id
 }
 
+export interface Transition {
+  name?: string // 当前路由动画效果
+  enterTransition?: string // 进场动画
+  leaveTransition?: string // 离场动画
+}
+
 export interface UniqueViewDTO {
   day?: string // 日期
   count?: number // 数量
@@ -787,4 +848,3 @@ export interface WebsiteConfigDTO {
   websocket_url?: string // websocket地址
   weixin_qr_code?: string // 微信二维码
 }
-

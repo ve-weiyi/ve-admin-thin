@@ -1,8 +1,8 @@
 interface FormItemProps {
   /** 菜单类型（0代表菜单、1代表iframe、2代表外链、3代表按钮）*/
-  menuType: number
-  higherMenuOptions: Record<string, unknown>[]
-  parentId: number
+  menu_type: number
+  higher_menu_options: Record<string, unknown>[]
+  parent_id: number
   title: string
   name: string
   path: string
@@ -10,18 +10,19 @@ interface FormItemProps {
   rank: number
   redirect: string
   icon: string
-  extraIcon: string
-  enterTransition: string
-  leaveTransition: string
-  activePath: string
+  extra_icon: string
+  enter_transition: string
+  leave_transition: string
+  active_path: string
   auths: string
-  frameSrc: string
-  frameLoading: boolean
-  keepAlive: boolean
-  hiddenTag: boolean
-  showLink: boolean
-  showParent: boolean
+  frame_src: string
+  frame_loading: boolean
+  keep_alive: boolean
+  hidden_tag: boolean
+  show_link: boolean
+  show_parent: boolean
 }
+
 interface FormProps {
   model: FormItemProps
 }

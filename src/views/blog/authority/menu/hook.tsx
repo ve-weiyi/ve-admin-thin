@@ -1,4 +1,4 @@
-import { getCurrentInstance } from "vue"
+import { getCurrentInstance, h } from "vue"
 import { Column } from "element-plus"
 import { FormField, RenderType } from "@/utils/render"
 import {
@@ -8,9 +8,24 @@ import {
   findMenuDetailsListApi,
   updateMenuApi,
 } from "@/api/menu"
-import { Timer } from "@element-plus/icons-vue"
+import { transformI18n } from "@/plugins/i18n.ts"
+import { useRenderIcon } from "@/components/ReIcon/src/hooks.ts"
+import { MenuDetailsDTO } from "@/api/types.ts"
 
 const align = "center"
+
+const getMenuType = (type, text = false) => {
+  switch (type) {
+    case 0:
+      return text ? "菜单" : "primary"
+    case 1:
+      return text ? "iframe" : "warning"
+    case 2:
+      return text ? "外链" : "danger"
+    case 3:
+      return text ? "按钮" : "info"
+  }
+}
 
 const methodOpt = [
   {
@@ -80,56 +95,55 @@ function getColumnFields(): Column[] {
       sortable: true,
     },
     {
-      key: "name",
-      title: "名称",
-      dataKey: "name",
-      width: 120,
-      align: align,
-    },
-    {
+      title: "菜单名称",
       key: "title",
-      title: "标题",
-      dataKey: "title",
-      width: 120,
-      align: align,
-    },
-    {
-      key: "icon",
-      title: "图标",
-      dataKey: "icon",
-      width: 0,
       align: "left",
-      cellRenderer: (scope: any) => {
-        return (
-          <div>
-            {/* <el-icon class="table-icon"> */}
-            {/*   {" "} */}
-            {/*   {h(resolveDynamicComponent(scope.row.icon) as string)}{" "} */}
-            {/* </el-icon> */}
-            {scope.row.icon}
-          </div>
-        )
-      },
+      width: 0,
+      cellRenderer: (scope: any) => (
+        <>
+          <span class="inline-block mr-1">
+            {h(useRenderIcon(scope.row.icon), {
+              style: { paddingTop: "1px" },
+            })}
+          </span>
+          <span>{transformI18n(scope.row.title)}</span>
+        </>
+      ),
     },
     {
-      key: "rank",
-      title: "排序",
-      dataKey: "rank",
-      width: 80,
-      align: align,
-      sortable: true,
+      title: "菜单类型",
+      key: "type",
+      width: 100,
+      cellRenderer: (scope: any) => (
+        <el-tag size={"default"} type={getMenuType(scope.row.type)} effect="plain">
+          {getMenuType(scope.row.type, true)}
+        </el-tag>
+      ),
     },
     {
       key: "path",
-      title: "路径",
+      title: "路由路径",
       dataKey: "path",
       width: 0,
-      align: align,
+    },
+    // {
+    //   key: "component",
+    //   title: "路由组件",
+    //   dataKey: "component",
+    //   width: 120,
+    // },
+    {
+      key: "rank",
+      title: "排序",
+      width: 80,
+      sortable: true,
+      cellRenderer: (scope: any) => {
+        return <span>{scope.row.meta.rank}</span>
+      },
     },
     {
-      key: "is_hidden",
-      title: "隐藏",
-      dataKey: "is_hidden",
+      key: "show_link",
+      title: "显示",
       width: 120,
       align: align,
       cellRenderer: (scope: any) => {
@@ -138,13 +152,17 @@ function getColumnFields(): Column[] {
         }
         return (
           <el-switch
-            v-model={scope.row.is_hidden}
+            v-model={scope.row.meta.showLink}
             active-color="#13ce66"
             inactive-color="#cccccc"
-            active-value={1}
-            inactive-value={0}
+            active-value={true}
+            inactive-value={false}
             onClick={() => {
-              instance.exposed.onUpdate(scope.row)
+              const data = Object.assign(scope.row, {
+                meta: JSON.stringify(scope.row.meta),
+              })
+
+              instance.exposed.onUpdate(data)
             }}
           />
         )
@@ -155,15 +173,11 @@ function getColumnFields(): Column[] {
       title: "创建时间",
       dataKey: "created_at",
       width: 0,
-      align: align,
       sortable: true,
       cellRenderer: (scope: any) => {
         return (
           <div>
-            <el-icon class="table-icon">
-              <Timer />
-            </el-icon>
-            <span>{new Date(scope.row.created_at).toLocaleDateString()}</span>
+            <span>{new Date(scope.row.created_at).toLocaleString()}</span>
           </div>
         )
       },
@@ -184,7 +198,15 @@ function getColumnFields(): Column[] {
               size="small"
               icon="Plus"
               onClick={() => {
-                instance.exposed.openForm(null)
+                let data: MenuDetailsDTO = {
+                  id: 0,
+                  type: 0,
+                  parent_id: scope.row.id,
+                  meta: {
+                    transition: {},
+                  },
+                }
+                instance.exposed.openForm(data)
               }}
             >
               新增
@@ -309,11 +331,15 @@ function handleApi(event: string, data: any) {
   }
 }
 
+let res = await findMenuDetailsListApi({})
+let parentOptions = res.data.list
+
 export function useTableHook() {
   return {
     getColumnFields,
     getSearchFields,
     getFormFields,
     handleApi,
+    parentOptions,
   }
 }

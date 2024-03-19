@@ -17,6 +17,7 @@
       @refresh="refreshList"
     >
       <template #buttons>
+        <slot name="toolbar"></slot>
         <el-button v-if="addEnable" type="primary" icon="Plus" @click="openForm(null)">
           新增{{ tableName }}
         </el-button>
@@ -82,24 +83,32 @@
         <el-button @click="closeForm()">取消</el-button>
         <el-button type="primary" @click="submitForm(formData)">确定</el-button>
       </template>
-      <el-form
-        ref="formRef"
-        :model="formData"
-        :rules="formRules"
-        label-width="100px"
-        size="default"
+
+      <slot
+        name="form-component"
+        :formData="formData"
+        :formRules="formRules"
+        :formFields="formFields"
       >
-        <el-form-item
-          v-for="item of formFields.filter((item) => item.hidden !== true)"
-          :key="item.field"
-          :prop="item.field"
-          :label="item.label + '：'"
+        <el-form
+          ref="formRef"
+          :model="formData"
+          :rules="formRules"
+          label-width="100px"
+          size="default"
         >
-          <template v-if="item.field">
-            <component :is="builderFormRender(item, formData)" />
-          </template>
-        </el-form-item>
-      </el-form>
+          <el-form-item
+            v-for="item of formFields.filter((item) => item.hidden !== true)"
+            :key="item.field"
+            :prop="item.field"
+            :label="item.label + '：'"
+          >
+            <template v-if="item.field">
+              <component :is="builderFormRender(item, formData)" />
+            </template>
+          </el-form-item>
+        </el-form>
+      </slot>
     </el-dialog>
   </div>
 </template>
@@ -208,7 +217,7 @@ function openForm(row: any) {
 // 关闭表单
 function closeForm() {
   formVisibility.value = false
-  resetForm(null)
+  // resetForm(null)
 }
 
 // 重置表单
@@ -237,6 +246,14 @@ function submitForm(row: any) {
       console.error("表单校验不通过", fields)
     }
   })
+
+  if (!formRef.value) {
+    if (row.id === 0) {
+      onCreate(row)
+    } else {
+      onUpdate(row)
+    }
+  }
 }
 
 /** ******** end 新增、修改 **********/
@@ -315,7 +332,7 @@ function refreshList() {
   const orderData = tableRef.value?.getOrderData()
   const paginationData = tableRef.value?.getPaginationData()
 
-  console.log("refreshList", orderData, searchData)
+  // console.log("refreshList", orderData, searchData)
 
   const conditions = []
   const sorts = []
@@ -375,6 +392,9 @@ function refreshList() {
   props.handleApi("list", page).then((res) => {
     if (res.data.page_size !== paginationData.pageSize) {
       paginationData.currentPage = res.data.page
+      if (res.data.page_size) {
+        paginationData.pageSize = res.data.page_size
+      }
       // pagination.pageSize = res.data.page_size
     }
 

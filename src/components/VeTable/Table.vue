@@ -16,7 +16,7 @@
       :key="item.key"
       :prop="item.dataKey as string"
       :label="item.title"
-      :align="item.align"
+      :align="item.align || 'center'"
       :width="item.width"
       :sortable="item.sortable"
       :fixed="item.fixed"
@@ -26,7 +26,7 @@
           <component :is="item.cellRenderer(scope)" />
         </template>
         <template v-else-if="item.type !== 'selection'">
-          {{ scope.row[item.dataKey] }}
+          {{ scope.row[item.dataKey] || scope.row[item.key] }}
         </template>
         <!-- 通过data属性传递参数 -->
         <!--        <slot name="operation" :row="scope"></slot>-->
@@ -99,7 +99,9 @@ const selectionIds = reactive<number[]>([])
 function handleSizeChange(val: number) {
   console.log(`${val} items per page`)
   paginationData.value.pageSize = val
-  refreshList()
+  if (paginationData.value.pageSizes.filter((item) => item === val).length !== 0) {
+    refreshList()
+  }
 }
 
 // 分页回调
