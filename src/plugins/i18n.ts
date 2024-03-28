@@ -1,8 +1,8 @@
 // 多组件库的国际化和本地项目国际化兼容
-import { type I18n, createI18n } from "vue-i18n";
+import { createI18n, type I18n } from "vue-i18n";
 import type { App, WritableComputedRef } from "vue";
 import { responsiveStorageNameSpace } from "@/config";
-import { storageLocal, isObject } from "@pureadmin/utils";
+import { isObject, storageLocal } from "@pureadmin/utils";
 
 // element-plus国际化
 import enLocale from "element-plus/dist/locale/en.mjs";
@@ -10,7 +10,7 @@ import zhLocale from "element-plus/dist/locale/zh-cn.mjs";
 
 const siphonI18n = (function () {
   // 仅初始化一次国际化配置
-  let cache = Object.fromEntries(
+  const cache = Object.fromEntries(
     Object.entries(
       import.meta.glob("../../locales/*.y(a)?ml", { eager: true })
     ).map(([key, value]: any) => {

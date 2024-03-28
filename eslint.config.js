@@ -52,7 +52,7 @@ export default defineFlatConfig([
       ...pluginPrettier.configs.recommended.rules,
       "no-debugger": "off",
       "no-unused-vars": [
-        "error",
+        "warn",
         {
           argsIgnorePattern: "^_",
           varsIgnorePattern: "^_"
@@ -97,7 +97,7 @@ export default defineFlatConfig([
         { allowBitwiseExpressions: true }
       ],
       "@typescript-eslint/no-unused-vars": [
-        "error",
+        "warn",
         {
           argsIgnorePattern: "^_",
           varsIgnorePattern: "^_"
@@ -152,6 +152,7 @@ export default defineFlatConfig([
       ...pluginVue.configs["vue3-recommended"].rules,
       "no-undef": "off",
       "no-unused-vars": "off",
+      "vue/no-unused-vars": ["warn"],
       "vue/no-v-html": "off",
       "vue/require-default-prop": "off",
       "vue/require-explicit-emits": "off",

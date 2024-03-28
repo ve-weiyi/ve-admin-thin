@@ -1,0 +1,255 @@
+<template>
+  <el-card class="main-card">
+    <div class="table-title">{{ $route.meta.title }}</div>
+    <div class="operation-container">
+      <el-button
+        icon="plus"
+        size="default"
+        type="primary"
+        @click="openModel(null)"
+      >
+        新建页面
+      </el-button>
+    </div>
+    <el-row v-loading="loading" :gutter="12" class="page-container">
+      <el-empty v-if="pageList.length == 0" description="暂无页面" />
+      <el-col v-for="item of pageList" :key="item.id" :md="6">
+        <div class="page-item">
+          <div class="page-operation">
+            <!-- 操作 -->
+            <el-dropdown trigger="click" @command="handleCommand">
+              <el-icon style="color: #fff; cursor: pointer">
+                <MoreFilled />
+              </el-icon>
+              <template #dropdown>
+                <el-dropdown-menu>
+                  <el-dropdown-item :command="'update' + JSON.stringify(item)">
+                    <el-icon>
+                      <Edit />
+                    </el-icon>
+                    编辑
+                  </el-dropdown-item>
+                  <el-dropdown-item :command="'delete' + item.id">
+                    <el-icon>
+                      <Delete />
+                    </el-icon>
+                    删除
+                  </el-dropdown-item>
+                </el-dropdown-menu>
+              </template>
+            </el-dropdown>
+          </div>
+          <el-image :src="item.page_cover" class="page-cover" fit="cover" />
+          <div class="page-name">{{ item.page_name }}</div>
+        </div>
+      </el-col>
+    </el-row>
+    <el-dialog v-model="addOrEdit" top="10vh" width="35%">
+      <template #header>
+        <div class="dialog-title-container">{{ pageTitle }}</div>
+      </template>
+      <el-form :model="pageForum" label-width="80px" size="default">
+        <el-form-item label="页面名称">
+          <el-input v-model="pageForum.page_name" style="width: 220px" />
+        </el-form-item>
+        <el-form-item label="页面标签">
+          <el-input v-model="pageForum.page_label" style="width: 220px" />
+        </el-form-item>
+        <el-form-item label="页面封面">
+          <el-upload
+            :before-upload="beforeUpload"
+            :http-request="uploadImage"
+            :on-success="uploadCover"
+            :show-file-list="false"
+            class="upload-cover"
+            drag
+            multiple
+          >
+            <i v-if="pageForum.page_cover == ''" class="el-icon-upload" />
+            <div v-if="pageForum.page_cover == ''" class="el-upload__text">
+              将文件拖到此处，或<em>点击上传</em>
+            </div>
+            <el-image
+              v-else
+              :src="pageForum.page_cover"
+              class="page-cover"
+              fit="cover"
+              height="180px"
+              width="360px"
+            />
+          </el-upload>
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <el-button @click="addOrEdit = false">取 消</el-button>
+        <el-button type="primary" @click="addOrEditPage"> 确 定</el-button>
+      </template>
+    </el-dialog>
+    <el-dialog v-model="isdeletePage" width="30%">
+      <template #header>
+        <div class="dialog-title-container">
+          <el-icon style="color: #ff9900">
+            <WarningFilled />
+          </el-icon>
+          提示
+        </div>
+      </template>
+      <div style="font-size: 1rem">是否删除该页面？</div>
+      <template #footer>
+        <el-button @click="isdeletePage = false">取 消</el-button>
+        <el-button type="primary" @click="deletePage"> 确 定</el-button>
+      </template>
+    </el-dialog>
+  </el-card>
+</template>
+<script lang="ts" setup>
+import { onMounted, reactive, ref } from "vue";
+import * as imageConversion from "image-conversion";
+import axios from "axios";
+import { ElMessage, ElNotification, UploadRequestOptions } from "element-plus";
+import { findPageListApi } from "@/api/page";
+import "@/style/table.scss";
+import { Page } from "@/api/types";
+import { uploadFileApi } from "@/api/file";
+
+const keywords = ref("");
+const loading = ref(true);
+const current = ref(1);
+const size = ref(8);
+const count = ref(0);
+const isdeletePage = ref(false);
+const addOrEdit = ref(false);
+const pageForum = reactive({
+  id: null,
+  page_name: "",
+  page_label: "",
+  page_cover: ""
+});
+const pageList = ref<Page[]>([]);
+const pageTitle = ref();
+
+const openModel = item => {
+  if (item) {
+    console.log(item);
+    Object.assign(pageForum, JSON.parse(item));
+    pageTitle.value = "修改页面";
+  } else {
+    Object.assign(pageForum, {
+      id: null,
+      page_name: "",
+      page_label: "",
+      page_cover: ""
+    });
+    pageTitle.value = "新建页面";
+  }
+  addOrEdit.value = true;
+};
+
+const listPages = () => {
+  findPageListApi({}).then(res => {
+    pageList.value = res.data.list;
+    loading.value = false;
+  });
+};
+
+const addOrEditPage = () => {
+  if (pageForum.page_name.trim() == "") {
+    ElMessage.error("页面名称不能为空");
+    return false;
+  }
+  if (pageForum.page_label.trim() == "") {
+    ElMessage.error("页面标签不能为空");
+    return false;
+  }
+  if (pageForum.page_cover == null) {
+    ElMessage.error("页面封面不能为空");
+    return false;
+  }
+  findPageListApi({}).then(res => {
+    pageList.value = res.data.list;
+  });
+  addOrEdit.value = false;
+};
+
+function uploadImage(options: UploadRequestOptions) {
+  return uploadFileApi("page", options.file);
+}
+
+const uploadCover = response => {
+  pageForum.page_cover = response.data;
+};
+
+const beforeUpload = rawFile => {
+  if (rawFile.size / 1024 < 200) {
+    return true;
+  }
+
+  // 压缩到200KB,这里的200就是要压缩的大小,可自定义
+  imageConversion.compressAccurately(rawFile, 200).then(res => {
+    rawFile = res;
+  });
+  return true;
+};
+
+const handleCommand = command => {
+  console.log("command", command);
+  const type = command.substring(0, 6);
+  const data = command.substring(6);
+  if (type == "delete") {
+    pageForum.id = data;
+    isdeletePage.value = true;
+  } else {
+    console.log(data);
+    openModel(data);
+  }
+};
+
+const deletePage = () => {
+  axios.delete("/api/admin/pages/" + pageForum.id).then(({ data }) => {
+    if (data.flag) {
+      ElNotification.success({
+        title: "成功",
+        message: data.message
+      });
+      listPages();
+    } else {
+      ElNotification.error({
+        title: "失败",
+        message: data.message
+      });
+    }
+    isdeletePage.value = false;
+  });
+};
+
+onMounted(() => {
+  listPages();
+});
+</script>
+
+<style scoped>
+.page-cover {
+  position: relative;
+  border-radius: 4px;
+  width: 100%;
+  height: 170px;
+}
+
+.page-name {
+  text-align: center;
+  margin-top: 0.5rem;
+}
+
+.page-item {
+  position: relative;
+  cursor: pointer;
+  margin-bottom: 1rem;
+}
+
+.page-operation {
+  position: absolute;
+  z-index: 1000;
+  top: 0.5rem;
+  right: 0.8rem;
+}
+</style>

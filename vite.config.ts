@@ -1,12 +1,12 @@
 import { getPluginsList } from "./build/plugins";
-import { include, exclude } from "./build/optimize";
-import { type UserConfigExport, type ConfigEnv, loadEnv } from "vite";
+import { exclude, include } from "./build/optimize";
+import { type ConfigEnv, loadEnv, type UserConfigExport } from "vite";
 import {
-  root,
+  __APP_INFO__,
   alias,
-  warpperEnv,
   pathResolve,
-  __APP_INFO__
+  root,
+  warpperEnv
 } from "./build/utils";
 
 export default ({ mode }: ConfigEnv): UserConfigExport => {
@@ -18,16 +18,34 @@ export default ({ mode }: ConfigEnv): UserConfigExport => {
     resolve: {
       alias
     },
-    // 服务端渲染
+    /**
+     * 本地开发服务，也可以配置接口代理
+     * @see https://cn.vitejs.dev/config/#server-proxy
+     */
     server: {
-      // 端口号
-      port: VITE_PORT,
-      host: "0.0.0.0",
-      // 本地跨域代理 https://cn.vitejs.dev/config/server-options.html#server-proxy
-      proxy: {},
-      // 预热文件以提前转换和缓存结果，降低启动期间的初始页面加载时长并防止转换瀑布
-      warmup: {
-        clientFiles: ["./index.html", "./src/{views,components}/*"]
+      /** 是否开启 HTTPS */
+      // https: false,
+      /** 设置 host: true 才可以使用 Network 的形式，以 IP 访问项目 */
+      host: true, // host: "0.0.0.0"
+      /** 端口号 */
+      port: 7777,
+      /** 是否自动打开浏览器 */
+      open: false,
+      /** 跨域设置允许 */
+      cors: true,
+      /** 端口被占用时，是否直接退出 */
+      strictPort: false,
+      /** 接口代理 */
+      proxy: {
+        // 前缀
+        "/api": {
+          target: "http://127.0.0.1:9999/", // 代理后的地址 =target/path
+          // target: "https://veweiyi.cn:9999/", // 代理后的地址 =target/path
+          ws: true,
+          /** 是否允许跨域 */
+          changeOrigin: true,
+          rewrite: path => path.replace("", "")
+        }
       }
     },
     plugins: getPluginsList(VITE_CDN, VITE_COMPRESSION),

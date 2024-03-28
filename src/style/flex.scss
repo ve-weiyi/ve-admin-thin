@@ -1,0 +1,41 @@
+// 横向
+.flex-row {
+  display: flex;
+  display: -webkit-flex;
+  flex-direction: row;
+  -webkit-flex-direction: row;
+}
+
+// 纵向
+.flex-column {
+  display: flex;
+  display: -webkit-flex;
+  flex-direction: column;
+  -webkit-flex-direction: column;
+}
+
+// 两侧排列
+.flex-between {
+  display: flex;
+  justify-content: space-between;
+  -webkit-justify-content: space-between;
+}
+
+// 水平居中
+.flex-level-center {
+  justify-content: center;
+  -webkit-justify-content: center;
+}
+
+// 水平居中 垂直居中
+.flex-vertical-center {
+  align-items: center;
+  -webkit-align-items: center;
+}
+
+// 水平居中 垂直居中
+.flex-center {
+  display: flex;
+  justify-content: center; /* 可选，根据需要调整对齐方式 */
+  align-items: center; /* 可选，根据需要调整对齐方式 */
+}
