@@ -30,14 +30,20 @@
 </template>
 
 <script lang="ts" setup>
-import { defineComponent, ref, watch } from "vue";
+import { defineComponent, ref, watch, watchEffect } from "vue";
 import { CheckboxValueType, ElTree } from "element-plus";
-import { findApiDetailsListApi } from "@/api/api";
 import { ApiDetailsDTO } from "@/api/types";
 
 // 父组件向子组件传输的数据
 const props = defineProps({
   row: {
+    type: Array,
+    required: false,
+    default: function () {
+      return [];
+    }
+  },
+  treeData: {
     type: Array,
     required: false,
     default: function () {
@@ -51,7 +57,7 @@ const emit = defineEmits(["changeRow"]);
 
 const filterText = ref("");
 const treeRef = ref<InstanceType<typeof ElTree>>();
-const treeData = ref<ApiDetailsDTO[]>([]);
+const treeData = ref<ApiDetailsDTO[]>(props.treeData);
 const defaultCheckIds = ref([]);
 const treeProps = ref({
   children: "children",
@@ -76,14 +82,6 @@ const checkAll = (value: CheckboxValueType) => {
   emit("changeRow", "treeRef", treeRef.value.getCheckedKeys());
 };
 
-const getTableData = () => {
-  defaultCheckIds.value = props.row;
-  findApiDetailsListApi({}).then(res => {
-    treeData.value = res.data.list;
-  });
-};
-getTableData();
-
 const needConfirm = ref(false);
 const nodeChange = () => {
   emit("changeRow", "treeRef", treeRef.value.getCheckedKeys());
@@ -106,6 +104,11 @@ const filterNode = (value, data) => {
 
 watch(filterText, val => {
   treeRef.value.filter(val);
+});
+
+watchEffect(() => {
+  treeData.value = props.treeData;
+  defaultCheckIds.value = props.row;
 });
 
 defineComponent({

@@ -6,8 +6,8 @@ import { Timer } from "@element-plus/icons-vue";
 import {
   createApiApi,
   deleteApiApi,
-  deleteApiByIdsApi,
-  findApiDetailsListApi,
+  deleteApiListApi,
+  findApiListApi,
   updateApiApi
 } from "@/api/api";
 
@@ -265,9 +265,9 @@ function handleApi(event: string, data: any) {
     case "delete":
       return deleteApiApi(data);
     case "deleteByIds":
-      return deleteApiByIdsApi(data);
+      return deleteApiListApi(data);
     case "list":
-      return findApiDetailsListApi(data);
+      return findApiListApi(data);
     default:
       return;
   }

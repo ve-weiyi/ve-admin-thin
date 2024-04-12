@@ -4,8 +4,8 @@ import { type FormField, RenderType } from "@/utils/render";
 import {
   createMenuApi,
   deleteMenuApi,
-  deleteMenuByIdsApi,
-  findMenuDetailsListApi,
+  deleteMenuListApi,
+  findMenuListApi,
   updateMenuApi
 } from "@/api/menu";
 import { transformI18n } from "@/plugins/i18n.ts";
@@ -78,7 +78,6 @@ function getColumnFields(): Column[] {
   const instance = getCurrentInstance();
   return [
     {
-      key: "selection",
       type: "selection",
       title: "批量操作",
       width: 60,
@@ -86,7 +85,6 @@ function getColumnFields(): Column[] {
       hidden: true
     },
     {
-      key: "id",
       title: "id",
       dataKey: "id",
       width: 100,
@@ -96,7 +94,7 @@ function getColumnFields(): Column[] {
     },
     {
       title: "菜单名称",
-      key: "title",
+      dataKey: "title",
       align: "left",
       width: 0,
       cellRenderer: (scope: any) => (
@@ -112,7 +110,7 @@ function getColumnFields(): Column[] {
     },
     {
       title: "菜单类型",
-      key: "type",
+      dataKey: "type",
       width: 100,
       cellRenderer: (scope: any) => (
         <el-tag
@@ -125,9 +123,8 @@ function getColumnFields(): Column[] {
       )
     },
     {
-      key: "path",
-      title: "路由路径",
       dataKey: "path",
+      title: "路由路径",
       width: 0
     },
     // {
@@ -137,7 +134,7 @@ function getColumnFields(): Column[] {
     //   width: 120,
     // },
     {
-      key: "rank",
+      dataKey: "rank",
       title: "排序",
       width: 80,
       sortable: true,
@@ -146,7 +143,7 @@ function getColumnFields(): Column[] {
       }
     },
     {
-      key: "show_link",
+      dataKey: "show_link",
       title: "显示",
       width: 120,
       align: align,
@@ -173,7 +170,6 @@ function getColumnFields(): Column[] {
       }
     },
     {
-      key: "created_at",
       title: "创建时间",
       dataKey: "created_at",
       width: 0,
@@ -187,11 +183,11 @@ function getColumnFields(): Column[] {
       }
     },
     {
-      key: "operation",
       title: "操作",
       dataKey: "operation",
       width: 160,
       align: align,
+      slot: "",
       cellRenderer: (scope: any) => {
         return (
           <div>
@@ -327,15 +323,15 @@ function handleApi(event: string, data: any) {
     case "delete":
       return deleteMenuApi(data);
     case "deleteByIds":
-      return deleteMenuByIdsApi(data);
+      return deleteMenuListApi(data);
     case "list":
-      return findMenuDetailsListApi(data);
+      return findMenuListApi(data);
     default:
       return;
   }
 }
 
-let res = await findMenuDetailsListApi({});
+let res = await findMenuListApi({});
 let parentOptions = res.data.list;
 
 export function useTableHook() {

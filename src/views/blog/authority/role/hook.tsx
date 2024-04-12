@@ -3,15 +3,14 @@ import { type FormField, RenderType } from "@/utils/render";
 import {
   createRoleApi,
   deleteRoleApi,
-  deleteRoleByIdsApi,
-  findRoleDetailsListApi,
+  deleteRoleListApi,
+  findRoleListApi,
   updateRoleApi
 } from "@/api/role";
 
 import { Timer } from "@element-plus/icons-vue";
-import { getCurrentInstance, ref } from "vue";
+import { getCurrentInstance } from "vue";
 import { FixedDir } from "element-plus/es/components/table-v2/src/constants";
-import type { RoleDetailsDTO } from "@/api/types";
 
 const align = "center";
 
@@ -76,7 +75,6 @@ function getColumnFields(): Column[] {
   const instance = getCurrentInstance();
   return [
     {
-      key: "selection",
       type: "selection",
       title: "批量操作",
       width: 60,
@@ -84,7 +82,6 @@ function getColumnFields(): Column[] {
       hidden: true
     },
     {
-      key: "id",
       title: "id",
       dataKey: "id",
       width: 100,
@@ -92,21 +89,18 @@ function getColumnFields(): Column[] {
       sortable: true
     },
     {
-      key: "role_name",
       title: "角色名称",
       dataKey: "role_name",
       width: 120,
       align: align
     },
     {
-      key: "role_domain",
       title: "角色范围",
       dataKey: "role_domain",
       width: 0,
       align: align
     },
     {
-      key: "role_comment",
       title: "角色标签",
       dataKey: "role_comment",
       width: 120,
@@ -114,7 +108,6 @@ function getColumnFields(): Column[] {
       sortable: true
     },
     {
-      key: "is_disable",
       title: "是否启用",
       dataKey: "is_disable",
       width: 120,
@@ -143,7 +136,6 @@ function getColumnFields(): Column[] {
       }
     },
     {
-      key: "is_default",
       title: "是否默认",
       dataKey: "is_default",
       width: 120,
@@ -172,7 +164,6 @@ function getColumnFields(): Column[] {
       }
     },
     {
-      key: "created_at",
       title: "创建时间",
       dataKey: "created_at",
       width: 0,
@@ -190,61 +181,63 @@ function getColumnFields(): Column[] {
       }
     },
     {
-      key: "operation",
       title: "操作",
       dataKey: "operation",
       width: 200,
       align: align,
       fixed: FixedDir.RIGHT,
-      cellRenderer: (scope: any) => {
-        return (
-          <div>
-            <el-button
-              class="table-text-button"
-              text
-              type="primary"
-              size="small"
-              icon="editPen"
-              onClick={() => openDrawer(scope.row)}
-            >
-              重置权限
-            </el-button>
-            <el-button
-              class="table-text-button"
-              text
-              type="primary"
-              size="small"
-              icon="editPen"
-              onClick={() => instance.exposed.openForm(scope.row)}
-            >
-              修改
-            </el-button>
-            <el-popconfirm
-              title="确定删除吗？"
-              onConfirm={() => {
-                deleteRoleApi(scope.row.id).then(res => {
-                  ElMessage.success("删除成功");
-                  instance.exposed.refreshList();
-                });
-              }}
-            >
-              {{
-                reference: () => (
-                  <el-button
-                    text
-                    type="danger"
-                    size="small"
-                    class="table-text-button"
-                    icon="delete"
-                  >
-                    删除
-                  </el-button>
-                )
-              }}
-            </el-popconfirm>
-          </div>
-        );
-      }
+      slot: "operation"
+      // cellRenderer: (scope: any) => {
+      //   return (
+      //     <div>
+      //       <el-button
+      //         class="table-text-button"
+      //         text
+      //         type="primary"
+      //         size="small"
+      //         icon="editPen"
+      //         // onClick={() => openDrawer(scope.row)}
+      //       >
+      //         重置权限
+      //       </el-button>
+      //       <el-button
+      //         class="table-text-button"
+      //         text
+      //         type="primary"
+      //         size="small"
+      //         icon="editPen"
+      //         onClick={() => instance.exposed.openForm(scope.row)}
+      //       >
+      //         修改
+      //       </el-button>
+      //       <el-popconfirm
+      //         title="确定删除吗？"
+      //         onConfirm={() => {
+      //           deleteRoleApi({
+      //             id: scope.row.id
+      //           }).then(res => {
+      //             ElMessage.success("删除成功");
+      //             instance.exposed.refreshList();
+      //           });
+      //         }}
+      //       >
+      //         {{
+      //           reference: () => (
+      //             <el-button
+      //               text
+      //               type="danger"
+      //               size="small"
+      //               class="table-text-button"
+      //               icon="delete"
+      //             >
+      //               删除
+      //             </el-button>
+      //           )
+      //         }}
+      //       </el-popconfirm>
+      //     </div>
+      //   );
+      // }
     }
   ];
 }
@@ -297,38 +290,19 @@ function handleApi(event: string, data: any) {
     case "delete":
       return deleteRoleApi(data);
     case "deleteByIds":
-      return deleteRoleByIdsApi(data);
+      return deleteRoleListApi(data);
     case "list":
-      return findRoleDetailsListApi(data);
+      return findRoleListApi(data);
     default:
       return;
   }
 }
-
-const drawer = ref(false);
-const activeMenus = ref([]);
-const activeResources = ref([]);
-const formData = ref<RoleDetailsDTO>();
-
-const openDrawer = (row: RoleDetailsDTO) => {
-  console.log("row", row);
-  if (row) {
-    formData.value = row;
-  } else {
-  }
-  drawer.value = true;
-};
 
 export function useTableHook() {
   return {
     getColumnFields,
     getSearchFields,
     getFormFields,
-    handleApi,
-    drawer,
-    activeMenus,
-    activeResources,
-    formData,
-    openDrawer
+    handleApi
   };
 }

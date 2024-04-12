@@ -1,5 +1,5 @@
 import http from "@/utils/request";
-import type { ChatMessage, ChatResponse } from "./types";
+import type { ChatHistory, ChatMessage, ChatResponse } from "./types";
 
 /** 和Chatgpt聊天 */
 export function chatAIApi(
@@ -18,6 +18,39 @@ export function chatCosApi(
 ): Promise<IApiResponseData<ChatResponse>> {
   return http.request<IApiResponseData<ChatResponse>>({
     url: `/api/v1/ai/cos`,
+    method: "post",
+    data: data
+  });
+}
+
+/** 和Chatgpt聊天 */
+export function chatStreamApi(
+  data: ChatMessage
+): Promise<IApiResponseData<ChatResponse>> {
+  return http.request<IApiResponseData<ChatResponse>>({
+    url: `/api/v1/ai/chat/stream`,
+    method: "post",
+    data: data
+  });
+}
+
+/** 和Chatgpt聊天 */
+export function chatAssistantApi(
+  data: ChatMessage
+): Promise<IApiResponseData<ChatResponse>> {
+  return http.request<IApiResponseData<ChatResponse>>({
+    url: `/api/v1/ai/assistant`,
+    method: "post",
+    data: data
+  });
+}
+
+/** 和Chatgpt聊天 */
+export function chatAssistantHistoryApi(
+  data: ChatHistory
+): Promise<IApiResponseData<ChatMessage[]>> {
+  return http.request<IApiResponseData<ChatMessage[]>>({
+    url: `/api/v1/ai/assistant/history`,
     method: "post",
     data: data
   });

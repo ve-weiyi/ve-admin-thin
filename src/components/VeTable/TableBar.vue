@@ -19,7 +19,7 @@ const props = defineProps({
   },
   /** 需要展示的列 */
   columnFields: {
-    type: Array as PropType<TableColumnList>,
+    type: Array as PropType<Column[]>,
     default: () => []
   },
   /** 对于树形表格，如果想启用展开和折叠功能，传入当前表格的ref即可 */

@@ -13,13 +13,11 @@
       :get-search-fields="getSearchFields"
     >
       <template #toolbar>
-        <el-button
-          icon="CircleCheck"
-          size="default"
-          type="success"
-          @click="Sync"
-        >
+        <el-button icon="check" size="default" type="success" @click="Sync">
           同步菜单
+        </el-button>
+        <el-button icon="delete" size="default" type="danger" @click="Clean">
+          重置菜单
         </el-button>
       </template>
       <template #form-component="{ formData, formFields }">
@@ -43,7 +41,7 @@ import { formRules } from "./utils/rule.ts";
 import TablePage from "@/components/TablePage2/TablePage.vue";
 import { ElMessage, ElMessageBox } from "element-plus";
 import { constantMenus } from "@/router";
-import { syncMenuListApi } from "@/api/menu.ts";
+import { cleanMenuListApi, syncMenuListApi } from "@/api/menu.ts";
 import { RouteConfigsTable } from "@/api/types.ts";
 
 const defaultOrder = { id: "asc" };
@@ -55,6 +53,28 @@ const {
   handleApi,
   parentOptions
 } = useTableHook();
+
+function Clean(evt: MouseEvent) {
+  ElMessageBox.confirm(
+    `确认要<strong>清空菜单列表并重置数据库吗</strong>`,
+    "系统提示",
+    {
+      confirmButtonText: "确定",
+      cancelButtonText: "取消",
+      type: "warning",
+      dangerouslyUseHTMLString: true,
+      draggable: true
+    }
+  )
+    .then(() => {
+      cleanMenuListApi({}).then(res => {
+        ElMessage.success("清空成功");
+      });
+    })
+    .catch(() => {
+      ElMessage.warning("清空取消");
+    });
+}
 
 function Sync(evt: MouseEvent) {
   ElMessageBox.confirm(

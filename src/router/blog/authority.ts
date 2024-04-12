@@ -24,9 +24,9 @@ export default {
       meta: { title: "菜单管理" }
     },
     {
-      path: "/authority/resource",
-      component: () => import("@/views/blog/authority/resource/Resource.vue"),
-      name: "Resource",
+      path: "/authority/api",
+      component: () => import("@/views/blog/authority/api/Api.vue"),
+      name: "Api",
       meta: { title: "接口管理" }
     }
   ]

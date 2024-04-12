@@ -88,7 +88,7 @@ export interface Category {
 
 export interface ChatMessage {
   id?: number; // 主键
-  chat_id?: string; // 群聊id
+  chat_id?: string; // 聊天id
   user_id?: number; // 用户id
   reply_msg_id?: number; // 回复消息id
   content?: string; // 聊天内容
@@ -115,7 +115,7 @@ export interface ChatRecord {
 
 export interface ChatSession {
   id?: number; // 主键
-  chat_id?: string; // 群聊id
+  chat_id?: string; // 聊天id
   chat_title?: string; // 标题
   type?: string; // 类型
   status?: number; // 0正常 1删除
@@ -155,7 +155,7 @@ export interface Menu {
   name?: string; // 路由名称
   component?: string; // 路由组件
   redirect?: string; // 路由重定向
-  type?: number; // 菜单类型（0代表菜单、1代表iframe、2代表外链、3代表按钮）
+  type?: number; // 菜单类型
   meta?: string; // 菜单元数据
   created_at?: string; // 创建时间
   updated_at?: string; // 更新时间
@@ -344,6 +344,10 @@ export interface WebsiteConfig {
   updated_at?: string; // 更新时间
 }
 
+export interface AboutMeReq {
+  content?: string;
+}
+
 export interface ArticleConditionReq {
   tag_id?: number; // 文章标签ID
   category_id?: number; // 文章分类ID
@@ -395,7 +399,7 @@ export interface CaptchaVerifyReq {
 }
 
 export interface ChangePasswordReq {
-  id?: number; // 从 JWT 中提取 user id，避免越权
+  i_d?: number; // 从 JWT 中提取 user id，避免越权
   password?: string; // 旧密码
   newPassword?: string; // 新密码
 }
@@ -414,6 +418,22 @@ export interface ChatMessage {
 export interface ChatStream {
   chat_id?: string;
   content?: string;
+}
+
+export interface EmptyReq {}
+
+export interface IdReq {
+  id?: number;
+}
+
+export interface IdsReq {
+  ids?: number[];
+}
+
+export interface LoginReq {
+  username?: string;
+  password?: string;
+  code?: string;
 }
 
 export interface Meta {
@@ -468,7 +488,7 @@ export interface Transition {
 
 export interface UpdateRoleApisReq {
   role_id?: number;
-  resource_ids?: number[];
+  api_ids?: number[];
 }
 
 export interface UpdateRoleMenusReq {
@@ -481,7 +501,7 @@ export interface UpdateUserRolesReq {
   role_ids?: number[];
 }
 
-export interface UserEmail {
+export interface UserEmailReq {
   username?: string;
 }
 
@@ -492,15 +512,8 @@ export interface UserInfoReq {
   avatar?: string; // 头像
 }
 
-export interface UserReq {
-  username?: string;
-  password?: string;
-  code?: string;
-}
-
 export interface VoiceVO {
   type?: number; // 消息类型
-  file?: File; // 文件
   content?: string; // 聊天内容
 }
 
@@ -638,11 +651,7 @@ export interface CommentDTO {
   reply_dto_list?: ReplyDTO[]; // 回复列表
 }
 
-export interface Login {
-  token?: Token;
-  user_info?: UserInfo;
-  login_history?: LoginHistory;
-}
+export interface EmptyResp {}
 
 export interface LoginHistory {
   id?: number;
@@ -651,6 +660,12 @@ export interface LoginHistory {
   ip_address?: string; // ip host
   ip_source?: string; // ip 源
   login_time?: string; // 创建时间
+}
+
+export interface LoginResp {
+  token?: Token;
+  user_info?: UserInfo;
+  login_history?: LoginHistory;
 }
 
 export interface MenuDetailsDTO {
@@ -722,8 +737,8 @@ export interface RoleDTO {
 }
 
 export interface RoleDetailsDTO extends Role {
-  menu_id_list?: number[];
-  resource_id_list?: number[];
+  menu_ids?: number[];
+  resource_ids?: number[];
 }
 
 export interface TagDTO {
@@ -755,13 +770,13 @@ export interface TalkDetailsDTO {
 }
 
 export interface Token {
+  user_id?: number; // 用户id
   token_type?: string; // token类型,Bearer
   access_token?: string; // 访问token,过期时间较短。2h
   expires_in?: number; // 访问token过期时间
   refresh_token?: string; // 刷新token,过期时间较长。30d
   refresh_expires_in?: number; // 刷新token过期时间
   scope?: string; // 作用域
-  uid?: number; // 用户id
 }
 
 export interface Transition {
@@ -798,17 +813,14 @@ export interface UserDTO {
 }
 
 export interface UserInfo {
-  id?: number;
-  username?: string;
-  nickname?: string;
-  avatar?: string;
-  intro?: string;
-  website?: string;
-  email?: string;
-  article_like_set?: string[]; // 文章点赞集合
-  comment_like_set?: string[]; // 评论点赞集合
-  talk_like_set?: string[]; // 说说点赞集合
-  roles?: RoleDTO[];
+  user_id?: number; // 用户id
+  username?: string; // 用户名
+  nickname?: string; // 昵称
+  avatar?: string; // 头像
+  intro?: string; // 个人简介
+  website?: string; // 个人网站
+  email?: string; // 邮箱
+  roles?: RoleDTO[]; // 角色列表
 }
 
 export interface UserMenuDTO {

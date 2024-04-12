@@ -26,8 +26,16 @@
           <component :is="item.cellRenderer(scope)" />
         </template>
         <template v-else-if="item.type !== 'selection'">
-          {{ scope.row[item.dataKey] || scope.row[item.key] }}
+          {{ scope.row[item.dataKey] }}
         </template>
+        <slot
+          v-if="item.slot"
+          :name="item.slot"
+          :record="item.dataKey"
+          :value="scope.row"
+        >
+          插槽内容
+        </slot>
         <!-- 通过data属性传递参数 -->
         <!--        <slot name="operation" :row="scope"></slot>-->
       </template>
@@ -48,8 +56,7 @@
 </template>
 
 <script setup lang="ts">
-import type { PropType } from "vue";
-import { onMounted, reactive, ref, watchEffect } from "vue";
+import { onMounted, PropType, reactive, ref, useSlots, watchEffect } from "vue";
 import { defaultPaginationData, Pagination } from "@/utils/render";
 import { Column, TableInstance } from "element-plus";
 import defaultProps from "element-plus/es/components/table/src/table/defaults";
@@ -76,6 +83,13 @@ const emit = defineEmits([
   // 定义事件
   "refresh"
 ]);
+
+const slots = useSlots();
+
+for (const key in slots) {
+  console.log("key---", key);
+}
+console.log("slots---", slots.operation);
 
 // 表格ref
 const tableRef = ref<TableInstance | null>(null);

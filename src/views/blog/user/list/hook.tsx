@@ -9,7 +9,7 @@ import {
   updateUserRolesApi,
   updateUserStatusApi
 } from "@/api/account";
-import { findRoleDetailsListApi } from "@/api/role";
+import { findRoleListApi } from "@/api/role";
 
 const align = "center";
 
@@ -193,7 +193,7 @@ function getSearchFields(): FormField[] {
 }
 
 let roleOptions = [];
-findRoleDetailsListApi({}).then(res => {
+findRoleListApi({}).then(res => {
   res.data.list.forEach(item => {
     roleOptions.push({ label: item.role_comment, value: item.id });
   });

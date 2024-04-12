@@ -52,8 +52,8 @@
               已选 {{ tableRef?.selectionIds.length }} 项
             </span>
             <el-button type="primary" text @click="cancelBatchDelete()">
-              取消选择</el-button
-            >
+              取消选择
+            </el-button>
           </div>
           <el-popconfirm title="是否确认删除?" @confirm="confirmBatchDelete()">
             <template #reference>
@@ -81,7 +81,14 @@
           :size="size"
           :columnFields="dynamicColumns"
           @refresh="refreshList"
-        />
+        >
+          <template
+            v-for="t in dynamicColumns.filter(k => k.slot)"
+            #[t.slot]="{ record, value }"
+          >
+            <slot :name="t.slot" :record="record" :value="value" />
+          </template>
+        </VeTable>
       </template>
     </VeTableBar>
 
