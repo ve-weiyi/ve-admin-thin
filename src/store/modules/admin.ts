@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import { store } from "@/store";
-import type { Login, Token, UserInfo } from "@/api/types";
+import type { LoginResp, Token, UserInfo } from "@/api/types";
 import cookies from "@/utils/cookies";
 import { useMultiTagsStoreHook } from "@/store/modules/multiTags";
 import { routerArrays } from "@/layout/types";
@@ -16,7 +16,7 @@ const useAdminStore = defineStore({
     userInfo: cookies.getItem<UserInfo>("user_info") || {}
   }),
   actions: {
-    login(login: Login) {
+    login(login: LoginResp) {
       cookies.setItem("token", login.token);
       cookies.setItem("user_info", login.user_info);
       console.log("token", cookies.getItem<Token>("token"));

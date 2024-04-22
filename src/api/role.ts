@@ -1,17 +1,19 @@
 import http from "@/utils/request";
 import type {
-  BatchResult,
+  BatchResp,
   EmptyResp,
   IdReq,
   IdsReq,
+  PageQuery,
+  PageResp,
   Role,
-  RoleDetailsDTO,
+  RoleResourcesResp,
   UpdateRoleApisReq,
   UpdateRoleMenusReq
 } from "./types";
 
-/** 创建角色 */
-export function createRoleApi(data: Role): Promise<IApiResponseData<Role>> {
+/** "创建角色" */
+export function createRoleApi(data?: Role): Promise<IApiResponseData<Role>> {
   return http.request<IApiResponseData<Role>>({
     url: `/api/v1/role/create_role`,
     method: "post",
@@ -19,8 +21,8 @@ export function createRoleApi(data: Role): Promise<IApiResponseData<Role>> {
   });
 }
 
-/** 更新角色 */
-export function updateRoleApi(data: Role): Promise<IApiResponseData<Role>> {
+/** "更新角色" */
+export function updateRoleApi(data?: Role): Promise<IApiResponseData<Role>> {
   return http.request<IApiResponseData<Role>>({
     url: `/api/v1/role/update_role`,
     method: "put",
@@ -28,60 +30,62 @@ export function updateRoleApi(data: Role): Promise<IApiResponseData<Role>> {
   });
 }
 
-/** 删除角色 */
-export function deleteRoleApi(req: IdReq): Promise<IApiResponseData<any>> {
-  return http.request<IApiResponseData<any>>({
+/** "删除角色" */
+export function deleteRoleApi(
+  data?: IdReq
+): Promise<IApiResponseData<BatchResp>> {
+  return http.request<IApiResponseData<BatchResp>>({
     url: `/api/v1/role/delete_role`,
     method: "delete",
-    data: req
+    data: data
   });
 }
 
-/** 查询角色 */
-export function findRoleApi(req: IdReq): Promise<IApiResponseData<Role>> {
+/** "批量删除角色" */
+export function deleteRoleListApi(
+  data?: IdsReq
+): Promise<IApiResponseData<BatchResp>> {
+  return http.request<IApiResponseData<BatchResp>>({
+    url: `/api/v1/role/delete_role_list`,
+    method: "delete",
+    data: data
+  });
+}
+
+/** "查询角色" */
+export function findRoleApi(data?: IdReq): Promise<IApiResponseData<Role>> {
   return http.request<IApiResponseData<Role>>({
     url: `/api/v1/role/find_role`,
     method: "post",
-    data: req
+    data: data
   });
 }
 
-/** 批量删除角色 */
-export function deleteRoleListApi(
-  req: IdsReq
-): Promise<IApiResponseData<BatchResult>> {
-  return http.request<IApiResponseData<BatchResult>>({
-    url: `/api/v1/role/delete_role_list`,
-    method: "delete",
-    data: req
-  });
-}
-
-/** 分页获取角色列表 */
+/** "分页获取角色列表" */
 export function findRoleListApi(
-  page: PageQuery
-): Promise<IApiResponseData<PageResult<Role[]>>> {
-  return http.request<IApiResponseData<PageResult<Role[]>>>({
+  data?: PageQuery
+): Promise<IApiResponseData<PageResp>> {
+  return http.request<IApiResponseData<PageResp>>({
     url: `/api/v1/role/find_role_list`,
     method: "post",
-    data: page
+    data: data
   });
 }
 
-/** 获取角色列表 */
+/** "获取角色资源列表" */
 export function findRoleResourcesApi(
-  data: IdReq
-): Promise<IApiResponseData<PageResult<RoleDetailsDTO[]>>> {
-  return http.request<IApiResponseData<PageResult<RoleDetailsDTO[]>>>({
+  data?: IdReq
+): Promise<IApiResponseData<RoleResourcesResp>> {
+  return http.request<IApiResponseData<RoleResourcesResp>>({
     url: `/api/v1/role/find_role_resources`,
     method: "post",
     data: data
   });
 }
 
-/** 更新角色菜单 */
+/** "更新角色菜单权限" */
 export function updateRoleMenusApi(
-  data: UpdateRoleMenusReq
+  data?: UpdateRoleMenusReq
 ): Promise<IApiResponseData<EmptyResp>> {
   return http.request<IApiResponseData<EmptyResp>>({
     url: `/api/v1/role/update_role_menus`,
@@ -90,9 +94,9 @@ export function updateRoleMenusApi(
   });
 }
 
-/** 更新角色资源 */
+/** "更新角色接口权限" */
 export function updateRoleApisApi(
-  data: UpdateRoleApisReq
+  data?: UpdateRoleApisReq
 ): Promise<IApiResponseData<EmptyResp>> {
   return http.request<IApiResponseData<EmptyResp>>({
     url: `/api/v1/role/update_role_apis`,

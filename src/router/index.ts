@@ -15,8 +15,7 @@ import {
   getHistoryMode,
   getTopMenu,
   handleAliveRoute,
-  initRouter,
-  isOneOfArray
+  initRouter
 } from "./utils";
 import {
   createRouter,
@@ -31,7 +30,7 @@ import { useAdminStoreHook } from "@/store/modules/admin";
  * 如何排除文件请看：https://cn.vitejs.dev/guide/features.html#negative-patterns
  */
 const modules: Record<string, any> = import.meta.glob(
-  ["./blog/**/*.ts", "./modules/**/*.ts", "!./modules/**/remaining.ts"],
+  ["./modules/**/*.ts", "!./modules/**/remaining.ts"],
   {
     eager: true
   }
@@ -126,15 +125,15 @@ router.beforeEach((to: ToRouteType, _from, next) => {
   }
   if (userInfo) {
     // 无权限跳转403页面
-    if (
-      to.meta?.roles &&
-      !isOneOfArray(
-        to.meta?.roles,
-        userInfo?.roles.map(v => v.role_name)
-      )
-    ) {
-      next({ path: "/error/403" });
-    }
+    // if (
+    //   to.meta?.roles &&
+    //   !isOneOfArray(
+    //     to.meta?.roles,
+    //     userInfo?.roles.map(v => v.role_name)
+    //   )
+    // ) {
+    //   next({ path: "/error/403" });
+    // }
     // 开启隐藏首页后在浏览器地址栏手动输入首页welcome路由则跳转到404页面
     if (VITE_HIDE_HOME === "true" && to.fullPath === "/welcome") {
       next({ path: "/error/404" });

@@ -29,8 +29,7 @@ import Check from "@iconify-icons/ep/check";
 import User from "@iconify-icons/ri/user-3-fill";
 import { loginApi } from "@/api/auth";
 import { useAdminStoreHook } from "@/store/modules/admin";
-import { getUserMenusApi } from "@/api/account";
-import { usePermissionStoreHook } from "@/store/modules/permission";
+import { initRouter } from "@/router/utils.ts";
 
 defineOptions({
   name: "Login"
@@ -59,7 +58,9 @@ const ruleForm = reactive({
 
 const onLogin = async (formEl: FormInstance | undefined) => {
   loading.value = true;
-  if (!formEl) return;
+  if (!formEl) {
+    return;
+  }
   await formEl.validate((valid, fields) => {
     if (valid) {
       loginApi(ruleForm)
@@ -69,20 +70,12 @@ const onLogin = async (formEl: FormInstance | undefined) => {
           message("登录成功", { type: "success" });
           // 保存token
           useAdminStoreHook().login(res.data);
-          // 拉取用户菜单
-          getUserMenusApi().then(res => {
-            console.log("getUserMenusApi res", res);
-          });
-          // handleAsyncRoutes(asyncRoutes)
-          usePermissionStoreHook().handleWholeMenus([]);
-          // 跳转到首页
-          router.push({ path: "/welcome" });
-          // useUserStoreHook().loginByUser(res.data)
           // 获取后端路由
-          // initRouter().then(() => {
-          //   router.push(getTopMenu(true).path)
-          //   message("登录成功", { type: "success" })
-          // })
+          initRouter().then(() => {
+            message("登录成功", { type: "success" });
+            // 跳转到首页
+            router.push({ path: "/welcome" });
+          });
         })
         .catch(err => {
           loading.value = false;
