@@ -80,7 +80,7 @@ export function findApiDetailsListApi(
 
 /** 同步接口列表 */
 export function syncApiListApi(
-  data: EmptyReq
+  data?: EmptyReq
 ): Promise<IApiResponseData<BatchResult>> {
   return http.request<IApiResponseData<BatchResult>>({
     url: `/api/v1/api/sync_api_list`,

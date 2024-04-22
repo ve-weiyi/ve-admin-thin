@@ -439,19 +439,19 @@ export interface LoginReq {
 export interface Meta {
   title?: string; // 菜单名称
   icon?: string; // 菜单图标
-  showLink?: boolean; // 是否在菜单中显示
-  rank?: number; // 菜单升序排序
-  extraIcon?: any; // 菜单名称右侧的额外图标
-  showParent?: boolean; // 是否显示父级菜单
-  roles?: string[]; // 页面级别权限设置
-  auths?: string[]; // 按钮级别权限设置
-  keepAlive?: boolean; // 路由组件缓存
-  frameSrc?: string; // 内嵌的iframe链接
-  frameLoading?: boolean; // iframe页是否开启首次加载动画
-  transition?: Transition; // 页面加载动画
-  hiddenTag?: boolean; // 是否不添加信息到标签页
-  dynamicLevel?: number; // 动态路由可打开的最大数量
-  activePath?: string; // 将某个菜单激活
+  show_link?: boolean; //是否在菜单中显示
+  rank?: number; //菜单升序排序
+  extra_icon?: any; //菜单名称右侧的额外图标
+  show_parent?: boolean; //是否显示父级菜单
+  roles?: string[]; //页面级别权限设置
+  auths?: string[]; //按钮级别权限设置
+  keep_alive?: boolean; //路由组件缓存
+  frame_src?: string; //内嵌的iframe链接
+  frame_loading?: boolean; //iframe页是否开启首次加载动画
+  transition?: Transition; //页面加载动画
+  hidden_tag?: boolean; //是否不添加信息到标签页
+  dynamic_level?: number; //动态路由可打开的最大数量
+  active_path?: string; //将某个菜单激活
 }
 
 export interface OauthLoginReq {
@@ -478,12 +478,6 @@ export interface RouteConfigsTable {
 
 export interface SyncMenuRequest {
   menus?: RouteConfigsTable[];
-}
-
-export interface Transition {
-  name?: string; // 当前路由动画效果
-  enterTransition?: string; // 进场动画
-  leaveTransition?: string; // 离场动画
 }
 
 export interface UpdateRoleApisReq {
@@ -780,9 +774,9 @@ export interface Token {
 }
 
 export interface Transition {
-  name?: string; // 当前路由动画效果
-  enterTransition?: string; // 进场动画
-  leaveTransition?: string; // 离场动画
+  name?: string; //当前路由动画效果
+  enter_transition?: string; //进场动画
+  leave_transition?: string; //离场动画
 }
 
 export interface UniqueViewDTO {

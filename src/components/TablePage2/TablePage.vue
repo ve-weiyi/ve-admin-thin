@@ -333,9 +333,9 @@ function onUpdate(row: any) {
   });
 }
 
-function onDelete(id: number) {
-  console.log("onDelete", id);
-  props.handleApi("delete", id).then(res => {
+function onDelete(row: any) {
+  console.log("onDelete", row);
+  props.handleApi("delete", row).then(res => {
     ElMessage.success("删除成功");
     refreshList();
   });
@@ -405,8 +405,10 @@ function refreshList() {
   // }
 
   const page = {
-    page: paginationData.currentPage,
-    page_size: paginationData.pageSize,
+    limit: {
+      page: paginationData.currentPage,
+      page_size: paginationData.pageSize
+    },
     sorts: sorts,
     conditions: conditions
   };

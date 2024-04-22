@@ -10,7 +10,7 @@
 </template>
 
 <script lang="ts" setup>
-import TablePage from "@/components/TablePage/TablePage.vue";
+import TablePage from "@/components/TablePage2/TablePage.vue";
 import {
   getColumnFields,
   getFormFields,

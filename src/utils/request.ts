@@ -44,6 +44,7 @@ class HttpRequest {
         "Content-Type": "application/json;charset=UTF-8"
       }
     };
+    this.setHeader(config);
     return config;
   }
 
@@ -67,6 +68,16 @@ class HttpRequest {
     //   delete payload.data
     // }
     return payload;
+  }
+
+  private setHeader(config: AxiosRequestConfig) {
+    const tk = useAdminStoreHook().getToken();
+    if (tk) {
+      config.headers = Object.assign({}, config.headers, {
+        "X-Auth-Token": tk?.access_token,
+        "X-User-Id": tk?.user_id
+      });
+    }
   }
 
   private checkStatus(status: number) {
@@ -114,14 +125,6 @@ class HttpRequest {
     return errMessage;
   }
 
-  private setHeader(config: AxiosRequestConfig) {
-    const tk = useAdminStoreHook().getToken();
-    if (tk) {
-      config.headers!.token = tk?.access_token;
-      config.headers!.uid = tk?.uid;
-    }
-  }
-
   // 拦截处理
   private newService() {
     // 创建一个 Axios 实例
@@ -129,9 +132,6 @@ class HttpRequest {
     // 请求拦截
     instance.interceptors.request.use(
       config => {
-        // console.log('request-->', config)
-
-        this.setHeader(config);
         if (!navigator.onLine) {
           ElMessage({
             message: "请检查您的网络是否正常",
@@ -157,7 +157,6 @@ class HttpRequest {
         if (type === "[object Blob]" || type === "[object ArrayBuffer]") {
           return result;
         }
-
         const { code, message } = result;
         switch (code) {
           case 200:
@@ -197,8 +196,8 @@ class HttpRequest {
   /** 创建请求方法 */
 
   request<T>(config: AxiosRequestConfig): Promise<T> {
-    const baseOpt = this.getConfig();
-    const params = Object.assign({}, baseOpt, config);
+    const baseConfig = this.getConfig();
+    const params = Object.assign({}, baseConfig, config);
     return this.service(params);
   }
 }

@@ -153,17 +153,17 @@ function getColumnFields(): Column[] {
         }
         return (
           <el-switch
-            v-model={scope.row.meta.showLink}
+            v-model={scope.row.meta.show_link}
             active-color="#13ce66"
             inactive-color="#cccccc"
             active-value={true}
             inactive-value={false}
             onClick={() => {
-              const data = Object.assign(scope.row, {
-                meta: JSON.stringify(scope.row.meta)
-              });
+              // const data = Object.assign(scope.row, {
+              //   meta: JSON.stringify(scope.row.meta)
+              // });
 
-              instance.exposed.onUpdate(data);
+              instance.exposed.onUpdate(scope.row);
             }}
           />
         );
@@ -224,9 +224,9 @@ function getColumnFields(): Column[] {
               修改
             </el-button>
             <el-popconfirm
-              title="确定删除吗？"
+              title="确定删除吗？如果是父菜单，则会一起删除子菜单。"
               onConfirm={() => {
-                instance.exposed.confirmDelete(scope.row.id);
+                instance.exposed.onDelete(scope.row);
               }}
             >
               {{

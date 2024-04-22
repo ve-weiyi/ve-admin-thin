@@ -44,8 +44,6 @@ import { constantMenus } from "@/router";
 import { cleanMenuListApi, syncMenuListApi } from "@/api/menu.ts";
 import { RouteConfigsTable } from "@/api/types.ts";
 
-const defaultOrder = { id: "asc" };
-
 const {
   getSearchFields,
   getColumnFields,
@@ -53,6 +51,10 @@ const {
   handleApi,
   parentOptions
 } = useTableHook();
+
+const defaultOrder = { id: "asc" };
+const formRef = ref(null);
+const tableRef = ref<InstanceType<typeof TablePage>>();
 
 function Clean(evt: MouseEvent) {
   ElMessageBox.confirm(
@@ -69,6 +71,7 @@ function Clean(evt: MouseEvent) {
     .then(() => {
       cleanMenuListApi({}).then(res => {
         ElMessage.success("清空成功");
+        tableRef.value.refreshList();
       });
     })
     .catch(() => {
@@ -114,7 +117,6 @@ function convertMenu(menus: RouteConfigsTable[]) {
   return menus;
 }
 
-const formRef = ref(null);
 onMounted(() => {
   console.log("menu-->", formRef.value);
   // resetTable()

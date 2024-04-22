@@ -31,10 +31,23 @@
             type="primary"
             size="small"
             icon="editPen"
+            @click="
+              (evt: MouseEvent) => {
+                tableRef.openForm(value);
+              }
+            "
           >
             修改
           </el-button>
-          <el-popconfirm title="确定删除吗？">
+          <el-popconfirm
+            title="确定删除吗？"
+            @confirm="
+              (evt: MouseEvent) => {
+                console.log('delete', value);
+                tableRef.onDelete({ id: value.id });
+              }
+            "
+          >
             <template #reference>
               <el-button
                 text

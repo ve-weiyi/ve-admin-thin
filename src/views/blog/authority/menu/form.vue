@@ -154,7 +154,7 @@ defineExpose({ getRef });
       <re-col v-show="newFormInline.type !== 3" :value="12" :xs="24" :sm="24">
         <el-form-item label="右侧图标">
           <el-input
-            v-model="newFormInline.meta.extraIcon"
+            v-model="newFormInline.meta.extra_icon"
             clearable
             placeholder="菜单名称右侧的额外图标"
           />
@@ -166,7 +166,7 @@ defineExpose({ getRef });
       <re-col v-show="newFormInline.type < 2" :value="12" :xs="24" :sm="24">
         <el-form-item label="进场动画">
           <ReAnimateSelector
-            v-model="newFormInline.meta.transition.enterTransition"
+            v-model="newFormInline.meta.transition.enter_transition"
             placeholder="请选择页面进场加载动画"
           />
         </el-form-item>
@@ -174,7 +174,7 @@ defineExpose({ getRef });
       <re-col v-show="newFormInline.type < 2" :value="12" :xs="24" :sm="24">
         <el-form-item label="离场动画">
           <ReAnimateSelector
-            v-model="newFormInline.meta.transition.leaveTransition"
+            v-model="newFormInline.meta.transition.leave_transition"
             placeholder="请选择页面离场加载动画"
           />
         </el-form-item>
@@ -183,7 +183,7 @@ defineExpose({ getRef });
       <re-col v-show="newFormInline.type === 0" :value="12" :xs="24" :sm="24">
         <el-form-item label="菜单激活">
           <el-input
-            v-model="newFormInline.meta.activePath"
+            v-model="newFormInline.meta.active_path"
             clearable
             placeholder="请输入需要激活的菜单"
           />
@@ -200,7 +200,7 @@ defineExpose({ getRef });
         <!-- iframe -->
         <el-form-item label="链接地址">
           <el-input
-            v-model="newFormInline.meta.frameSrc"
+            v-model="newFormInline.meta.frame_src"
             clearable
             placeholder="请输入 iframe 链接地址"
           />
@@ -209,11 +209,11 @@ defineExpose({ getRef });
       <re-col v-if="newFormInline.type === 1" :value="12" :xs="24" :sm="24">
         <el-form-item label="加载动画">
           <Segmented
-            :modelValue="newFormInline.meta.frameLoading ? 0 : 1"
+            :modelValue="newFormInline.meta.frame_loading ? 0 : 1"
             :options="frameLoadingOptions"
             @change="
               ({ option: { value } }) => {
-                newFormInline.meta.frameLoading = value;
+                newFormInline.meta.frame_loading = value;
               }
             "
           />
@@ -223,11 +223,11 @@ defineExpose({ getRef });
       <re-col v-show="newFormInline.type < 2" :value="12" :xs="24" :sm="24">
         <el-form-item label="缓存页面">
           <Segmented
-            :modelValue="newFormInline.meta.keepAlive ? 0 : 1"
+            :modelValue="newFormInline.meta.keep_alive ? 0 : 1"
             :options="keepAliveOptions"
             @change="
               ({ option: { value } }) => {
-                newFormInline.meta.keepAlive = value;
+                newFormInline.meta.keep_alive = value;
               }
             "
           />
@@ -236,11 +236,11 @@ defineExpose({ getRef });
       <re-col v-show="newFormInline.type < 2" :value="12" :xs="24" :sm="24">
         <el-form-item label="标签页">
           <Segmented
-            :modelValue="newFormInline.meta.hiddenTag ? 1 : 0"
+            :modelValue="newFormInline.meta.hidden_tag ? 1 : 0"
             :options="hiddenTagOptions"
             @change="
               ({ option: { value } }) => {
-                newFormInline.meta.hiddenTag = value;
+                newFormInline.meta.hidden_tag = value;
               }
             "
           />
@@ -250,11 +250,11 @@ defineExpose({ getRef });
       <re-col v-show="newFormInline.type !== 3" :value="12" :xs="24" :sm="24">
         <el-form-item label="菜单">
           <Segmented
-            :modelValue="newFormInline.meta.showLink ? 0 : 1"
+            :modelValue="newFormInline.meta.show_link ? 0 : 1"
             :options="showLinkOptions"
             @change="
               ({ option: { value } }) => {
-                newFormInline.meta.showLink = value;
+                newFormInline.meta.show_link = value;
               }
             "
           />
@@ -263,11 +263,11 @@ defineExpose({ getRef });
       <re-col v-show="newFormInline.type !== 3" :value="8" :xs="24" :sm="24">
         <el-form-item label="父级菜单">
           <Segmented
-            :modelValue="newFormInline.meta.showParent ? 0 : 1"
+            :modelValue="newFormInline.meta.show_parent ? 0 : 1"
             :options="showParentOptions"
             @change="
               ({ option: { value } }) => {
-                newFormInline.meta.showParent = value;
+                newFormInline.meta.show_parent = value;
               }
             "
           />

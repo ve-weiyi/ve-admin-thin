@@ -24,7 +24,7 @@
 </template>
 
 <script lang="ts" setup>
-import TablePage from "@/components/TablePage/TablePage.vue";
+import TablePage from "@/components/TablePage2/TablePage.vue";
 import { useTableHook } from "./hook";
 import { onMounted, ref } from "vue";
 import { syncApiListApi } from "@/api/api";
@@ -33,7 +33,7 @@ import { ElMessage, ElMessageBox } from "element-plus";
 const { getSearchFields, getColumnFields, getFormFields, handleApi } =
   useTableHook();
 
-const defaultOrder = { id: "desc" };
+const defaultOrder = { id: "asc" };
 const tableRef = ref<InstanceType<typeof TablePage>>();
 
 function Sync(evt: MouseEvent) {

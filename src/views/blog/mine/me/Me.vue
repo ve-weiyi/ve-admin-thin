@@ -110,13 +110,13 @@ import { useAdminStoreHook } from "@/store/modules/admin";
 import { uploadFileApi } from "@/api/file";
 import * as imageConversion from "image-conversion";
 import { UserInfo } from "@/api/types";
-import { updateUserInfoApi } from "@/api/account";
+import { getUserInfoApi, updateUserInfoApi } from "@/api/account";
 
 // 获取缓存信息
 const store = useAdminStoreHook();
 
 const activeName = ref("info");
-const infoForm = ref<UserInfo>(store.getUserInfo());
+const infoForm = ref<UserInfo>();
 const passwordForm = ref({
   oldPassword: "",
   newPassword: "",
@@ -157,9 +157,11 @@ function afterUpload(response: any) {
   infoForm.value.avatar = response.data.file_url;
 }
 
-// const uploadImage = (options: UploadRequestOptions) => {
-//   return updateUserAvatarApi(options.file)
-// }
+const getUserInfo = () => {
+  getUserInfoApi().then(res => {
+    infoForm.value = res.data;
+  });
+};
 
 const updateInfo = () => {
   if (infoForm.value.nickname.trim() === "") {
@@ -171,6 +173,7 @@ const updateInfo = () => {
   updateUserInfoApi(infoForm.value).then(res => {
     ElMessage.success(res.message);
     store.updateUserInfo(res.data);
+    infoForm.value = res.data;
   });
 };
 
@@ -207,6 +210,7 @@ const updatePassword = () => {
 
 onMounted(() => {
   console.log("mounted", store);
+  getUserInfo();
 });
 </script>
 

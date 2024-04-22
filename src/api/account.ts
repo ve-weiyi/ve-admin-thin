@@ -18,7 +18,7 @@ export function findUserListApi(
   page: PageQuery
 ): Promise<IApiResponseData<PageResult<UserDTO[]>>> {
   return http.request<IApiResponseData<PageResult<UserDTO[]>>>({
-    url: `/api/v1/user/list`,
+    url: `/api/v1/user/find_user_list`,
     method: "post",
     data: page
   });
@@ -29,7 +29,7 @@ export function findOnlineUserListApi(
   page: PageQuery
 ): Promise<IApiResponseData<PageResult<UserDTO[]>>> {
   return http.request<IApiResponseData<PageResult<UserDTO[]>>>({
-    url: `/api/v1/user/online_list`,
+    url: `/api/v1/user/find_user_online_list`,
     method: "post",
     data: page
   });

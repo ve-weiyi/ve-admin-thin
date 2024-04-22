@@ -112,7 +112,7 @@ function getColumnFields(): Column[] {
             }
             <el-popconfirm
               title="确定删除吗？"
-              onConfirm={() => instance.exposed.confirmDelete(scope.row.id)}
+              onConfirm={() => instance.exposed.onDelete(scope.row)}
             >
               {{
                 reference: () => (
