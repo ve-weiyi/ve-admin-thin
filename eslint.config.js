@@ -66,7 +66,7 @@ export default defineFlatConfig([
         }
       ],
       "prettier/prettier": [
-        "error",
+        "warn",
         {
           endOfLine: "auto"
         }
