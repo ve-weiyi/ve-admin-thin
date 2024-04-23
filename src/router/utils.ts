@@ -1,33 +1,34 @@
 import {
-  type RouterHistory,
-  type RouteRecordRaw,
-  type RouteComponent,
+  createWebHashHistory,
   createWebHistory,
-  createWebHashHistory
+  type RouteComponent,
+  type RouteRecordRaw,
+  type RouterHistory
 } from "vue-router";
 import { router } from "./index";
 import { isProxy, toRaw } from "vue";
 import { useTimeoutFn } from "@vueuse/core";
 import {
-  isString,
   cloneDeep,
-  isAllEmpty,
   intersection,
-  storageLocal,
-  isIncludeAllChildren
+  isAllEmpty,
+  isIncludeAllChildren,
+  isString,
+  storageLocal
 } from "@pureadmin/utils";
 import { getConfig } from "@/config";
 import { buildHierarchyTree } from "@/utils/tree";
-import { userKey, type DataInfo } from "@/utils/auth";
+import { type DataInfo, userKey } from "@/utils/auth";
 import { type menuType, routerArrays } from "@/layout/types";
 import { useMultiTagsStoreHook } from "@/store/modules/multiTags";
 import { usePermissionStoreHook } from "@/store/modules/permission";
+// 动态路由
+import { getAsyncRoutes } from "@/api/routes";
+import { getUserMenusApi } from "@/api/mine.ts";
+
 const IFrame = () => import("@/layout/frameView.vue");
 // https://cn.vitejs.dev/guide/features.html#glob-import
 const modulesRoutes = import.meta.glob("/src/views/**/*.{vue,tsx}");
-
-// 动态路由
-import { getAsyncRoutes } from "@/api/routes";
 
 function handRank(routeInfo: any) {
   const { name, path, parentId, meta } = routeInfo;
@@ -43,7 +44,9 @@ function handRank(routeInfo: any) {
 function ascending(arr: any[]) {
   arr.forEach((v, index) => {
     // 当rank不存在时，根据顺序自动创建，首页路由永远在第一位
-    if (handRank(v)) v.meta.rank = index + 2;
+    if (handRank(v)) {
+      v.meta.rank = index + 2;
+    }
   });
   return arr.sort(
     (a: { meta: { rank: number } }, b: { meta: { rank: number } }) => {
@@ -101,13 +104,19 @@ function getParentPaths(value: string, routes: RouteRecordRaw[], key = "path") {
     for (let i = 0; i < routes.length; i++) {
       const item = routes[i];
       // 返回父级path
-      if (item[key] === value) return parents;
+      if (item[key] === value) {
+        return parents;
+      }
       // children不存在或为空则不递归
-      if (!item.children || !item.children.length) continue;
+      if (!item.children || !item.children.length) {
+        continue;
+      }
       // 往下查找时将当前path入栈
       parents.push(item.path);
 
-      if (dfs(item.children, value, parents).length) return parents;
+      if (dfs(item.children, value, parents).length) {
+        return parents;
+      }
       // 深度遍历查找未找到时当前path 出栈
       parents.pop();
     }
@@ -168,7 +177,9 @@ function handleAsyncRoutes(routeList) {
           router.options.routes[0].children.push(v);
           // 最终路由进行升序
           ascending(router.options.routes[0].children);
-          if (!router.hasRoute(v?.name)) router.addRoute(v);
+          if (!router.hasRoute(v?.name)) {
+            router.addRoute(v);
+          }
           const flattenRouters: any = router
             .getRoutes()
             .find(n => n.path === "/");
@@ -211,10 +222,15 @@ function initRouter() {
     }
   } else {
     return new Promise(resolve => {
-      getAsyncRoutes().then(({ data }) => {
-        handleAsyncRoutes(cloneDeep(data));
+      getUserMenusApi().then(res => {
+        handleAsyncRoutes(cloneDeep(res.data.list));
         resolve(router);
       });
+
+      // getAsyncRoutes().then(({ data }) => {
+      //   handleAsyncRoutes(cloneDeep(data));
+      //   resolve(router);
+      // });
     });
   }
 }
@@ -225,7 +241,9 @@ function initRouter() {
  * @returns 返回处理后的一维路由
  */
 function formatFlatteningRoutes(routesList: RouteRecordRaw[]) {
-  if (routesList.length === 0) return routesList;
+  if (routesList.length === 0) {
+    return routesList;
+  }
   let hierarchyList = buildHierarchyTree(routesList);
   for (let i = 0; i < hierarchyList.length; i++) {
     if (hierarchyList[i].children) {
@@ -244,7 +262,9 @@ function formatFlatteningRoutes(routesList: RouteRecordRaw[]) {
  * @returns 返回将一维数组重新处理成规定路由的格式
  */
 function formatTwoStageRoutes(routesList: RouteRecordRaw[]) {
-  if (routesList.length === 0) return routesList;
+  if (routesList.length === 0) {
+    return routesList;
+  }
   const newRoutesList: RouteRecordRaw[] = [];
   routesList.forEach((v: RouteRecordRaw) => {
     if (v.path === "/") {
@@ -300,17 +320,21 @@ function handleAliveRoute({ name }: ToRouteType, mode?: string) {
 
 /** 过滤后端传来的动态路由 重新生成规范路由 */
 function addAsyncRoutes(arrRoutes: Array<RouteRecordRaw>) {
-  if (!arrRoutes || !arrRoutes.length) return;
+  if (!arrRoutes || !arrRoutes.length) {
+    return;
+  }
   const modulesRoutesKeys = Object.keys(modulesRoutes);
   arrRoutes.forEach((v: RouteRecordRaw) => {
     // 将backstage属性加入meta，标识此路由为后端返回路由
     v.meta.backstage = true;
     // 父级的redirect属性取值：如果子级存在且父级的redirect属性不存在，默认取第一个子级的path；如果子级存在且父级的redirect属性存在，取存在的redirect属性，会覆盖默认值
-    if (v?.children && v.children.length && !v.redirect)
+    if (v?.children && v.children.length && !v.redirect) {
       v.redirect = v.children[0].path;
+    }
     // 父级的name属性取值：如果子级存在且父级的name属性不存在，默认取第一个子级的name；如果子级存在且父级的name属性存在，取存在的name属性，会覆盖默认值（注意：测试中发现父级的name不能和子级name重复，如果重复会造成重定向无效（跳转404），所以这里给父级的name起名的时候后面会自动加上`Parent`，避免重复）
-    if (v?.children && v.children.length && !v.name)
+    if (v?.children && v.children.length && !v.name) {
       v.name = (v.children[0].name as string) + "Parent";
+    }
     if (v.meta?.frameSrc) {
       v.component = IFrame;
     } else {
@@ -357,10 +381,14 @@ function getAuths(): Array<string> {
 
 /** 是否有按钮级别的权限 */
 function hasAuth(value: string | Array<string>): boolean {
-  if (!value) return false;
+  if (!value) {
+    return false;
+  }
   /** 从当前路由的`meta`字段里获取按钮级别的所有自定义`code`值 */
   const metaAuths = getAuths();
-  if (!metaAuths) return false;
+  if (!metaAuths) {
+    return false;
+  }
   const isAuths = isString(value)
     ? metaAuths.includes(value)
     : isIncludeAllChildren(value, metaAuths);

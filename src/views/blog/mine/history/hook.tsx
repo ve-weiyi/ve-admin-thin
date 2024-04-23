@@ -3,9 +3,9 @@ import { type Column, ElMessage } from "element-plus";
 import { type FormField, RenderType } from "@/utils/render";
 
 import {
-  deleteUserLoginHistoryByIdsApi,
+  deleteUserLoginHistoryListApi,
   findUserLoginHistoryListApi
-} from "@/api/account";
+} from "@/api/mine";
 import type { LoginHistory } from "@/api/types";
 
 const align = "center";
@@ -128,7 +128,7 @@ function handleApi(event: string, data: any) {
     case "list":
       return findUserLoginHistoryListApi(data);
     case "deleteByIds":
-      return deleteUserLoginHistoryByIdsApi(data);
+      return deleteUserLoginHistoryListApi(data);
     default:
       ElMessage.error("未知事件");
       return;

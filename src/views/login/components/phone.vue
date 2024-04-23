@@ -1,4 +1,4 @@
-<script lang="ts" setup>
+<script setup lang="ts">
 import { useI18n } from "vue-i18n";
 import { reactive, ref } from "vue";
 import Motion from "../utils/motion";
@@ -26,7 +26,9 @@ const onLogin = async (formEl: FormInstance | undefined) => {
     if (valid) {
       // 模拟登录请求，需根据实际开发进行修改
       setTimeout(() => {
-        message(transformI18n($t("login.loginSuccess")), { type: "success" });
+        message(transformI18n($t("login.pureLoginSuccess")), {
+          type: "success"
+        });
         loading.value = false;
       }, 2000);
     } else {
@@ -50,9 +52,9 @@ function onBack() {
       <el-form-item prop="phone">
         <el-input
           v-model="ruleForm.phone"
-          :placeholder="t('login.phone')"
-          :prefix-icon="useRenderIcon(Iphone)"
           clearable
+          :placeholder="t('login.purePhone')"
+          :prefix-icon="useRenderIcon(Iphone)"
         />
       </el-form-item>
     </Motion>
@@ -62,9 +64,9 @@ function onBack() {
         <div class="w-full flex justify-between">
           <el-input
             v-model="ruleForm.verifyCode"
-            :placeholder="t('login.smsVerifyCode')"
-            :prefix-icon="useRenderIcon('ri:shield-keyhole-line')"
             clearable
+            :placeholder="t('login.pureSmsVerifyCode')"
+            :prefix-icon="useRenderIcon('ri:shield-keyhole-line')"
           />
           <el-button
             :disabled="isDisabled"
@@ -73,8 +75,8 @@ function onBack() {
           >
             {{
               text.length > 0
-                ? text + t("login.info")
-                : t("login.getVerifyCode")
+                ? text + t("login.pureInfo")
+                : t("login.pureGetVerifyCode")
             }}
           </el-button>
         </div>
@@ -84,13 +86,13 @@ function onBack() {
     <Motion :delay="150">
       <el-form-item>
         <el-button
-          :loading="loading"
           class="w-full"
           size="default"
           type="primary"
+          :loading="loading"
           @click="onLogin(ruleFormRef)"
         >
-          {{ t("login.login") }}
+          {{ t("login.pureLogin") }}
         </el-button>
       </el-form-item>
     </Motion>
@@ -98,7 +100,7 @@ function onBack() {
     <Motion :delay="200">
       <el-form-item>
         <el-button class="w-full" size="default" @click="onBack">
-          {{ t("login.back") }}
+          {{ t("login.pureBack") }}
         </el-button>
       </el-form-item>
     </Motion>

@@ -218,7 +218,7 @@
 
 <script lang="tsx" setup>
 import { computed, reactive, ref } from "vue";
-import { findUserLoginHistoryListApi } from "@/api/account";
+import { findUserLoginHistoryListApi } from "@/api/mine";
 import { useRouter } from "vue-router";
 import type { Column } from "element-plus";
 import { ElMessage } from "element-plus";

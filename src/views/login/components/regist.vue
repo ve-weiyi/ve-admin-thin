@@ -1,4 +1,4 @@
-<script lang="ts" setup>
+<script setup lang="ts">
 import { useI18n } from "vue-i18n";
 import { reactive, ref } from "vue";
 import Motion from "../utils/motion";
@@ -28,9 +28,11 @@ const repeatPasswordRule = [
   {
     validator: (rule, value, callback) => {
       if (value === "") {
-        callback(new Error(transformI18n($t("login.passwordSureReg"))));
+        callback(new Error(transformI18n($t("login.purePassWordSureReg"))));
       } else if (ruleForm.password !== value) {
-        callback(new Error(transformI18n($t("login.passwordDifferentReg"))));
+        callback(
+          new Error(transformI18n($t("login.purePassWordDifferentReg")))
+        );
       } else {
         callback();
       }
@@ -47,14 +49,16 @@ const onUpdate = async (formEl: FormInstance | undefined) => {
       if (checked.value) {
         // 模拟请求，需根据实际开发进行修改
         setTimeout(() => {
-          message(transformI18n($t("login.registerSuccess")), {
+          message(transformI18n($t("login.pureRegisterSuccess")), {
             type: "success"
           });
           loading.value = false;
         }, 2000);
       } else {
         loading.value = false;
-        message(transformI18n($t("login.tickPrivacy")), { type: "warning" });
+        message(transformI18n($t("login.pureTickPrivacy")), {
+          type: "warning"
+        });
       }
     } else {
       loading.value = false;
@@ -83,7 +87,7 @@ function onBack() {
         :rules="[
           {
             required: true,
-            message: transformI18n($t('login.usernameReg')),
+            message: transformI18n($t('login.pureUsernameReg')),
             trigger: 'blur'
           }
         ]"
@@ -91,9 +95,9 @@ function onBack() {
       >
         <el-input
           v-model="ruleForm.username"
-          :placeholder="t('login.username')"
-          :prefix-icon="useRenderIcon(User)"
           clearable
+          :placeholder="t('login.pureUsername')"
+          :prefix-icon="useRenderIcon(User)"
         />
       </el-form-item>
     </Motion>
@@ -102,9 +106,9 @@ function onBack() {
       <el-form-item prop="phone">
         <el-input
           v-model="ruleForm.phone"
-          :placeholder="t('login.phone')"
-          :prefix-icon="useRenderIcon(Iphone)"
           clearable
+          :placeholder="t('login.purePhone')"
+          :prefix-icon="useRenderIcon(Iphone)"
         />
       </el-form-item>
     </Motion>
@@ -114,9 +118,9 @@ function onBack() {
         <div class="w-full flex justify-between">
           <el-input
             v-model="ruleForm.verifyCode"
-            :placeholder="t('login.smsVerifyCode')"
-            :prefix-icon="useRenderIcon('ri:shield-keyhole-line')"
             clearable
+            :placeholder="t('login.pureSmsVerifyCode')"
+            :prefix-icon="useRenderIcon('ri:shield-keyhole-line')"
           />
           <el-button
             :disabled="isDisabled"
@@ -125,8 +129,8 @@ function onBack() {
           >
             {{
               text.length > 0
-                ? text + t("login.info")
-                : t("login.getVerifyCode")
+                ? text + t("login.pureInfo")
+                : t("login.pureGetVerifyCode")
             }}
           </el-button>
         </div>
@@ -137,10 +141,10 @@ function onBack() {
       <el-form-item prop="password">
         <el-input
           v-model="ruleForm.password"
-          :placeholder="t('login.password')"
-          :prefix-icon="useRenderIcon(Lock)"
           clearable
           show-password
+          :placeholder="t('login.purePassword')"
+          :prefix-icon="useRenderIcon(Lock)"
         />
       </el-form-item>
     </Motion>
@@ -149,10 +153,10 @@ function onBack() {
       <el-form-item :rules="repeatPasswordRule" prop="repeatPassword">
         <el-input
           v-model="ruleForm.repeatPassword"
-          :placeholder="t('login.sure')"
-          :prefix-icon="useRenderIcon(Lock)"
           clearable
           show-password
+          :placeholder="t('login.pureSure')"
+          :prefix-icon="useRenderIcon(Lock)"
         />
       </el-form-item>
     </Motion>
@@ -160,10 +164,10 @@ function onBack() {
     <Motion :delay="300">
       <el-form-item>
         <el-checkbox v-model="checked">
-          {{ t("login.readAccept") }}
+          {{ t("login.pureReadAccept") }}
         </el-checkbox>
         <el-button link type="primary">
-          {{ t("login.privacyPolicy") }}
+          {{ t("login.purePrivacyPolicy") }}
         </el-button>
       </el-form-item>
     </Motion>
@@ -171,13 +175,13 @@ function onBack() {
     <Motion :delay="350">
       <el-form-item>
         <el-button
-          :loading="loading"
           class="w-full"
           size="default"
           type="primary"
+          :loading="loading"
           @click="onUpdate(ruleFormRef)"
         >
-          {{ t("login.definite") }}
+          {{ t("login.pureDefinite") }}
         </el-button>
       </el-form-item>
     </Motion>
@@ -185,7 +189,7 @@ function onBack() {
     <Motion :delay="400">
       <el-form-item>
         <el-button class="w-full" size="default" @click="onBack">
-          {{ t("login.back") }}
+          {{ t("login.pureBack") }}
         </el-button>
       </el-form-item>
     </Motion>

@@ -1,22 +1,25 @@
-<script lang="ts" setup>
-import { onBeforeUnmount, onMounted, reactive, ref, toRaw } from "vue";
+<script setup lang="ts">
 import { useI18n } from "vue-i18n";
 import Motion from "./utils/motion";
 import { useRouter } from "vue-router";
 import { message } from "@/utils/message";
 import { loginRules } from "./utils/rule";
 import phone from "./components/phone.vue";
+import TypeIt from "@/components/ReTypeit";
+import { debounce } from "@pureadmin/utils";
 import qrCode from "./components/qrCode.vue";
 import regist from "./components/regist.vue";
 import update from "./components/update.vue";
 import { useNav } from "@/layout/hooks/useNav";
+import { useEventListener } from "@vueuse/core";
 import type { FormInstance } from "element-plus";
 import { $t, transformI18n } from "@/plugins/i18n";
 import { operates, thirdParty } from "./utils/enums";
 import { useLayout } from "@/layout/hooks/useLayout";
+import { initRouter } from "@/router/utils";
 import { avatar, bg, illustration } from "./utils/static";
-import TypeIt from "@/components/ReTypeit";
 import { ReImageVerify } from "@/components/ReImageVerify";
+import { reactive, ref, toRaw } from "vue";
 import { useRenderIcon } from "@/components/ReIcon/src/hooks";
 import { useTranslationLang } from "@/layout/hooks/useTranslationLang";
 import { useDataThemeChange } from "@/layout/hooks/useDataThemeChange";
@@ -27,26 +30,28 @@ import globalization from "@/assets/svg/globalization.svg?component";
 import Lock from "@iconify-icons/ri/lock-fill";
 import Check from "@iconify-icons/ep/check";
 import User from "@iconify-icons/ri/user-3-fill";
+import Info from "@iconify-icons/ri/information-line";
 import { loginApi } from "@/api/auth";
-import { useAdminStoreHook } from "@/store/modules/admin";
-import { initRouter } from "@/router/utils.ts";
+import { useAdminStoreHook } from "@/store/modules/admin.ts";
 
 defineOptions({
   name: "Login"
 });
 
 const imgCode = ref("");
+const loginDay = ref(7);
 const router = useRouter();
 const loading = ref(false);
 const checked = ref(false);
+const disabled = ref(false);
 const ruleFormRef = ref<FormInstance>();
 const currentPage = ref(0);
 
 const { t } = useI18n();
 const { initStorage } = useLayout();
 initStorage();
-const { dataTheme, dataThemeChange } = useDataThemeChange();
-dataThemeChange();
+const { dataTheme, overallStyle, dataThemeChange } = useDataThemeChange();
+dataThemeChange(overallStyle.value);
 const { title, getDropdownItemStyle, getDropdownItemClass } = useNav();
 const { locale, translationCh, translationEn } = useTranslationLang();
 
@@ -57,12 +62,10 @@ const ruleForm = reactive({
 });
 
 const onLogin = async (formEl: FormInstance | undefined) => {
-  loading.value = true;
-  if (!formEl) {
-    return;
-  }
+  if (!formEl) return;
   await formEl.validate((valid, fields) => {
     if (valid) {
+      loading.value = true;
       loginApi(ruleForm)
         .then(res => {
           loading.value = false;
@@ -72,35 +75,29 @@ const onLogin = async (formEl: FormInstance | undefined) => {
           useAdminStoreHook().login(res.data);
           // 获取后端路由
           initRouter().then(() => {
-            message("登录成功", { type: "success" });
             // 跳转到首页
             router.push({ path: "/welcome" });
           });
         })
         .catch(err => {
-          loading.value = false;
           message(err.message, { type: "error" });
-        });
+        })
+        .finally(() => (loading.value = false));
     } else {
-      loading.value = false;
       return fields;
     }
   });
 };
 
-/** 使用公共函数，避免`removeEventListener`失效 */
-function onkeypress({ code }: KeyboardEvent) {
-  if (code === "Enter") {
-    onLogin(ruleFormRef.value);
-  }
-}
+const immediateDebounce: any = debounce(
+  formRef => onLogin(formRef),
+  1000,
+  true
+);
 
-onMounted(() => {
-  window.document.addEventListener("keypress", onkeypress);
-});
-
-onBeforeUnmount(() => {
-  window.document.removeEventListener("keypress", onkeypress);
+useEventListener(document, "keypress", ({ code }) => {
+  if (code === "Enter" && !disabled.value && !loading.value)
+    immediateDebounce(ruleFormRef.value);
 });
 </script>
 
@@ -111,9 +108,9 @@ onBeforeUnmount(() => {
       <!-- 主题 -->
       <el-switch
         v-model="dataTheme"
+        inline-prompt
         :active-icon="dayIcon"
         :inactive-icon="darkIcon"
-        inline-prompt
         @change="dataThemeChange"
       />
       <!-- 国际化 -->
@@ -124,20 +121,20 @@ onBeforeUnmount(() => {
         <template #dropdown>
           <el-dropdown-menu class="translation">
             <el-dropdown-item
-              :class="['dark:!text-white', getDropdownItemClass(locale, 'zh')]"
               :style="getDropdownItemStyle(locale, 'zh')"
+              :class="['dark:!text-white', getDropdownItemClass(locale, 'zh')]"
               @click="translationCh"
             >
               <IconifyIconOffline
                 v-show="locale === 'zh'"
-                :icon="Check"
                 class="check-zh"
+                :icon="Check"
               />
               简体中文
             </el-dropdown-item>
             <el-dropdown-item
-              :class="['dark:!text-white', getDropdownItemClass(locale, 'en')]"
               :style="getDropdownItemStyle(locale, 'en')"
+              :class="['dark:!text-white', getDropdownItemClass(locale, 'en')]"
               @click="translationEn"
             >
               <span v-show="locale === 'en'" class="check-en">
@@ -174,7 +171,7 @@ onBeforeUnmount(() => {
                 :rules="[
                   {
                     required: true,
-                    message: transformI18n($t('login.usernameReg')),
+                    message: transformI18n($t('login.pureUsernameReg')),
                     trigger: 'blur'
                   }
                 ]"
@@ -182,9 +179,9 @@ onBeforeUnmount(() => {
               >
                 <el-input
                   v-model="ruleForm.username"
-                  :placeholder="t('login.username')"
-                  :prefix-icon="useRenderIcon(User)"
                   clearable
+                  :placeholder="t('login.pureUsername')"
+                  :prefix-icon="useRenderIcon(User)"
                 />
               </el-form-item>
             </Motion>
@@ -193,10 +190,10 @@ onBeforeUnmount(() => {
               <el-form-item prop="password">
                 <el-input
                   v-model="ruleForm.password"
-                  :placeholder="t('login.password')"
-                  :prefix-icon="useRenderIcon(Lock)"
                   clearable
                   show-password
+                  :placeholder="t('login.purePassword')"
+                  :prefix-icon="useRenderIcon(Lock)"
                 />
               </el-form-item>
             </Motion>
@@ -205,9 +202,9 @@ onBeforeUnmount(() => {
               <el-form-item prop="verifyCode">
                 <el-input
                   v-model="ruleForm.verifyCode"
-                  :placeholder="t('login.verifyCode')"
-                  :prefix-icon="useRenderIcon('ri:shield-keyhole-line')"
                   clearable
+                  :placeholder="t('login.pureVerifyCode')"
+                  :prefix-icon="useRenderIcon('ri:shield-keyhole-line')"
                 >
                   <template v-slot:append>
                     <ReImageVerify v-model:code="imgCode" />
@@ -220,20 +217,44 @@ onBeforeUnmount(() => {
               <el-form-item>
                 <div class="w-full h-[20px] flex justify-between items-center">
                   <el-checkbox v-model="checked">
-                    {{ t("login.remember") }}
+                    <span class="flex">
+                      <select
+                        v-model="loginDay"
+                        :style="{
+                          width: loginDay < 10 ? '10px' : '16px',
+                          outline: 'none',
+                          background: 'none',
+                          appearance: 'none'
+                        }"
+                      >
+                        <option value="1">1</option>
+                        <option value="7">7</option>
+                        <option value="30">30</option>
+                      </select>
+                      {{ t("login.pureRemember") }}
+                      <IconifyIconOffline
+                        v-tippy="{
+                          content: t('login.pureRememberInfo'),
+                          placement: 'top'
+                        }"
+                        :icon="Info"
+                        class="ml-1"
+                      />
+                    </span>
                   </el-checkbox>
                   <el-button link type="primary" @click="currentPage = 4">
-                    {{ t("login.forget") }}
+                    {{ t("login.pureForget") }}
                   </el-button>
                 </div>
                 <el-button
-                  :loading="loading"
                   class="w-full mt-4"
                   size="default"
                   type="primary"
+                  :loading="loading"
+                  :disabled="disabled"
                   @click="onLogin(ruleFormRef)"
                 >
-                  {{ t("login.login") }}
+                  {{ t("login.pureLogin") }}
                 </el-button>
               </el-form-item>
             </Motion>
@@ -258,7 +279,9 @@ onBeforeUnmount(() => {
           <Motion v-if="currentPage === 0" :delay="350">
             <el-form-item>
               <el-divider>
-                <p class="text-gray-500 text-xs">{{ t("login.thirdLogin") }}</p>
+                <p class="text-gray-500 text-xs">
+                  {{ t("login.pureThirdLogin") }}
+                </p>
               </el-divider>
               <div class="w-full flex justify-evenly">
                 <span
@@ -268,8 +291,8 @@ onBeforeUnmount(() => {
                 >
                   <IconifyIconOnline
                     :icon="`ri:${item.icon}-fill`"
-                    class="cursor-pointer text-gray-500 hover:text-blue-400"
                     width="20"
+                    class="cursor-pointer text-gray-500 hover:text-blue-400"
                   />
                 </span>
               </div>
@@ -285,6 +308,18 @@ onBeforeUnmount(() => {
           <update v-if="currentPage === 4" @onBack="() => (currentPage = 0)" />
         </div>
       </div>
+    </div>
+    <div
+      class="w-full flex-c absolute bottom-3 text-sm text-[rgba(0,0,0,0.6)] dark:text-[rgba(220,220,242,0.8)]"
+    >
+      Copyright © 2020-present
+      <a
+        class="hover:text-primary"
+        href="https://github.com/pure-admin"
+        target="_blank"
+      >
+        &nbsp;{{ title }}
+      </a>
     </div>
   </div>
 </template>
