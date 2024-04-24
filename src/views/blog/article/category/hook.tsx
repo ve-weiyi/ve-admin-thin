@@ -1,13 +1,12 @@
 import { getCurrentInstance } from "vue";
 import type { Column } from "element-plus";
 import { type FormField, RenderType } from "@/utils/render";
-import { Timer } from "@element-plus/icons-vue";
 
 import {
   createCategoryApi,
   deleteCategoryApi,
-  deleteCategoryByIdsApi,
-  findCategoryDetailsListApi,
+  deleteCategoryListApi,
+  findCategoryListApi,
   updateCategoryApi
 } from "@/api/category";
 import type { Category } from "@/api/types";
@@ -57,10 +56,9 @@ function getColumnFields(): Column[] {
       cellRenderer: (scope: any) => {
         return (
           <div>
-            <el-icon class="table-icon">
-              <Timer />
-            </el-icon>
-            <span>{new Date(scope.row.created_at).toLocaleString()}</span>
+            <span>
+              {new Date(scope.row.created_at * 1000).toLocaleString()}
+            </span>
           </div>
         );
       }
@@ -137,9 +135,9 @@ function handleApi(event: string, data: any) {
     case "delete":
       return deleteCategoryApi(data);
     case "deleteByIds":
-      return deleteCategoryByIdsApi(data);
+      return deleteCategoryListApi(data);
     case "list":
-      return findCategoryDetailsListApi(data);
+      return findCategoryListApi(data);
     default:
       return;
   }

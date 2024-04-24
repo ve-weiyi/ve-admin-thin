@@ -254,10 +254,10 @@ function resetForm(row: any) {
 
 // 提交表单
 function submitForm(row: any) {
-  console.log("submitForm", formRef.value);
+  console.log("submitForm", row.id, formRef.value);
   formRef.value?.validate((valid: boolean, fields: any) => {
     if (valid) {
-      if (row.id === 0) {
+      if (row.id === undefined || row.id === 0) {
         onCreate(row);
       } else {
         onUpdate(row);
@@ -266,14 +266,6 @@ function submitForm(row: any) {
       console.error("表单校验不通过", fields);
     }
   });
-
-  if (!formRef.value) {
-    if (row.id === 0) {
-      onCreate(row);
-    } else {
-      onUpdate(row);
-    }
-  }
 }
 
 /** ******** end 新增、修改 **********/
@@ -317,7 +309,7 @@ const handleStatusCheck = (value: string | number) => {
 
 function onCreate(row: any) {
   console.log("onCreate", row);
-  props.handleApi(row, "create").then(res => {
+  props.handleApi("create", row).then(res => {
     ElMessage.success("创建成功");
     closeForm();
     refreshList();
@@ -343,7 +335,7 @@ function onDelete(row: any) {
 
 function onDeleteByIds(ids: number[]) {
   console.log("onDeleteByIds", ids);
-  props.handleApi("deleteByIds", ids).then(res => {
+  props.handleApi("deleteByIds", { ids: ids }).then(res => {
     ElMessage.success("批量删除成功");
     refreshList();
   });
@@ -405,10 +397,8 @@ function refreshList() {
   // }
 
   const page = {
-    limit: {
-      page: paginationData.currentPage,
-      page_size: paginationData.pageSize
-    },
+    page: paginationData.currentPage,
+    page_size: paginationData.pageSize,
     sorts: sorts,
     conditions: conditions
   };

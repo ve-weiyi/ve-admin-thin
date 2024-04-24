@@ -175,7 +175,9 @@ function getColumnFields(): Column[] {
             <el-icon class="table-icon">
               <Timer />
             </el-icon>
-            <span>{new Date(scope.row.created_at).toLocaleDateString()}</span>
+            <span>
+              {new Date(scope.row.created_at * 1000).toLocaleDateString()}
+            </span>
           </div>
         );
       }

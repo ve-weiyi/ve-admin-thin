@@ -1,14 +1,14 @@
 import { defineStore } from "pinia";
 import {
-  type cacheType,
-  store,
-  debounce,
   ascending,
-  getKeyList,
-  filterTree,
+  type cacheType,
   constantMenus,
+  debounce,
   filterNoPermissionTree,
-  formatFlatteningRoutes
+  filterTree,
+  formatFlatteningRoutes,
+  getKeyList,
+  store
 } from "../utils";
 import { useMultiTagsStoreHook } from "./multiTags";
 
@@ -33,6 +33,9 @@ export const usePermissionStore = defineStore({
       this.flatteningRoutes = formatFlatteningRoutes(
         this.constantMenus.concat(routes)
       );
+
+      console.log("this.wholeMenus", this.wholeMenus);
+      console.log("this.flatteningRoutes", this.flatteningRoutes);
     },
     cacheOperate({ mode, name }: cacheType) {
       const delIndex = this.cachePageList.findIndex(v => v === name);

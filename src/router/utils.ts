@@ -24,7 +24,6 @@ import { useMultiTagsStoreHook } from "@/store/modules/multiTags";
 import { usePermissionStoreHook } from "@/store/modules/permission";
 // 动态路由
 import { getAsyncRoutes } from "@/api/routes";
-import { getUserMenusApi } from "@/api/mine.ts";
 
 const IFrame = () => import("@/layout/frameView.vue");
 // https://cn.vitejs.dev/guide/features.html#glob-import
@@ -222,15 +221,15 @@ function initRouter() {
     }
   } else {
     return new Promise(resolve => {
-      getUserMenusApi().then(res => {
-        handleAsyncRoutes(cloneDeep(res.data.list));
-        resolve(router);
-      });
-
-      // getAsyncRoutes().then(({ data }) => {
-      //   handleAsyncRoutes(cloneDeep(data));
+      // getUserMenusApi().then(res => {
+      //   handleAsyncRoutes(cloneDeep(res.data.list));
       //   resolve(router);
       // });
+
+      getAsyncRoutes().then(({ data }) => {
+        handleAsyncRoutes(cloneDeep(data));
+        resolve(router);
+      });
     });
   }
 }

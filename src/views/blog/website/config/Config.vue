@@ -271,7 +271,7 @@
 <script lang="ts" setup>
 import { onMounted, ref } from "vue";
 import { ElMessage } from "element-plus";
-import { getConfigApi, updateConfigApi } from "@/api/website";
+import { getWebsiteConfigApi, updateConfigApi } from "@/api/website";
 
 const websiteConfigForm = ref({
   website_avatar: "",
@@ -306,9 +306,7 @@ onMounted(() => {
 });
 
 function getWebsiteConfig() {
-  getConfigApi({
-    key: "website_config"
-  }).then(res => {
+  getWebsiteConfigApi().then(res => {
     console.log("res", res);
     websiteConfigForm.value = JSON.parse(res.data);
   });

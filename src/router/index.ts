@@ -30,7 +30,7 @@ import { useAdminStoreHook } from "@/store/modules/admin";
  * 如何排除文件请看：https://cn.vitejs.dev/guide/features.html#negative-patterns
  */
 const modules: Record<string, any> = import.meta.glob(
-  ["./modules/**/*.ts", "!./modules/**/remaining.ts"],
+  ["./blog/**/*.ts", "./modules/**/*.ts", "!./modules/**/remaining.ts"],
   {
     eager: true
   }
@@ -112,17 +112,23 @@ router.beforeEach((to: ToRouteType, _from, next) => {
   const externalLink = isUrl(to?.name as string);
   if (!externalLink) {
     to.matched.some(item => {
-      if (!item.meta.title) return "";
+      if (!item.meta.title) {
+        return "";
+      }
       const Title = getConfig().Title;
-      if (Title)
+      if (Title) {
         document.title = `${transformI18n(item.meta.title)} | ${Title}`;
-      else document.title = transformI18n(item.meta.title);
+      } else {
+        document.title = transformI18n(item.meta.title);
+      }
     });
   }
+
   /** 如果已经登录并存在登录信息后不能跳转到路由白名单，而是继续保持在当前页面 */
   function toCorrectRoute() {
     whiteList.includes(to.fullPath) ? next(_from.fullPath) : next();
   }
+
   if (userInfo) {
     // 无权限跳转403页面
     // if (
@@ -181,7 +187,9 @@ router.beforeEach((to: ToRouteType, _from, next) => {
             }
           }
           // 确保动态路由完全加入路由列表并且不影响静态路由（注意：动态路由刷新时router.beforeEach可能会触发两次，第一次触发动态路由还未完全添加，第二次动态路由才完全添加到路由列表，如果需要在router.beforeEach做一些判断可以在to.name存在的条件下去判断，这样就只会触发一次）
-          if (isAllEmpty(to.name)) router.push(to.fullPath);
+          if (isAllEmpty(to.name)) {
+            router.push(to.fullPath);
+          }
         });
       }
       toCorrectRoute();

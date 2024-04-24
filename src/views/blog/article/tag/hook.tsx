@@ -1,13 +1,12 @@
 import { getCurrentInstance } from "vue";
 import type { Column } from "element-plus";
 import { type FormField, RenderType } from "@/utils/render";
-import { Timer } from "@element-plus/icons-vue";
 
 import {
   createTagApi,
   deleteTagApi,
-  deleteTagByIdsApi,
-  findTagDetailsListApi,
+  deleteTagListApi,
+  findTagListApi,
   updateTagApi
 } from "@/api/tag";
 import type { Tag } from "@/api/types";
@@ -64,10 +63,9 @@ function getColumnFields(): Column[] {
       cellRenderer: (scope: any) => {
         return (
           <div>
-            <el-icon class="table-icon">
-              <Timer />
-            </el-icon>
-            <span>{new Date(scope.row.created_at).toLocaleString()}</span>
+            <span>
+              {new Date(scope.row.created_at * 1000).toLocaleString()}
+            </span>
           </div>
         );
       }
@@ -144,9 +142,9 @@ function handleApi(event: string, data: any) {
     case "delete":
       return deleteTagApi(data);
     case "deleteByIds":
-      return deleteTagByIdsApi(data);
+      return deleteTagListApi(data);
     case "list":
-      return findTagDetailsListApi(data);
+      return findTagListApi(data);
     default:
       return;
   }

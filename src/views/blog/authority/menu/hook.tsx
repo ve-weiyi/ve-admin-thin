@@ -177,7 +177,9 @@ function getColumnFields(): Column[] {
       cellRenderer: (scope: any) => {
         return (
           <div>
-            <span>{new Date(scope.row.created_at).toLocaleString()}</span>
+            <span>
+              {new Date(scope.row.created_at * 1000).toLocaleString()}
+            </span>
           </div>
         );
       }
