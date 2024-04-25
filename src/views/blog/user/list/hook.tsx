@@ -183,8 +183,8 @@ function getSearchFields(): FormField[] {
   return [
     {
       type: RenderType.Input,
-      label: "系统模块",
-      field: "opt_module",
+      label: "用户昵称",
+      field: "nickname",
 
       searchRules: {
         flag: "and",
@@ -195,7 +195,7 @@ function getSearchFields(): FormField[] {
 }
 
 let roleOptions = [];
-findRoleListApi({}).then(res => {
+findRoleListApi().then(res => {
   res.data.list.forEach(item => {
     roleOptions.push({ label: item.role_comment, value: item.id });
   });

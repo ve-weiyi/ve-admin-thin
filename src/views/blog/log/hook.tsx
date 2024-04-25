@@ -9,7 +9,7 @@ import JsonViewer from "vue-json-viewer";
 import {
   createOperationLogApi,
   deleteOperationLogApi,
-  deleteOperationLogByIdsApi,
+  deleteOperationLogListApi,
   findOperationLogListApi,
   updateOperationLogApi
 } from "@/api/operation_log";
@@ -316,7 +316,7 @@ function handleApi(event: string, data: any) {
     case "delete":
       return deleteOperationLogApi(data);
     case "deleteByIds":
-      return deleteOperationLogByIdsApi(data);
+      return deleteOperationLogListApi(data);
     case "list":
       return findOperationLogListApi(data);
     default:

@@ -348,8 +348,8 @@ function refreshList() {
 
   // console.log("refreshList", orderData, searchData)
 
-  const conditions = [];
-  const sorts = [];
+  const conditions: Condition[] = [];
+  const sorts: Sort[] = [];
 
   const statusData =
     props.statusList.find(v => v.value === status.value)?.condition || {};
@@ -357,10 +357,10 @@ function refreshList() {
   for (const key in statusData) {
     const value = statusData[key];
     conditions.push({
-      flag: "and",
       field: key,
-      value: value,
-      rule: "="
+      value: value instanceof String ? value : JSON.stringify(value),
+      logic: "and",
+      operator: "="
     });
   }
 
@@ -369,10 +369,10 @@ function refreshList() {
     const item = searchFields.value.find(v => v.field === key);
     const value = searchData[key];
     conditions.push({
-      flag: item?.searchRules.flag || "and",
       field: key,
-      value: value,
-      rule: item?.searchRules.rule || "="
+      value: value instanceof String ? value : JSON.stringify(value),
+      logic: item?.searchRules.flag || "and",
+      operator: item?.searchRules.rule || "="
     });
   }
 
@@ -396,7 +396,7 @@ function refreshList() {
   //   }
   // }
 
-  const page = {
+  const page: PageQuery = {
     page: paginationData.currentPage,
     page_size: paginationData.pageSize,
     sorts: sorts,

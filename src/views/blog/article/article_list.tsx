@@ -73,7 +73,7 @@ function getColumnFields(): Column[] {
       cellRenderer: (scope: any) => {
         return (
           <div>
-            {scope.row.tag_name_list.map((item: any) => {
+            {scope.row.tag_name_list?.map((item: any) => {
               return <el-tag class="table-tag">{item}</el-tag>;
             })}
           </div>

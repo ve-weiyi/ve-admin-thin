@@ -6,7 +6,7 @@ import { Timer } from "@element-plus/icons-vue";
 import {
   createFriendLinkApi,
   deleteFriendLinkApi,
-  deleteFriendLinkByIdsApi,
+  deleteFriendLinkListApi,
   findFriendLinkListApi,
   updateFriendLinkApi
 } from "@/api/friend_link";
@@ -182,7 +182,7 @@ function handleApi(event: string, data: any) {
     case "delete":
       return deleteFriendLinkApi(data);
     case "deleteByIds":
-      return deleteFriendLinkByIdsApi(data);
+      return deleteFriendLinkListApi(data);
     case "list":
       return findFriendLinkListApi(data);
     default:

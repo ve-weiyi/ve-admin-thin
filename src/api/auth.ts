@@ -1,5 +1,6 @@
 import http from "@/utils/request";
 import type {
+  EmptyReq,
   EmptyResp,
   LoginReq,
   LoginResp,
@@ -21,18 +22,24 @@ export function loginApi(
 }
 
 /** "登出" */
-export function logoutApi(): Promise<IApiResponseData<EmptyResp>> {
+export function logoutApi(
+  data?: EmptyReq
+): Promise<IApiResponseData<EmptyResp>> {
   return http.request<IApiResponseData<EmptyResp>>({
     url: `/api/v1/logout`,
-    method: "post"
+    method: "post",
+    data: data
   });
 }
 
 /** "注销" */
-export function logoffApi(): Promise<IApiResponseData<EmptyResp>> {
+export function logoffApi(
+  data?: EmptyReq
+): Promise<IApiResponseData<EmptyResp>> {
   return http.request<IApiResponseData<EmptyResp>>({
     url: `/api/v1/logoff`,
-    method: "post"
+    method: "post",
+    data: data
   });
 }
 

@@ -6,7 +6,7 @@ import { Timer } from "@element-plus/icons-vue";
 import {
   createRemarkApi,
   deleteRemarkApi,
-  deleteRemarkByIdsApi,
+  deleteRemarkListApi,
   findRemarkListApi,
   updateRemarkApi
 } from "@/api/remark";
@@ -180,7 +180,7 @@ function handleApi(event: string, data: any) {
     case "delete":
       return deleteRemarkApi(data);
     case "deleteByIds":
-      return deleteRemarkByIdsApi(data);
+      return deleteRemarkListApi(data);
     case "list":
       return findRemarkListApi(data);
     default:

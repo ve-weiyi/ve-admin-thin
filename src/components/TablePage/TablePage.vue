@@ -528,10 +528,10 @@ function refreshList() {
     const item = searchFields.value.find(v => v.field === key);
     const value = searchData.value[key];
     conditions.push({
-      flag: item?.searchRules.flag || "and",
+      logic: item?.searchRules.flag || "and",
       field: key,
       value: value,
-      rule: item?.searchRules.rule || "="
+      operator: item?.searchRules.rule || "="
     });
   }
 
@@ -545,10 +545,10 @@ function refreshList() {
   for (const key in statusData.value) {
     const value = statusData.value[key];
     conditions.push({
-      flag: "and",
+      logic: "and",
       field: key,
       value: value,
-      rule: "="
+      operator: "="
     });
   }
 

@@ -14,12 +14,12 @@ import {
 import {
   createTalkApi,
   deleteTalkApi,
-  deleteTalkByIdsApi,
-  findTalkDetailsListApi,
+  deleteTalkListApi,
+  findTalkListApi,
   updateTalkApi
 } from "@/api/talk";
 
-import type { TalkDetailsDTO } from "@/api/types";
+import type { TalkDetails } from "@/api/types";
 
 const align = "center";
 
@@ -47,9 +47,9 @@ function handleApi(event: string, data: any) {
     case "delete":
       return deleteTalkApi(data);
     case "deleteByIds":
-      return deleteTalkByIdsApi(data);
+      return deleteTalkListApi(data);
     case "list":
-      return findTalkDetailsListApi(data);
+      return findTalkListApi(data);
     default:
       return;
   }
@@ -64,7 +64,7 @@ export function useTableHook() {
 
   // 表格数据定义
   const tableRef = ref<TableInstance | null>(null);
-  const tableData = ref<TalkDetailsDTO[]>([]);
+  const tableData = ref<TalkDetails[]>([]);
   const pagination = reactive<Pagination>({ ...defaultPaginationData });
   const selectionIds = reactive<number[]>([]);
 
@@ -76,12 +76,11 @@ export function useTableHook() {
   // 排序条件,{k:v}
   const orderData = ref<any>({});
   // 条件查询 (key,value)
-  // eslint-disable-next-line no-undef
+
   const conditions = reactive<Condition[]>([]);
-  // eslint-disable-next-line no-undef
+
   const sorts = reactive<Sort[]>([]);
 
-  // eslint-disable-next-line no-undef
   function onFindList(page: PageQuery) {
     console.log("onFindList", page);
     handleApi("list", page).then(res => {
@@ -157,10 +156,10 @@ export function useTableHook() {
         continue;
       }
       conditions.push({
-        flag: item?.searchRules.flag || "and",
+        logic: item?.searchRules.flag || "and",
         field: key,
         value: value,
-        rule: item?.searchRules.rule || "="
+        operator: item?.searchRules.rule || "="
       });
     }
 

@@ -1,13 +1,12 @@
 import { getCurrentInstance } from "vue";
 import { type Column, ElTag } from "element-plus";
 import { type FormField, RenderType } from "@/utils/render";
-import { Timer } from "@element-plus/icons-vue";
 
 import {
   createCommentApi,
   deleteCommentApi,
-  deleteCommentByIdsApi,
-  findCommentBackListApi,
+  deleteCommentListApi,
+  findCommentListApi,
   updateCommentApi
 } from "@/api/comment";
 import type { Comment } from "@/api/types";
@@ -57,29 +56,22 @@ function getColumnFields(): Column[] {
       cellRenderer: (scope: any) => {
         return (
           <div>
-            <img src={scope.row.avatar} width="40" height="40" />
+            <img src={scope.row.user_avatar} width="40" height="40" />
           </div>
         );
       }
     },
     {
-      key: "nickname",
+      key: "user_nickname",
       title: "评论人",
-      dataKey: "nickname",
+      dataKey: "user_nickname",
       width: 120,
       align: align
     },
     {
-      key: "reply_nickname",
-      title: "回复人",
-      dataKey: "reply_nickname",
-      width: 120,
-      align: align
-    },
-    {
-      key: "article_title",
+      key: "topic_title",
       title: "文章标题",
-      dataKey: "article_title",
+      dataKey: "topic_title",
       width: 160,
       align: align
     },
@@ -144,9 +136,6 @@ function getColumnFields(): Column[] {
       cellRenderer: (scope: any) => {
         return (
           <div>
-            <el-icon class="table-icon">
-              <Timer />
-            </el-icon>
             <span>
               {new Date(scope.row.created_at * 1000).toLocaleString()}
             </span>
@@ -230,9 +219,9 @@ function handleApi(event: string, data: any) {
     case "delete":
       return deleteCommentApi(data);
     case "deleteByIds":
-      return deleteCommentByIdsApi(data);
+      return deleteCommentListApi(data);
     case "list":
-      return findCommentBackListApi(data);
+      return findCommentListApi(data);
     default:
       return;
   }

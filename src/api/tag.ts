@@ -4,8 +4,8 @@ import type {
   IdReq,
   IdsReq,
   PageQuery,
-  Tag,
-  TagDetailsDTO
+  PageResp,
+  Tag
 } from "./types";
 
 /** "创建标签" */
@@ -60,20 +60,9 @@ export function findTagApi(data?: IdReq): Promise<IApiResponseData<Tag>> {
 /** "分页获取标签列表" */
 export function findTagListApi(
   data?: PageQuery
-): Promise<IApiResponseData<Tag[]>> {
-  return http.request<IApiResponseData<Tag[]>>({
+): Promise<IApiResponseData<PageResp>> {
+  return http.request<IApiResponseData<PageResp>>({
     url: `/api/v1/tag/find_tag_list`,
-    method: "post",
-    data: data
-  });
-}
-
-/** "分页获取文章分类详情列表" */
-export function findTagDetailsListApi(
-  data?: PageQuery
-): Promise<IApiResponseData<TagDetailsDTO[]>> {
-  return http.request<IApiResponseData<TagDetailsDTO[]>>({
-    url: `/api/v1/tag/find_tag_details_list`,
     method: "post",
     data: data
   });

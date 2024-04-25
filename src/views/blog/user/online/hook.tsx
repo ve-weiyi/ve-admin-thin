@@ -173,8 +173,8 @@ function getSearchFields(): FormField[] {
   return [
     {
       type: RenderType.Input,
-      label: "系统模块",
-      field: "opt_module",
+      label: "用户昵称",
+      field: "nickname",
 
       searchRules: {
         flag: "and",

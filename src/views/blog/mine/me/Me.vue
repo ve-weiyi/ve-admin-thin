@@ -197,7 +197,7 @@ const updatePassword = () => {
   axios
     .put("/api/admin/users/password", passwordForm.value)
     .then(({ data }) => {
-      if (data.flag) {
+      if (data.logic) {
         passwordForm.value.oldPassword = "";
         passwordForm.value.newPassword = "";
         passwordForm.value.confirmPassword = "";

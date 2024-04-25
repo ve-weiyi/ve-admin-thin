@@ -206,7 +206,7 @@ const handleCommand = command => {
 
 const deletePage = () => {
   axios.delete("/api/admin/pages/" + pageForum.id).then(({ data }) => {
-    if (data.flag) {
+    if (data.logic) {
       ElNotification.success({
         title: "成功",
         message: data.message

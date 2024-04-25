@@ -1,38 +1,59 @@
 import http from "@/utils/request";
 import type {
-  Article,
-  ArticleBack,
-  ArticleConditionDTO,
-  ArticleConditionReq,
+  ArticleClassifyCategoryReq,
+  ArticleClassifyResp,
+  ArticleClassifyTagReq,
   ArticleDeleteReq,
-  ArticleDetailsDTOReq,
-  ArticleHome,
-  ArticlePageDetailsDTO,
-  ArticlePreviewDTO,
+  ArticleDetailsReq,
+  ArticleDetailsResp,
+  ArticleRecommendResp,
   ArticleTopReq,
   EmptyResp,
   IdReq,
-  PageQuery
+  PageQuery,
+  PageResp
 } from "./types";
 
 /** "保存文章" */
 export function saveArticleApi(
-  data?: ArticleDetailsDTOReq
+  data?: ArticleDetailsReq
 ): Promise<IApiResponseData<EmptyResp>> {
   return http.request<IApiResponseData<EmptyResp>>({
-    url: `/api/v1/admin/article`,
+    url: `/api/v1/admin/article/save_article`,
     method: "post",
     data: data
   });
 }
 
-/** "删除文章" */
+/** "置顶文章" */
+export function topArticleApi(
+  data?: ArticleTopReq
+): Promise<IApiResponseData<EmptyResp>> {
+  return http.request<IApiResponseData<EmptyResp>>({
+    url: `/api/v1/admin/article/top_article`,
+    method: "post",
+    data: data
+  });
+}
+
+/** "删除文章-物理删除" */
 export function deleteArticleApi(
   data?: IdReq
 ): Promise<IApiResponseData<EmptyResp>> {
   return http.request<IApiResponseData<EmptyResp>>({
-    url: `/api/v1/admin/article`,
-    method: "delete",
+    url: `/api/v1/admin/article/delete_article`,
+    method: "post",
+    data: data
+  });
+}
+
+/** "删除文章-逻辑删除" */
+export function preDeleteArticleApi(
+  data?: ArticleDeleteReq
+): Promise<IApiResponseData<EmptyResp>> {
+  return http.request<IApiResponseData<EmptyResp>>({
+    url: `/api/v1/admin/article/pre_delete_article`,
+    method: "post",
     data: data
   });
 }
@@ -40,10 +61,10 @@ export function deleteArticleApi(
 /** "查询文章" */
 export function findArticleApi(
   data?: IdReq
-): Promise<IApiResponseData<ArticleBack>> {
-  return http.request<IApiResponseData<ArticleBack>>({
-    url: `/api/v1/admin/article`,
-    method: "get",
+): Promise<IApiResponseData<ArticleDetailsResp>> {
+  return http.request<IApiResponseData<ArticleDetailsResp>>({
+    url: `/api/v1/admin/article/find_article`,
+    method: "post",
     data: data
   });
 }
@@ -51,32 +72,10 @@ export function findArticleApi(
 /** "分页获取文章列表" */
 export function findArticleListApi(
   data?: PageQuery
-): Promise<IApiResponseData<ArticleBack[]>> {
-  return http.request<IApiResponseData<ArticleBack[]>>({
-    url: `/api/v1/admin/find_article_list`,
+): Promise<IApiResponseData<PageResp>> {
+  return http.request<IApiResponseData<PageResp>>({
+    url: `/api/v1/admin/article/find_article_list`,
     method: "post",
-    data: data
-  });
-}
-
-/** "删除文章-逻辑删除" */
-export function updateArticleDeleteApi(
-  data?: ArticleDeleteReq
-): Promise<IApiResponseData<EmptyResp>> {
-  return http.request<IApiResponseData<EmptyResp>>({
-    url: `/api/v1/admin/article/delete`,
-    method: "put",
-    data: data
-  });
-}
-
-/** "更新文章" */
-export function updateArticleTopApi(
-  data?: ArticleTopReq
-): Promise<IApiResponseData<EmptyResp>> {
-  return http.request<IApiResponseData<EmptyResp>>({
-    url: `/api/v1/admin/article/top`,
-    method: "put",
     data: data
   });
 }
@@ -84,32 +83,43 @@ export function updateArticleTopApi(
 /** "文章归档(时间轴)" */
 export function findArticleArchivesApi(
   data?: PageQuery
-): Promise<IApiResponseData<ArticlePreviewDTO[]>> {
-  return http.request<IApiResponseData<ArticlePreviewDTO[]>>({
-    url: `/api/v1/article/archives`,
+): Promise<IApiResponseData<PageResp>> {
+  return http.request<IApiResponseData<PageResp>>({
+    url: `/api/v1/article/article_archives`,
     method: "post",
     data: data
   });
 }
 
 /** "通过标签或者id获取文章列表" */
-export function findArticleSeriesApi(
-  data?: ArticleConditionReq
-): Promise<IApiResponseData<ArticleConditionDTO>> {
-  return http.request<IApiResponseData<ArticleConditionDTO>>({
-    url: `/api/v1/article/series`,
+export function findArticleClassifyCategoryApi(
+  data?: ArticleClassifyCategoryReq
+): Promise<IApiResponseData<ArticleClassifyResp>> {
+  return http.request<IApiResponseData<ArticleClassifyResp>>({
+    url: `/api/v1/article/article_classify_category`,
+    method: "post",
+    data: data
+  });
+}
+
+/** "通过标签或者id获取文章列表" */
+export function findArticleClassifyTagApi(
+  data?: ArticleClassifyTagReq
+): Promise<IApiResponseData<ArticleClassifyResp>> {
+  return http.request<IApiResponseData<ArticleClassifyResp>>({
+    url: `/api/v1/article/article_classify_tag`,
     method: "post",
     data: data
   });
 }
 
 /** "文章相关推荐" */
-export function findArticleDetailsApi(
+export function findArticleRecommendApi(
   data?: IdReq
-): Promise<IApiResponseData<ArticlePageDetailsDTO>> {
-  return http.request<IApiResponseData<ArticlePageDetailsDTO>>({
-    url: `/api/v1/article/:id/details`,
-    method: "get",
+): Promise<IApiResponseData<ArticleRecommendResp>> {
+  return http.request<IApiResponseData<ArticleRecommendResp>>({
+    url: `/api/v1/article/find_article_recommend`,
+    method: "post",
     data: data
   });
 }
@@ -117,9 +127,9 @@ export function findArticleDetailsApi(
 /** "分页获取文章列表" */
 export function findArticleHomeListApi(
   data?: PageQuery
-): Promise<IApiResponseData<ArticleHome[]>> {
-  return http.request<IApiResponseData<ArticleHome[]>>({
-    url: `/api/v1/article/list`,
+): Promise<IApiResponseData<PageResp>> {
+  return http.request<IApiResponseData<PageResp>>({
+    url: `/api/v1/article/find_article_home_list`,
     method: "post",
     data: data
   });
@@ -128,10 +138,10 @@ export function findArticleHomeListApi(
 /** "点赞文章" */
 export function likeArticleApi(
   data?: IdReq
-): Promise<IApiResponseData<Article>> {
-  return http.request<IApiResponseData<Article>>({
-    url: `/api/v1/article/:id/like`,
-    method: "put",
+): Promise<IApiResponseData<EmptyResp>> {
+  return http.request<IApiResponseData<EmptyResp>>({
+    url: `/api/v1/article/like_article`,
+    method: "post",
     data: data
   });
 }

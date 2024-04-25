@@ -2,10 +2,10 @@ import http from "@/utils/request";
 import type {
   BatchResp,
   Category,
-  CategoryDetailsDTO,
   IdReq,
   IdsReq,
-  PageQuery
+  PageQuery,
+  PageResp
 } from "./types";
 
 /** "创建文章分类" */
@@ -66,20 +66,9 @@ export function findCategoryApi(
 /** "分页获取文章分类列表" */
 export function findCategoryListApi(
   data?: PageQuery
-): Promise<IApiResponseData<Category[]>> {
-  return http.request<IApiResponseData<Category[]>>({
+): Promise<IApiResponseData<PageResp>> {
+  return http.request<IApiResponseData<PageResp>>({
     url: `/api/v1/category/find_category_list`,
-    method: "post",
-    data: data
-  });
-}
-
-/** "分页获取文章分类详情列表" */
-export function findCategoryDetailsListApi(
-  data?: PageQuery
-): Promise<IApiResponseData<CategoryDetailsDTO[]>> {
-  return http.request<IApiResponseData<CategoryDetailsDTO[]>>({
-    url: `/api/v1/category/find_category_details_list`,
     method: "post",
     data: data
   });

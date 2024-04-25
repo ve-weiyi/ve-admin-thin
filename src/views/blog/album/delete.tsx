@@ -14,7 +14,7 @@ import {
 import {
   createPhotoApi,
   deletePhotoApi,
-  deletePhotoByIdsApi,
+  deletePhotoListApi,
   findPhotoListApi,
   updatePhotoApi
 } from "@/api/photo";
@@ -44,7 +44,7 @@ function handleApi(event: string, data: any) {
     case "delete":
       return deletePhotoApi(data);
     case "deleteByIds":
-      return deletePhotoByIdsApi(data);
+      return deletePhotoListApi(data);
     case "list":
       return findPhotoListApi(data);
     default:
@@ -75,12 +75,11 @@ export function useTableHook() {
   // 排序条件,{k:v}
   const orderData = ref<any>({});
   // 条件查询 (key,value)
-  // eslint-disable-next-line no-undef
+
   const conditions = reactive<Condition[]>([]);
-  // eslint-disable-next-line no-undef
+
   const sorts = reactive<Sort[]>([]);
 
-  // eslint-disable-next-line no-undef
   function onFindList(page: PageQuery) {
     console.log("onFindList", page);
     handleApi("list", page).then(res => {
@@ -156,10 +155,10 @@ export function useTableHook() {
         continue;
       }
       conditions.push({
-        flag: item?.searchRules.flag || "and",
+        logic: item?.searchRules.flag || "and",
         field: key,
         value: value,
-        rule: item?.searchRules.rule || "="
+        operator: item?.searchRules.rule || "="
       });
     }
 
