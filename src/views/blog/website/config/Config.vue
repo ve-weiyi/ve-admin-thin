@@ -271,7 +271,7 @@
 <script lang="ts" setup>
 import { onMounted, ref } from "vue";
 import { ElMessage } from "element-plus";
-import { getWebsiteConfigApi, updateConfigApi } from "@/api/website";
+import { getWebsiteConfigApi, updateWebsiteConfigApi } from "@/api/website";
 
 const websiteConfigForm = ref({
   website_avatar: "",
@@ -308,15 +308,12 @@ onMounted(() => {
 function getWebsiteConfig() {
   getWebsiteConfigApi().then(res => {
     console.log("res", res);
-    websiteConfigForm.value = JSON.parse(res.data);
+    websiteConfigForm.value = res.data;
   });
 }
 
 function updateWebsiteConfig() {
-  updateConfigApi({
-    key: "website_config",
-    value: JSON.stringify(websiteConfigForm.value)
-  }).then(res => {
+  updateWebsiteConfigApi(websiteConfigForm.value).then(res => {
     ElMessage.success(res.message);
   });
 }

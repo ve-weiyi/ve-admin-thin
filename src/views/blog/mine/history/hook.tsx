@@ -10,26 +10,20 @@ import type { LoginHistory } from "@/api/types";
 
 const align = "center";
 
-const options = [
+const loginOption = [
   {
-    value: 1,
-    label: "文章"
+    value: "email",
+    label: "邮箱"
   },
   {
-    value: 2,
-    label: "友链"
+    value: "phone",
+    label: "手机号"
   },
   {
-    value: 3,
-    label: "说说"
+    value: "oauth",
+    label: "第三方登录"
   }
 ];
-const LoginMethod = {
-  0: "未知",
-  1: "密码登录",
-  2: "验证码登录",
-  3: "第三方登录"
-};
 
 // 表格展示列信息
 function getColumnFields(): Column[] {
@@ -97,9 +91,9 @@ function getSearchFields(): FormField[] {
   return [
     {
       type: RenderType.Select,
-      label: "来源",
-      field: "type",
-      options: options,
+      label: "登录方式",
+      field: "login_type",
+      options: loginOption,
       searchRules: {
         flag: "and",
         rule: "="
@@ -107,8 +101,8 @@ function getSearchFields(): FormField[] {
     },
     {
       type: RenderType.Input,
-      label: "用户昵称",
-      field: "nickname",
+      label: "登录ip",
+      field: "ip_address",
       searchRules: {
         flag: "and",
         rule: "like"

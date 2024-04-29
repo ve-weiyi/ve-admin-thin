@@ -57,7 +57,7 @@ export default ({ mode }: ConfigEnv): UserConfigExport => {
     build: {
       // https://cn.vitejs.dev/guide/build.html#browser-compatibility
       target: "es2015",
-      sourcemap: true,
+      sourcemap: false,
       // 消除打包大小超过500kb警告
       chunkSizeWarningLimit: 4000,
       rollupOptions: {
@@ -72,6 +72,8 @@ export default ({ mode }: ConfigEnv): UserConfigExport => {
         }
       }
     },
+    /** 混淆器 */
+    esbuild: false,
     define: {
       __INTLIFY_PROD_DEVTOOLS__: false,
       __APP_INFO__: JSON.stringify(__APP_INFO__)

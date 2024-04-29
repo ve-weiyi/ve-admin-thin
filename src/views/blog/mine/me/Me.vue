@@ -28,6 +28,12 @@
               <el-form-item label="昵称">
                 <el-input v-model="infoForm.nickname" size="default" />
               </el-form-item>
+              <el-form-item label="邮箱">
+                <el-input v-model="infoForm.email" size="default" />
+              </el-form-item>
+              <el-form-item label="手机号">
+                <el-input v-model="infoForm.phone" size="default" />
+              </el-form-item>
               <el-form-item label="个人简介">
                 <el-input v-model="infoForm.intro" size="default" />
               </el-form-item>
@@ -132,11 +138,6 @@ const handleClick = tab => {
   }
 };
 
-function onUpload(options: UploadRequestOptions) {
-  console.log("onUpload", options.filename);
-  return uploadFileApi("article/cover", options.file);
-}
-
 function beforeUpload(rawFile: UploadRawFile) {
   console.log("beforeUpload", rawFile.size);
   if (rawFile.size / 1024 < 500) {
@@ -150,6 +151,17 @@ function beforeUpload(rawFile: UploadRawFile) {
   });
 }
 
+function onUpload(options: UploadRequestOptions) {
+  console.log("onUpload", options.filename);
+  const data = {
+    label: "avatar",
+    file: options.file,
+    file_size: options.file.size,
+    file_md5: ""
+  };
+  return uploadFileApi(data);
+}
+
 function afterUpload(response: any) {
   console.log("afterUpload", response);
   ElMessage.success(response.message);
@@ -159,6 +171,7 @@ function afterUpload(response: any) {
 
 const getUserInfo = () => {
   getUserInfoApi().then(res => {
+    store.updateUserInfo(res.data);
     infoForm.value = res.data;
   });
 };
@@ -172,8 +185,7 @@ const updateInfo = () => {
   // 更新用户信息
   updateUserInfoApi(infoForm.value).then(res => {
     ElMessage.success(res.message);
-    store.updateUserInfo(res.data);
-    infoForm.value = res.data;
+    getUserInfo();
   });
 };
 

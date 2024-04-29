@@ -221,7 +221,13 @@ const handleCommand = command => {
 };
 
 function uploadImage(options: UploadRequestOptions) {
-  return uploadFileApi("album", options.file);
+  const data = {
+    label: "album",
+    file: option.sfile,
+    file_size: options.file.size,
+    file_md5: ""
+  };
+  return uploadFileApi(data);
 }
 
 function uploadCover(res) {

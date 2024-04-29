@@ -1,14 +1,17 @@
 import http from "@/utils/request";
+import type { UploadFileReq, UploadFileResp } from "@/api/types.ts";
 
 export function uploadFileApi(
-  label: string,
-  file: File
-): Promise<IApiResponseData<any>> {
+  data?: UploadFileReq
+): Promise<IApiResponseData<UploadFileResp>> {
   const formData = new FormData();
-  formData.append("file", file);
+  formData.append("label", data.label);
+  formData.append("file", data.file);
+  formData.append("file_size", data.file_size);
+  formData.append("file_md5", data.file_md5);
 
   return http.request<IApiResponseData<any>>({
-    url: `/api/v1/upload/${label}`,
+    url: `/api/v1/upload/upload_file`,
     method: "post",
     data: formData,
     headers: {

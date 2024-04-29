@@ -284,7 +284,13 @@ function openModel() {
 
 function onUpload(options: UploadRequestOptions) {
   console.log("onUpload", options.filename);
-  return uploadFileApi("article/cover", options.file);
+  const data = {
+    label: "cover",
+    file: option.sfile,
+    file_size: options.file.size,
+    file_md5: ""
+  };
+  return uploadFileApi(data);
 }
 
 function beforeUpload(rawFile: UploadRawFile) {
@@ -307,12 +313,24 @@ function afterUpload(response: any) {
 
 function uploadImg(pos, file) {
   if (file.size / 1024 < 500) {
-    uploadFileApi("article", file).then(res => {
+    const data = {
+      label: "article",
+      file: file,
+      file_size: file.size,
+      file_md5: ""
+    };
+    uploadFileApi(data).then(res => {
       mdRef.value.$img2Url(pos, res.data.file_url);
     });
   } else {
     imageConversion.compressAccurately(file, 200).then(res => {
-      uploadFileApi("article", file).then(res => {
+      const data = {
+        label: "article",
+        file: res,
+        file_size: res.size,
+        file_md5: ""
+      };
+      uploadFileApi(data).then(res => {
         mdRef.value.$img2Url(pos, res.data.file_url);
       });
     });

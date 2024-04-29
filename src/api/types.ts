@@ -65,11 +65,10 @@ export interface IdReq {
 }
 
 export interface IdsReq {
-  i_d_s?: number[];
+  ids?: number[];
 }
 
-export interface PageQuery {
-  ?: PageLimit;
+export interface PageQuery extends PageLimit{
   sorts?: PageSort[];
   conditions?: PageCondition[];
 }
@@ -258,7 +257,7 @@ export interface OauthLoginReq {
   state?: string;// 状态
 }
 
-export interface OauthLoginUrl {
+export interface OauthLoginUrlResp {
   url?: string;// 授权地址
 }
 
@@ -468,23 +467,23 @@ export interface AboutMe {
   content?: string;
 }
 
-export interface Article {
-  id?: number;// id
-  user_id?: number;// 作者
-  category_id?: number;// 文章分类
-  article_cover?: string;// 文章缩略图
-  article_title?: string;// 标题
-  article_content?: string;// 内容
-  type?: number;// 文章类型 1原创 2转载 3翻译
-  original_url?: string;// 原文链接
-  is_top?: number;// 是否置顶 0否 1是
-  is_delete?: number;// 是否删除  0否 1是
-  status?: number;// 状态值 1公开 2私密 3评论可见
-  created_at?: number;// 发表时间
-  updated_at?: number;// 更新时间
-}
-
-export interface ArticleDetailsReq {
+//    Article {
+//        Id int64 `json:"id,optional"`                           // id
+//        UserId int64 `json:"user_id,optional"`                  // 作者
+//        CategoryId int64 `json:"category_id,optional"`          // 文章分类
+//        ArticleCover string `json:"article_cover,optional"`     // 文章缩略图
+//        ArticleTitle string `json:"article_title,optional"`     // 标题
+//        ArticleContent string `json:"article_content,optional"` // 内容
+//        Type int64 `json:"type,optional"`                       // 文章类型 1原创 2转载 3翻译
+//        OriginalUrl string `json:"original_url,optional"`       // 原文链接
+//        IsTop int64 `json:"is_top,optional"`                    // 是否置顶 0否 1是
+//        IsDelete int64 `json:"is_delete,optional"`              // 是否删除  0否 1是
+//        Status int64 `json:"status,optional"`                   // 状态值 1公开 2私密 3评论可见
+//        CreatedAt int64 `json:"created_at,optional"`            // 发表时间
+//        UpdatedAt int64 `json:"updated_at,optional"`            // 更新时间
+//    }
+// 新建文章
+export interface ArticleNewReq {
   id?: number;// id
   user_id?: number;// 作者
   category_id?: number;// 文章分类
@@ -502,7 +501,8 @@ export interface ArticleDetailsReq {
   tag_name_list?: string[];// 文章标签列表
 }
 
-export interface ArticleDetailsResp {
+// 后台文章
+export interface ArticleBackDTO {
   id?: number;// 文章ID
   article_cover?: string;// 文章缩略图
   article_title?: string;// 标题
@@ -517,23 +517,10 @@ export interface ArticleDetailsResp {
   tag_name_list?: string[];// 文章标签列表
   like_count?: number;// 点赞量
   views_count?: number;// 浏览量
-}
-
-export interface ArticleClassifyCategoryReq {
-  category_id?: number;// 文章分类ID
-}
-
-export interface ArticleClassifyTagReq {
-  tag_id?: number;// 文章标签ID
-}
-
-export interface ArticleClassifyResp {
-  article_list?: ArticleHome[];// 文章列表
-  condition_name?: string;// 条件名
 }
 
 // 首页文章
-export interface ArticleHome {
+export interface ArticleHomeDTO {
   id?: number;// 文章ID
   article_cover?: string;// 文章缩略图
   article_title?: string;// 标题
@@ -544,19 +531,10 @@ export interface ArticleHome {
   status?: number;// 状态值 1 公开 2 私密 3 评论可见
   created_at?: number;// 发表时间
   updated_at?: number;// 更新时间
+  category_name?: string;// 文章分类名
+  tag_name_list?: string[];// 文章标签列表
   like_count?: number;// 点赞量
   views_count?: number;// 浏览量
-  article_category?: string;// 文章分类
-  article_tag_list?: string[];// 文章标签列表
-}
-
-// 文章推荐
-export interface ArticleRecommendResp {
-  ?: Article;
-  last_article?: ArticlePreviewDTO;// 上一篇文章
-  next_article?: ArticlePreviewDTO;// 下一篇文章
-  recommend_article_list?: ArticlePreviewDTO[];// 推荐文章列表
-  newest_article_list?: ArticlePreviewDTO[];// 最新文章列表
 }
 
 // 文章预览
@@ -567,7 +545,24 @@ export interface ArticlePreviewDTO {
   created_at?: number;// 创建时间
 }
 
-export interface ArticleDeleteReq {
+// 文章推荐详情
+export interface ArticleRecommendResp extends ArticleHomeDTO{
+  last_article?: ArticlePreviewDTO;// 上一篇文章
+  next_article?: ArticlePreviewDTO;// 下一篇文章
+  recommend_article_list?: ArticlePreviewDTO[];// 推荐文章列表
+  newest_article_list?: ArticlePreviewDTO[];// 最新文章列表
+}
+
+export interface ArticleClassifyReq {
+  classify_name?: string;// 分类名
+}
+
+export interface ArticleClassifyResp {
+  article_list?: ArticlePreviewDTO[];// 文章列表
+  condition_name?: string;// 条件名
+}
+
+export interface ArticlePreDeleteReq {
   id?: number;// 文章ID
   is_delete?: number;// 是否删除
 }
@@ -699,20 +694,17 @@ export interface TalkDetails {
   updated_at?: number;// 更新时间
 }
 
-export interface Comment {
-  id?: number;// 主键
-  user_i_d?: number;// 评论用户Id
-  topic_i_d?: number;// 评论主题id
+// 创建评论
+export interface CommentNewReq {
+  topic_id?: number;// 主题id
+  parent_id?: number;// 父评论id
+  session_id?: number;// 会话id
+  reply_user_id?: number;// 回复用户id
   comment_content?: string;// 评论内容
-  reply_user_i_d?: number;// 回复用户id
-  parent_i_d?: number;// 父评论id
   type?: number;// 评论类型 1.文章 2.友链 3.说说
-  is_delete?: number;// 是否删除  0否 1是
-  is_review?: number;// 是否审核
-  created_at?: number;// 评论时间
-  updated_at?: number;// 更新时间
 }
 
+// 后台评论
 export interface CommentBackDTO {
   id?: number;
   type?: number;
@@ -724,31 +716,93 @@ export interface CommentBackDTO {
   created_at?: number;
 }
 
-export interface CommentDTO {
+export interface CommentUserInfo {
+  id?: number;
+  nickname?: string;
+  avatar?: string;
+  website?: string;
+}
+
+// 评论回复
+export interface CommentReply {
   id?: number;// 评论id
-  user_i_d?: number;// 用户id
+  topic_id?: number;// 主题id
+  parent_id?: number;// 父评论id
+  session_id?: number;// 会话id
+  user_id?: number;// 用户id
   nickname?: string;// 用户昵称
   avatar?: string;// 用户头像
-  website?: string;// 个人网站
+  website?: string;// 用户网站
+  reply_user_id?: number;// 被回复用户id
+  reply_nickname?: string;// 被回复用户昵称
+  reply_avatar?: string;// 被回复用户头像
+  reply_website?: string;// 被回复用户网站
   comment_content?: string;// 评论内容
-  like_count?: number;// 点赞数
+  type?: number;// 评论类型 1.文章 2.友链 3.说说
   created_at?: number;// 评论时间
+  like_count?: number;// 点赞数
+}
+
+// 评论
+export interface CommentDTO {
+  id?: number;// 评论id
+  topic_id?: number;// 主题id
+  parent_id?: number;// 父评论id
+  session_id?: number;// 会话id
+  user_id?: number;// 用户id
+  nickname?: string;// 用户昵称
+  avatar?: string;// 用户头像
+  website?: string;// 用户网站
+  reply_user_id?: number;// 被回复用户id
+  reply_nickname?: string;// 被回复用户昵称
+  reply_avatar?: string;// 被回复用户头像
+  reply_website?: string;// 被回复用户网站
+  comment_content?: string;// 评论内容
+  type?: number;// 评论类型 1.文章 2.友链 3.说说
+  created_at?: number;// 评论时间
+  like_count?: number;// 点赞数
   reply_count?: number;// 回复量
   comment_reply_list?: CommentReply[];// 评论回复列表
 }
 
-export interface CommentReply {
-  id?: number;// 评论id
-  parent_i_d?: number;// 父评论id
+export interface CommentQueryReq {
+  page?: number;// 页码
+  page_size?: number;// 每页数量
+  topic_id?: number;// 主题id
+  parent_id?: number;// 父评论id
+  type?: number;// 评论类型 1.文章 2.友链 3.说说
+  order_by?: string;// 排序字段 create_at|like_count
+}
+
+export interface ChatRecord {
+  id?: number;// 主键
   user_i_d?: number;// 用户id
-  nickname?: string;// 用户昵称
-  avatar?: string;// 用户头像
-  website?: string;// 个人网站
-  reply_user_i_d?: number;// 被回复用户id
-  reply_nickname?: string;// 被回复用户昵称
-  reply_website?: string;// 被回复个人网站
-  comment_content?: string;// 评论内容
-  like_count?: number;// 点赞数
-  created_at?: number;// 评论时间
+  nickname?: string;// 昵称
+  avatar?: string;// 头像
+  content?: string;// 聊天内容
+  ip_address?: string;// ip地址
+  ip_source?: string;// ip来源
+  type?: number;// 类型
+  created_at?: number;// 创建时间
+  updated_at?: number;// 更新时间
+}
+
+export interface UploadFileReq {
+  label?: string;
+  file?: any;// 文件
+  file_size?: number;// 文件大小
+  file_md5?: string;// 文件md5值
+}
+
+export interface UploadFileResp {
+  id?: number;// id
+  user_id?: number;// 用户id
+  label?: string;// 标签
+  file_name?: string;// 文件名称
+  file_size?: number;// 文件大小
+  file_md5?: string;// 文件md5值
+  file_url?: string;// 上传路径
+  created_at?: number;// 创建时间
+  updated_at?: number;// 更新时间
 }
 

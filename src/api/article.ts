@@ -1,11 +1,10 @@
 import http from "@/utils/request";
 import type {
-  ArticleClassifyCategoryReq,
+  ArticleClassifyReq,
   ArticleClassifyResp,
-  ArticleClassifyTagReq,
-  ArticleDeleteReq,
-  ArticleDetailsReq,
-  ArticleDetailsResp,
+  ArticleHomeDTO,
+  ArticleNewReq,
+  ArticlePreDeleteReq,
   ArticleRecommendResp,
   ArticleTopReq,
   EmptyResp,
@@ -16,7 +15,7 @@ import type {
 
 /** "保存文章" */
 export function saveArticleApi(
-  data?: ArticleDetailsReq
+  data?: ArticleNewReq
 ): Promise<IApiResponseData<EmptyResp>> {
   return http.request<IApiResponseData<EmptyResp>>({
     url: `/api/v1/admin/article/save_article`,
@@ -49,7 +48,7 @@ export function deleteArticleApi(
 
 /** "删除文章-逻辑删除" */
 export function preDeleteArticleApi(
-  data?: ArticleDeleteReq
+  data?: ArticlePreDeleteReq
 ): Promise<IApiResponseData<EmptyResp>> {
   return http.request<IApiResponseData<EmptyResp>>({
     url: `/api/v1/admin/article/pre_delete_article`,
@@ -61,8 +60,8 @@ export function preDeleteArticleApi(
 /** "查询文章" */
 export function findArticleApi(
   data?: IdReq
-): Promise<IApiResponseData<ArticleDetailsResp>> {
-  return http.request<IApiResponseData<ArticleDetailsResp>>({
+): Promise<IApiResponseData<ArticleHomeDTO>> {
+  return http.request<IApiResponseData<ArticleHomeDTO>>({
     url: `/api/v1/admin/article/find_article`,
     method: "post",
     data: data
@@ -93,7 +92,7 @@ export function findArticleArchivesApi(
 
 /** "通过标签或者id获取文章列表" */
 export function findArticleClassifyCategoryApi(
-  data?: ArticleClassifyCategoryReq
+  data?: ArticleClassifyReq
 ): Promise<IApiResponseData<ArticleClassifyResp>> {
   return http.request<IApiResponseData<ArticleClassifyResp>>({
     url: `/api/v1/article/article_classify_category`,
@@ -104,7 +103,7 @@ export function findArticleClassifyCategoryApi(
 
 /** "通过标签或者id获取文章列表" */
 export function findArticleClassifyTagApi(
-  data?: ArticleClassifyTagReq
+  data?: ArticleClassifyReq
 ): Promise<IApiResponseData<ArticleClassifyResp>> {
   return http.request<IApiResponseData<ArticleClassifyResp>>({
     url: `/api/v1/article/article_classify_tag`,

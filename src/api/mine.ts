@@ -40,7 +40,7 @@ export function getUserApisApi(
   data?: EmptyReq
 ): Promise<IApiResponseData<UserApisResp>> {
   return http.request<IApiResponseData<UserApisResp>>({
-    url: `/api/v1/user/apis`,
+    url: `/api/v1/user/get_user_apis`,
     method: "get",
     data: data
   });
@@ -51,7 +51,7 @@ export function getUserMenusApi(
   data?: EmptyReq
 ): Promise<IApiResponseData<UserMenusResp>> {
   return http.request<IApiResponseData<UserMenusResp>>({
-    url: `/api/v1/user/menus`,
+    url: `/api/v1/user/get_user_menus`,
     method: "get",
     data: data
   });
@@ -62,7 +62,7 @@ export function getUserRoleApi(
   data?: EmptyReq
 ): Promise<IApiResponseData<UserRolesResp>> {
   return http.request<IApiResponseData<UserRolesResp>>({
-    url: `/api/v1/user/roles`,
+    url: `/api/v1/user/get_user_roles`,
     method: "get",
     data: data
   });
@@ -73,7 +73,7 @@ export function getUserInfoApi(
   data?: EmptyReq
 ): Promise<IApiResponseData<UserInfoResp>> {
   return http.request<IApiResponseData<UserInfoResp>>({
-    url: `/api/v1/user/info`,
+    url: `/api/v1/user/get_user_info`,
     method: "get",
     data: data
   });
@@ -84,7 +84,7 @@ export function updateUserInfoApi(
   data?: UserInfoReq
 ): Promise<IApiResponseData<EmptyResp>> {
   return http.request<IApiResponseData<EmptyResp>>({
-    url: `/api/v1/user/info`,
+    url: `/api/v1/user/update_user_info`,
     method: "post",
     data: data
   });
@@ -95,7 +95,7 @@ export function updateUserAvatarApi(
   data?: EmptyReq
 ): Promise<IApiResponseData<EmptyResp>> {
   return http.request<IApiResponseData<EmptyResp>>({
-    url: `/api/v1/user/avatar`,
+    url: `/api/v1/user/update_user_avatar`,
     method: "post",
     data: data
   });

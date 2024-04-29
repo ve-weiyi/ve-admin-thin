@@ -52,23 +52,23 @@ export function updateAboutMeApi(
   });
 }
 
-/** "获取网站前台配置" */
+/** "获取网站配置" */
 export function getWebsiteConfigApi(
   data?: EmptyReq
 ): Promise<IApiResponseData<WebsiteConfig>> {
   return http.request<IApiResponseData<WebsiteConfig>>({
-    url: `/api/v1/blog/websit_config`,
+    url: `/api/v1/blog/get_website_config`,
     method: "get",
     data: data
   });
 }
 
-/** "更新配置" */
+/** "更新网站配置" */
 export function updateWebsiteConfigApi(
   data?: WebsiteConfig
 ): Promise<IApiResponseData<EmptyResp>> {
   return http.request<IApiResponseData<EmptyResp>>({
-    url: `/api/v1/admin/websit_config`,
+    url: `/api/v1/admin/update_website_config`,
     method: "put",
     data: data
   });

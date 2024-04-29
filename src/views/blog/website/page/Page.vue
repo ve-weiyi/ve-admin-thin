@@ -172,7 +172,13 @@ const addOrEditPage = () => {
 };
 
 function uploadImage(options: UploadRequestOptions) {
-  return uploadFileApi("page", options.file);
+  const data = {
+    label: "page",
+    file: options.file,
+    file_size: options.file.size,
+    file_md5: ""
+  };
+  return uploadFileApi(data);
 }
 
 const uploadCover = response => {

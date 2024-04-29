@@ -40,7 +40,7 @@ const aboutContent = ref("");
 
 const getAbout = () => {
   getAboutMeApi().then(res => {
-    aboutContent.value = res.data;
+    aboutContent.value = res.data.content;
   });
 };
 
@@ -48,7 +48,13 @@ const onUploadImg = async (files, callback) => {
   const res = await Promise.all(
     files.map(file => {
       return new Promise((rev, rej) => {
-        uploadFileApi("about", file)
+        const data = {
+          label: "about",
+          file: file,
+          file_size: file.size,
+          file_md5: ""
+        };
+        uploadFileApi(file)
           .then(res => rev(res))
           .catch(error => rej(error));
       });
@@ -74,7 +80,10 @@ const onUploadImg = async (files, callback) => {
 };
 
 const updateAbout = () => {
-  updateAboutMeApi(aboutContent.value).then(res => {
+  const data = {
+    content: aboutContent.value
+  };
+  updateAboutMeApi(data).then(res => {
     ElNotification.success({
       title: "成功",
       message: res.message
