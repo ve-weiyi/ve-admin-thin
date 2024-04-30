@@ -5,21 +5,11 @@
         <!-- 修改信息 -->
         <el-tab-pane label="修改信息" name="info">
           <div class="info-container">
-            <el-upload
-              :http-request="onUpload"
-              :before-upload="beforeUpload"
-              :on-success="afterUpload"
-              :show-file-list="false"
-              class="avatar-uploader"
-            >
-              <img
-                v-if="infoForm.avatar"
-                :src="infoForm.avatar"
-                alt="avatar"
-                class="avatar"
-              />
-              <i v-else class="plus avatar-uploader-icon" />
-            </el-upload>
+            <AvatarCropper
+              :src="infoForm.avatar"
+              :fixed-number="[1, 1]"
+              @on-confirm="confirmUpload"
+            />
             <el-form
               :model="infoForm"
               label-width="70px"
@@ -99,24 +89,13 @@
 
 <script lang="ts" setup>
 import { onMounted, ref } from "vue";
-import {
-  ElButton,
-  ElForm,
-  ElFormItem,
-  ElInput,
-  ElMessage,
-  ElTabPane,
-  ElTabs,
-  ElUpload,
-  UploadRawFile,
-  UploadRequestOptions
-} from "element-plus";
+import { ElMessage } from "element-plus";
 import axios from "axios";
 import { useAdminStoreHook } from "@/store/modules/admin";
 import { uploadFileApi } from "@/api/file";
-import * as imageConversion from "image-conversion";
 import { UserInfo } from "@/api/types";
 import { getUserInfoApi, updateUserInfoApi } from "@/api/mine";
+import AvatarCropper from "./AvatarCropper.vue";
 
 // 获取缓存信息
 const store = useAdminStoreHook();
@@ -138,35 +117,18 @@ const handleClick = tab => {
   }
 };
 
-function beforeUpload(rawFile: UploadRawFile) {
-  console.log("beforeUpload", rawFile.size);
-  if (rawFile.size / 1024 < 500) {
-    return rawFile;
-  }
-
-  // 压缩到200KB,这里的200就是要压缩的大小,可自定义
-  imageConversion.compressAccurately(rawFile, 200).then((res: Blob) => {
-    console.log("compressAccurately", res.size);
-    return res;
-  });
-}
-
-function onUpload(options: UploadRequestOptions) {
-  console.log("onUpload", options.filename);
+function confirmUpload(file: Blob) {
   const data = {
     label: "avatar",
-    file: options.file,
-    file_size: options.file.size,
+    file: file,
+    file_size: file.size,
     file_md5: ""
   };
-  return uploadFileApi(data);
-}
-
-function afterUpload(response: any) {
-  console.log("afterUpload", response);
-  ElMessage.success(response.message);
-  // store.updateAvatar(response.data.file_url)
-  infoForm.value.avatar = response.data.file_url;
+  uploadFileApi(data).then(response => {
+    console.log("confirmUpload", response);
+    ElMessage.success(response.message);
+    infoForm.value.avatar = response.data.file_url;
+  });
 }
 
 const getUserInfo = () => {
@@ -232,30 +194,5 @@ onMounted(() => {
   justify-content: center; /* 水平居中 */
   align-items: center; /* 垂直居中 */
   margin-top: 1rem;
-}
-
-.avatar-uploader {
-  border: 1px dashed var(--el-border-color);
-  border-radius: 6px;
-  width: 100px;
-  height: 100px;
-  margin-right: 1rem;
-}
-
-.avatar {
-  width: 100%;
-  height: 100%;
-}
-
-.avatar-uploader-icon {
-  font-size: 28px;
-  color: #8c939d;
-  cursor: pointer;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: #f5f7fa;
 }
 </style>

@@ -80,6 +80,9 @@ dependencies:
   vue:
     specifier: ^3.4.24
     version: 3.4.24(typescript@5.4.5)
+  vue-cropper:
+    specifier: ^1.1.2
+    version: 1.1.2
   vue-i18n:
     specifier: ^9.13.1
     version: 9.13.1(vue@3.4.24)
@@ -7180,6 +7183,10 @@ packages:
     optionalDependencies:
       fsevents: 2.3.3
     dev: true
+
+  /vue-cropper@1.1.2:
+    resolution: {integrity: sha512-S4cmvQzdNiVpNGigFwgULSwxWp55bdD1xf+RIEH+4mLDpD9/MUjNoHf970V3nFX7SerUrPZbOXG/ZBaD6pxfWQ==}
+    dev: false
 
   /vue-demi@0.14.7(vue@3.4.24):
     resolution: {integrity: sha512-EOG8KXDQNwkJILkx/gPcoL/7vH+hORoBaKgGe+6W7VFMvCYJfmF2dGbvgDroVnI8LU7/kTu8mbjRZGBU1z9NTA==}
