@@ -5,8 +5,7 @@ import type {
   IdsReq,
   PageQuery,
   PageResp,
-  PhotoAlbum,
-  PhotoAlbumDetailsDTO
+  PhotoAlbum
 } from "./types";
 
 /** "创建相册" */
@@ -71,28 +70,6 @@ export function findPhotoAlbumListApi(
   return http.request<IApiResponseData<PageResp>>({
     url: `/api/v1/photo_album/find_photo_album_list`,
     method: "post",
-    data: data
-  });
-}
-
-/** "获取相册详情列表" */
-export function findPhotoAlbumDetailsListApi(
-  data?: PageQuery
-): Promise<IApiResponseData<PageResp>> {
-  return http.request<IApiResponseData<PageResp>>({
-    url: `/api/v1/photo_album/details_list`,
-    method: "post",
-    data: data
-  });
-}
-
-/** "获取相册详情" */
-export function findPhotoAlbumDetailsApi(
-  data?: IdReq
-): Promise<IApiResponseData<PhotoAlbumDetailsDTO>> {
-  return http.request<IApiResponseData<PhotoAlbumDetailsDTO>>({
-    url: `/api/v1/photo_album/:id/details`,
-    method: "get",
     data: data
   });
 }

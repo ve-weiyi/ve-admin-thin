@@ -10,7 +10,7 @@ import {
 } from "@/api/menu";
 import { transformI18n } from "@/plugins/i18n.ts";
 import { useRenderIcon } from "@/components/ReIcon/src/hooks.ts";
-import type { MenuDetailsDTO } from "@/api/types.ts";
+import type { MenuDetails } from "@/api/types.ts";
 
 const align = "center";
 
@@ -200,7 +200,7 @@ function getColumnFields(): Column[] {
               size="small"
               icon="Plus"
               onClick={() => {
-                let data: MenuDetailsDTO = {
+                let data: MenuDetails = {
                   id: 0,
                   type: 0,
                   parent_id: scope.row.id,

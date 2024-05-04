@@ -126,7 +126,7 @@
             :before-upload="beforeUpload"
             :file-list="uploadList"
             :on-remove="handleRemove"
-            :on-success="uploadCover"
+            :on-success="afterUpload"
             action="/api/admin/photos/albums/cover"
             list-type="picture-card"
             multiple
@@ -139,7 +139,7 @@
             <el-upload
               v-show="uploadList.length === 0"
               :before-upload="beforeUpload"
-              :on-success="uploadCover"
+              :on-success="afterUpload"
               :show-file-list="false"
               action="/api/admin/photos/albums/cover"
               drag
@@ -258,9 +258,9 @@ import { computed, onMounted, ref } from "vue";
 import { useTableHook } from "./photo";
 import { useRoute } from "vue-router";
 import * as imageConversion from "image-conversion";
-import { findPhotoAlbumDetailsApi } from "@/api/photo_album";
-import { PhotoAlbum, PhotoAlbumDetailsDTO } from "@/api/types";
-import { CheckboxValueType } from "element-plus";
+import { findPhotoAlbumApi } from "@/api/photo_album";
+import { PhotoAlbum } from "@/api/types";
+import { CheckboxValueType, UploadRawFile } from "element-plus";
 
 const {
   onFindList,
@@ -323,20 +323,25 @@ function handleCheckedPhotoChange(value: CheckboxValueType[]) {
   console.log("handleCheckedPhotoChange", value, selectionIds);
 }
 
-const beforeUpload = rawFile => {
+// 上传文件时触发
+function beforeUpload(rawFile: UploadRawFile) {
+  console.log("beforeUpload", rawFile.name, rawFile.size);
+
   if (rawFile.size / 1024 < 200) {
     return true;
   }
 
-  // 压缩到200KB,这里的200就是要压缩的大小,可自定义
-  imageConversion.compressAccurately(rawFile, 200).then(res => {
-    rawFile = res;
+  return new Promise<Blob>((resolve, reject) => {
+    // 压缩到200KB,这里的200就是要压缩的大小,可自定义
+    imageConversion.compressAccurately(rawFile, 200).then((res: Blob) => {
+      console.log("compressAccurately", res.size);
+      resolve(res);
+    });
   });
-  return true;
-};
+}
 
-function uploadCover(res) {
-  console.log("uploadCover", res);
+function afterUpload(res) {
+  console.log("afterUpload", res);
 }
 
 const dialogTitle = computed(() => {
@@ -350,7 +355,7 @@ const dialogTitle = computed(() => {
 // 获取路由参数
 const route = useRoute();
 const albumId = route.params.id ? parseInt(route.params.id as string) : 0; // 假设路由参数名为 "id"
-const albumInfo = ref<PhotoAlbumDetailsDTO>({});
+const albumInfo = ref<PhotoAlbum>({});
 const albumList = ref<PhotoAlbum[]>([]);
 const movePhoto = ref(false);
 const uploadPhoto = ref(false);
@@ -361,7 +366,9 @@ function savePhotos() {
 }
 
 function getAlbumInfo(id: number) {
-  findPhotoAlbumDetailsApi(id).then(res => {
+  findPhotoAlbumApi({
+    id
+  }).then(res => {
     console.log("getAlbumInfo", res);
     albumInfo.value = res.data;
     document.title = `${albumInfo.value.album_name} - 相册`;

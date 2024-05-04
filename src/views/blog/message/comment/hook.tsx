@@ -6,10 +6,9 @@ import {
   createCommentApi,
   deleteCommentApi,
   deleteCommentListApi,
-  findCommentListApi,
+  findCommentBackListApi,
   updateCommentApi
 } from "@/api/comment";
-import type { Comment } from "@/api/types";
 
 const align = "center";
 
@@ -221,7 +220,7 @@ function handleApi(event: string, data: any) {
     case "deleteByIds":
       return deleteCommentListApi(data);
     case "list":
-      return findCommentListApi(data);
+      return findCommentBackListApi(data);
     default:
       return;
   }

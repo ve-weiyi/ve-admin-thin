@@ -495,7 +495,7 @@ function onDelete(id: number) {
 
 function onDeleteByIds(ids: number[]) {
   console.log("onDeleteByIds", ids);
-  props.handleApi("deleteByIds", ids).then(res => {
+  props.handleApi("deleteByIds", { ids }).then(res => {
     ElMessage.success("批量删除成功");
     batchDeleteVisibility.value = false;
     refreshList();
@@ -725,7 +725,7 @@ function confirmBatchDelete(ids: number[]) {
 }
 
 function confirmDelete(id: number) {
-  onDelete(id);
+  onDelete({ id });
 }
 
 /** ******** end 批量删除 **********/

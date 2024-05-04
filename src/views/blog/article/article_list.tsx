@@ -4,8 +4,8 @@ import { Timer } from "@element-plus/icons-vue";
 import {
   deleteArticleApi,
   findArticleListApi,
-  updateArticleDeleteApi,
-  updateArticleTopApi
+  preDeleteArticleApi,
+  topArticleApi
 } from "@/api/article";
 import { getCurrentInstance } from "vue";
 import router from "@/router";
@@ -129,7 +129,7 @@ function getColumnFields(): Column[] {
             inactive-text="普通"
             inline-prompt
             onChange={() => {
-              updateArticleTopApi(scope.row).then(res => {
+              topArticleApi(scope.row).then(res => {
                 ElMessage.success("更新置顶状态成功");
               });
             }}
@@ -181,7 +181,7 @@ function getColumnFields(): Column[] {
                   title="确定删除吗？"
                   onConfirm={() => {
                     // 逻辑删除
-                    updateArticleDeleteApi({
+                    preDeleteArticleApi({
                       id: scope.row.id,
                       is_delete: 1
                     }).then(res => {
@@ -206,7 +206,7 @@ function getColumnFields(): Column[] {
                   title="确定恢复吗？"
                   onConfirm={() => {
                     // 逻辑删除
-                    updateArticleDeleteApi({
+                    preDeleteArticleApi({
                       id: scope.row.id,
                       is_delete: 0
                     }).then(res => {

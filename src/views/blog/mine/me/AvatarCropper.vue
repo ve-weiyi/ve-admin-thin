@@ -237,7 +237,7 @@ function beforeUpload(rawFile: UploadRawFile) {
   });
 }
 
-const onUpload = (obj: UploadRequestOptions) => {
+function onUpload(obj: UploadRequestOptions) {
   console.log("onUpload", obj);
 
   let rawFile = obj.file;
@@ -247,7 +247,7 @@ const onUpload = (obj: UploadRequestOptions) => {
     dialogVisibleCorpper.value = true;
     resolve(true);
   });
-};
+}
 
 // 实时预览事件
 const realTime = data => {

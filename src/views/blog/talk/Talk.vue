@@ -39,9 +39,9 @@
             <!-- 图片上传 -->
             <el-upload
               :before-upload="beforeUpload"
-              :on-success="upload"
+              :http-request="onUpload"
+              :on-success="afterUpload"
               :show-file-list="false"
-              action="/api/admin/talks/images"
               multiple
             >
               <el-icon class="operation-btn">
@@ -94,15 +94,17 @@
         <el-upload
           v-show="uploadList.length > 0"
           :before-upload="beforeUpload"
-          :file-list="uploadList"
+          :http-request="onUpload"
+          :on-success="afterUpload"
           :on-remove="handleRemove"
-          :on-success="upload"
-          action="/api/admin/talks/images"
+          :file-list="uploadList"
           class="talk-image-upload"
           list-type="picture-card"
           multiple
         >
-          <i class="el-icon-plus" />
+          <el-icon>
+            <Plus />
+          </el-icon>
         </el-upload>
       </div>
     </el-card>
@@ -116,17 +118,18 @@ import EmojiList from "@/assets/emojis/qq_emoji.json";
 import Editor from "@/views/blog/talk/Editor.vue";
 import { useRoute } from "vue-router";
 import { createTalkApi, findTalkApi, updateTalkApi } from "@/api/talk";
-import { Talk } from "@/api/types";
-import { ElMessage } from "element-plus";
+import { TalkDetails } from "@/api/types";
+import { ElMessage, UploadRawFile, UploadRequestOptions } from "element-plus";
+import { uploadFileApi } from "@/api/file.ts";
 
 const route = useRoute();
 const emojiList = ref<any>(EmojiList);
-const talk = ref<Talk>({
+const talk = ref<TalkDetails>({
   id: null,
   content: "",
   is_top: 0,
   status: 1,
-  images: null
+  img_list: []
 });
 const statusList = ref([
   { status: 1, desc: "公开" },
@@ -137,13 +140,13 @@ const uploadList = ref([]);
 onMounted(() => {
   console.log("route.params.talkId", route.params.talkId);
   if (route.params.talkId) {
-    const tid = parseInt(route.params.talkId as string);
-    findTalkApi(tid).then(res => {
+    const id = parseInt(route.params.talkId as string);
+    findTalkApi({ id }).then(res => {
       talk.value = res.data;
-      if (res.data.images) {
-        // res.data.images.forEach((item) => {
-        //   uploadList.value.push({ url: item })
-        // })
+      if (res.data.img_list) {
+        res.data.img_list.forEach(item => {
+          uploadList.value.push({ url: item });
+        });
       }
     });
   }
@@ -161,28 +164,48 @@ function addEmoji(key, value) {
   console.log("talk.value.content", talk.value.content);
 }
 
+// 上传文件时触发
+function beforeUpload(rawFile: UploadRawFile) {
+  console.log("beforeUpload", rawFile.name, rawFile.size);
+
+  if (rawFile.size / 1024 < 200) {
+    return true;
+  }
+
+  return new Promise<Blob>((resolve, reject) => {
+    // 压缩到200KB,这里的200就是要压缩的大小,可自定义
+    imageConversion.compressAccurately(rawFile, 200).then((res: Blob) => {
+      console.log("compressAccurately", res.size);
+      resolve(res);
+    });
+  });
+}
+
+function onUpload(obj: UploadRequestOptions) {
+  console.log("onUpload", obj);
+
+  let file = obj.file;
+  const data = {
+    label: "avatar",
+    file: file,
+    file_size: file.size,
+    file_md5: ""
+  };
+  return uploadFileApi(data);
+}
+
+function afterUpload(res: any) {
+  console.log("afterUpload", res);
+  ElMessage.success(res.message);
+  uploadList.value.push({ url: res.data.file_url });
+}
+
 function handleRemove(file) {
   const index = uploadList.value.findIndex(item => item.url === file.url);
   if (index !== -1) {
     uploadList.value.splice(index, 1);
   }
 }
-
-function upload(response) {
-  uploadList.value.push({ url: response.data });
-}
-
-const beforeUpload = rawFile => {
-  if (rawFile.size / 1024 < 200) {
-    return true;
-  }
-
-  // 压缩到200KB,这里的200就是要压缩的大小,可自定义
-  imageConversion.compressAccurately(rawFile, 200).then(res => {
-    rawFile = res;
-  });
-  return true;
-};
 
 function saveOrUpdateTalk() {
   if (talk.value.content.trim() === "") {
@@ -193,7 +216,8 @@ function saveOrUpdateTalk() {
   // 转换图片
   if (uploadList.value.length > 0) {
     const imgList = uploadList.value.map(item => item.url);
-    talk.value.images = JSON.stringify(imgList);
+    // talk.value.img_list = JSON.stringify(imgList);
+    talk.value.img_list = imgList;
   }
 
   console.log("talk.value", talk.value);

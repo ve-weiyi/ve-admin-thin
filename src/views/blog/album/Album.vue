@@ -19,12 +19,12 @@
             style="margin-right: 1rem"
             text
             type="primary"
-            @click="batchDeleteVisibility == true"
+            @click="checkDelete"
           >
             回收站
           </el-button>
           <el-input
-            v-model="searchData.albumName"
+            v-model="searchData.album_name"
             placeholder="请输入相册名"
             prefix-icon="search"
             size="default"
@@ -51,15 +51,21 @@
             <!-- 相册操作 -->
             <div class="album-operation">
               <el-dropdown @command="handleCommand">
-                <i class="more" style="color: #fff" />
-                <el-dropdown-menu v-slot="dropdown">
-                  <el-dropdown-item :command="'update' + JSON.stringify(item)">
-                    <i class="el-icon-edit" />编辑
-                  </el-dropdown-item>
-                  <el-dropdown-item :command="'delete' + item.id">
-                    <i class="delete" />删除
-                  </el-dropdown-item>
-                </el-dropdown-menu>
+                <iconify-icon icon="ri:more-fill" style="color: #fff" />
+                <template #dropdown>
+                  <el-dropdown-menu>
+                    <el-dropdown-item
+                      :command="'update' + JSON.stringify(item)"
+                    >
+                      <iconify-icon icon="ri:edit-fill" />
+                      编辑
+                    </el-dropdown-item>
+                    <el-dropdown-item :command="'delete' + item.id">
+                      <iconify-icon icon="ep:delete-filled" />
+                      删除
+                    </el-dropdown-item>
+                  </el-dropdown-menu>
+                </template>
               </el-dropdown>
             </div>
             <div class="album-photo-count">
@@ -76,7 +82,7 @@
       <!-- 分页 -->
       <el-pagination
         :current-page="pagination.currentPage"
-        :hide-on-single-page="true"
+        :hide-on-single-page="false"
         :layout="pagination.layout"
         :page-size="pagination.pageSize"
         :page-sizes="pagination.pageSizes"
@@ -86,83 +92,83 @@
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
       />
-      <!-- 新增模态框 -->
-      <el-dialog v-model="formVisibility" top="10vh" width="35%">
-        <template #header>
-          <div class="dialog-title-container">
-            <el-icon>
-              <MoreFilled />
-            </el-icon>
-            {{ dialogTitle }}}
-          </div>
-        </template>
-        <el-form
-          ref="formRef"
-          :model="formData"
-          label-width="80px"
-          size="default"
-        >
-          <el-form-item label="相册名称">
-            <el-input v-model="formData.albumName" style="width: 220px" />
-          </el-form-item>
-          <el-form-item label="相册描述">
-            <el-input v-model="formData.albumDesc" style="width: 220px" />
-          </el-form-item>
-          <el-form-item label="相册封面">
-            <el-upload
-              :before-upload="beforeUpload"
-              :http-request="uploadImage"
-              :on-success="uploadCover"
-              :show-file-list="false"
-              class="upload-cover"
-              drag
-              multiple
-            >
-              <i v-if="!formData.albumCover" class="el-icon-upload" />
-              <div v-if="!formData.albumCover" class="el-upload__text">
-                将文件拖到此处，或<em>点击上传</em>
-              </div>
-              <img
-                v-else
-                :src="formData.albumCover"
-                height="180px"
-                width="360px"
-              />
-            </el-upload>
-          </el-form-item>
-          <el-form-item label="发布形式">
-            <el-radio-group v-model="formData.status">
-              <el-radio :label="1">公开</el-radio>
-              <el-radio :label="2">私密</el-radio>
-            </el-radio-group>
-          </el-form-item>
-        </el-form>
-        <template #footer>
-          <el-button @click="closeForm">取 消</el-button>
-          <el-button type="primary" @click="submitForm(formData)">
-            确 定
-          </el-button>
-        </template>
-      </el-dialog>
-      <!-- 删除对话框 -->
-      <el-dialog v-model="batchDeleteVisibility" width="30%">
-        <template #header>
-          <div class="dialog-title-container">
-            <el-icon style="color: #ff9900">
-              <Warning />
-            </el-icon>
-            提示
-          </div>
-        </template>
-        <div style="font-size: 1rem">是否删除该相册？</div>
-        <template #footer>
-          <el-button @click="batchDeleteVisibility = false">取 消</el-button>
-          <el-button type="primary" @click="onDelete(formData)">
-            确 定
-          </el-button>
-        </template>
-      </el-dialog>
     </el-card>
+    <!-- 新增模态框 -->
+    <el-dialog v-model="formVisibility" top="10vh" width="35%">
+      <template #header>
+        <div class="dialog-title-container">
+          <el-icon>
+            <MoreFilled />
+          </el-icon>
+          {{ dialogTitle }}
+        </div>
+      </template>
+      <el-form
+        ref="formRef"
+        :model="formData"
+        label-width="80px"
+        size="default"
+      >
+        <el-form-item label="相册名称">
+          <el-input v-model="formData.albumName" style="width: 220px" />
+        </el-form-item>
+        <el-form-item label="相册描述">
+          <el-input v-model="formData.albumDesc" style="width: 220px" />
+        </el-form-item>
+        <el-form-item label="相册封面">
+          <el-upload
+            :before-upload="beforeUpload"
+            :http-request="onUpload"
+            :on-success="afterUpload"
+            :show-file-list="false"
+            class="upload-cover"
+            drag
+            multiple
+          >
+            <i v-if="!formData.albumCover" class="el-icon-upload" />
+            <div v-if="!formData.albumCover" class="el-upload__text">
+              将文件拖到此处，或<em>点击上传</em>
+            </div>
+            <img
+              v-else
+              :src="formData.albumCover"
+              height="180px"
+              width="360px"
+            />
+          </el-upload>
+        </el-form-item>
+        <el-form-item label="发布形式">
+          <el-radio-group v-model="formData.status">
+            <el-radio :label="1">公开</el-radio>
+            <el-radio :label="2">私密</el-radio>
+          </el-radio-group>
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <el-button @click="closeForm">取 消</el-button>
+        <el-button type="primary" @click="submitForm(formData)">
+          确 定
+        </el-button>
+      </template>
+    </el-dialog>
+    <!-- 删除对话框 -->
+    <el-dialog v-model="batchDeleteVisibility" width="30%">
+      <template #header>
+        <div class="dialog-title-container">
+          <el-icon style="color: #ff9900">
+            <Warning />
+          </el-icon>
+          提示
+        </div>
+      </template>
+      <div style="font-size: 1rem">是否删除该相册？</div>
+      <template #footer>
+        <el-button @click="batchDeleteVisibility = false">取 消</el-button>
+        <el-button type="primary" @click="confirmDelete(formData)">
+          确 定
+        </el-button>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
@@ -171,8 +177,10 @@ import { computed } from "vue";
 import { useTableHook } from "./album";
 import { useRouter } from "vue-router";
 import * as imageConversion from "image-conversion";
-import { UploadRequestOptions } from "element-plus";
+import { UploadRawFile, UploadRequestOptions } from "element-plus";
 import { uploadFileApi } from "@/api/file";
+import { Icon as IconifyIcon } from "@iconify/vue";
+import "@/style/table.scss";
 
 const {
   onDelete,
@@ -190,8 +198,11 @@ const {
   resetTable,
   pagination,
   loading,
-  batchDeleteVisibility,
   formVisibility,
+  batchDeleteVisibility,
+  confirmDelete,
+  confirmBatchDelete,
+  cancelBatchDelete,
   searchRef,
   searchData,
   tableRef,
@@ -212,43 +223,59 @@ const dialogTitle = computed(() => {
   }
 });
 
-const handleCommand = command => {
-  if (command.includes("update")) {
-    openForm(command.slice(6));
-  } else if (command.includes("delete")) {
-    onDelete(command.slice(6));
-  }
-};
+// 上传文件时触发
+function beforeUpload(rawFile: UploadRawFile) {
+  console.log("beforeUpload", rawFile.name, rawFile.size);
 
-function uploadImage(options: UploadRequestOptions) {
+  if (rawFile.size / 1024 < 200) {
+    return true;
+  }
+
+  return new Promise<Blob>((resolve, reject) => {
+    // 压缩到200KB,这里的200就是要压缩的大小,可自定义
+    imageConversion.compressAccurately(rawFile, 200).then((res: Blob) => {
+      console.log("compressAccurately", res.size);
+      resolve(res);
+    });
+  });
+}
+
+function onUpload(options: UploadRequestOptions) {
   const data = {
     label: "album",
-    file: option.sfile,
+    file: options.file,
     file_size: options.file.size,
     file_md5: ""
   };
   return uploadFileApi(data);
 }
 
-function uploadCover(res) {
-  console.log("uploadCover", res);
+function afterUpload(res: any) {
+  console.log("afterUpload", res);
   formData.value.albumCover = res.data.file_url;
 }
 
-const beforeUpload = rawFile => {
-  if (rawFile.size / 1024 < 200) {
-    return true;
-  }
-
-  // 压缩到200KB,这里的200就是要压缩的大小,可自定义
-  imageConversion.compressAccurately(rawFile, 200).then(res => {
-    rawFile = res;
-  });
-  return true;
+const checkDelete = () => {
+  router.push({ path: "/photos/delete" });
 };
 
 const checkPhoto = item => {
   router.push({ path: "/albums/" + item.id });
+};
+
+const handleCommand = command => {
+  const type = command.substring(0, 6);
+  const data = command.substring(6);
+  if (type.includes("update")) {
+    openForm(data);
+  } else if (type.includes("delete")) {
+    openDelete(data);
+  }
+};
+
+const openDelete = data => {
+  formData.value = data;
+  batchDeleteVisibility.value = true;
 };
 </script>
 

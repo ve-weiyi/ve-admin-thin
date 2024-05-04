@@ -59,7 +59,7 @@
           <el-upload
             :before-upload="beforeUpload"
             :http-request="uploadImage"
-            :on-success="uploadCover"
+            :on-success="afterUpload"
             :show-file-list="false"
             class="upload-cover"
             drag
@@ -181,21 +181,26 @@ function uploadImage(options: UploadRequestOptions) {
   return uploadFileApi(data);
 }
 
-const uploadCover = response => {
+const afterUpload = response => {
   pageForum.page_cover = response.data;
 };
 
-const beforeUpload = rawFile => {
+// 上传文件时触发
+function beforeUpload(rawFile: UploadRawFile) {
+  console.log("beforeUpload", rawFile.name, rawFile.size);
+
   if (rawFile.size / 1024 < 200) {
     return true;
   }
 
-  // 压缩到200KB,这里的200就是要压缩的大小,可自定义
-  imageConversion.compressAccurately(rawFile, 200).then(res => {
-    rawFile = res;
+  return new Promise<Blob>((resolve, reject) => {
+    // 压缩到200KB,这里的200就是要压缩的大小,可自定义
+    imageConversion.compressAccurately(rawFile, 200).then((res: Blob) => {
+      console.log("compressAccurately", res.size);
+      resolve(res);
+    });
   });
-  return true;
-};
+}
 
 const handleCommand = command => {
   console.log("command", command);

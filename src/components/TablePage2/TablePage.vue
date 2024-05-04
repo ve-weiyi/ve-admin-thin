@@ -342,9 +342,9 @@ function onDeleteByIds(ids: number[]) {
 }
 
 function refreshList() {
-  const searchData = searchRef.value?.getSearchData();
-  const orderData = tableRef.value?.getOrderData();
-  const paginationData = tableRef.value?.getPaginationData();
+  const search = searchRef.value?.getSearchData();
+  const order = tableRef.value?.getOrderData();
+  const pagination = tableRef.value?.getPaginationData();
 
   // console.log("refreshList", orderData, searchData)
 
@@ -365,9 +365,9 @@ function refreshList() {
   }
 
   // 搜索条件
-  for (const key in searchData) {
+  for (const key in search) {
     const item = searchFields.value.find(v => v.field === key);
-    const value = searchData[key];
+    const value = search[key];
     conditions.push({
       field: key,
       value: value instanceof String ? value : JSON.stringify(value),
@@ -377,44 +377,30 @@ function refreshList() {
   }
 
   // 排序条件
-  for (const key in orderData) {
-    const value = orderData[key];
+  for (const key in order) {
+    const value = order[key];
     sorts.push({
       field: key,
       order: value
     });
   }
 
-  // // 默认排序条件
-  // if (sorts.length == 0) {
-  //   for (const key in defaultOrder) {
-  //     const value = defaultOrder[key]
-  //     sorts.push({
-  //       field: key,
-  //       order: value,
-  //     })
-  //   }
-  // }
-
   const page: PageQuery = {
-    page: paginationData.currentPage,
-    page_size: paginationData.pageSize,
+    page: pagination.currentPage,
+    page_size: pagination.pageSize,
     sorts: sorts,
     conditions: conditions
   };
 
   loading.value = true;
   props.handleApi("list", page).then(res => {
-    if (res.data.page_size !== paginationData.pageSize) {
-      paginationData.currentPage = res.data.page;
-      if (res.data.page_size) {
-        paginationData.pageSize = res.data.page_size;
-      }
-      // pagination.pageSize = res.data.page_size
+    if (res.data.page_size !== pagination.pageSize) {
+      pagination.currentPage = res.data.page;
+      pagination.pageSize = res.data.page_size;
     }
 
     tableData.value = res.data.list;
-    paginationData.total = res.data.total;
+    pagination.total = res.data.total;
     loading.value = false;
     // setTimeout(() => {
     //   loading.value = false
