@@ -25,7 +25,7 @@ import { usePermissionStoreHook } from "@/store/modules/permission";
 // 动态路由
 import { getAsyncRoutes } from "@/api/routes";
 
-const IFrame = () => import("@/layout/frameView.vue");
+const IFrame = () => import("@/layout/frame.vue");
 // https://cn.vitejs.dev/guide/features.html#glob-import
 const modulesRoutes = import.meta.glob("/src/views/**/*.{vue,tsx}");
 

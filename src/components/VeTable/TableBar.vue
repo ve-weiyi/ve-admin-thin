@@ -7,10 +7,10 @@ import {
 } from "element-plus";
 import draggable from "vuedraggable/src/vuedraggable";
 import cloneDeep from "lodash/cloneDeep";
-import ExpandIcon from "./svg/expand.svg?component";
-import RefreshIcon from "./svg/refresh.svg?component";
-import CollapseIcon from "./svg/collapse.svg?component";
-import SettingIcon from "./svg/settings.svg?component";
+import ExpandIcon from "@/assets/table-bar/expand.svg?component";
+import RefreshIcon from "@/assets/table-bar/refresh.svg?component";
+import SettingIcon from "@/assets/table-bar/settings.svg?component";
+import CollapseIcon from "@/assets/table-bar/collapse.svg?component";
 
 const props = defineProps({
   loading: {
