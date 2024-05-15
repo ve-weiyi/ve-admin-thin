@@ -227,12 +227,12 @@ import { findCategoryListApi } from "@/api/category";
 import { findTagListApi } from "@/api/tag";
 import { findArticleApi, saveArticleApi } from "@/api/article";
 import { uploadFileApi } from "@/api/file";
-import { ArticleBack, Category, Tag } from "@/api/types";
+import { ArticleBackDTO, Category, Tag } from "@/api/types";
 import { ElMessage, UploadRawFile, UploadRequestOptions } from "element-plus";
 
 const route = useRoute();
 const router = useRouter();
-const article = ref<ArticleBack>({
+const article = ref<ArticleBackDTO>({
   id: null,
   article_title: "",
   article_content: "",
@@ -286,7 +286,7 @@ function onUpload(options: UploadRequestOptions) {
   console.log("onUpload", options.filename);
   const data = {
     label: "cover",
-    file: option.sfile,
+    file: options.file,
     file_size: options.file.size,
     file_md5: ""
   };
@@ -432,7 +432,7 @@ function searchCategories(keywords: string, cb: any) {
       {
         field: "category_name",
         value: keywords,
-        rule: "like"
+        operator: "like"
       }
     ]
   }).then(res => {
@@ -468,7 +468,7 @@ function searchTags(keywords: string, cb: any) {
       {
         field: "tag_name",
         value: keywords,
-        rule: "like"
+        operator: "like"
       }
     ]
   }).then(res => {
@@ -518,7 +518,7 @@ function listTags() {
 }
 
 const getArticle = (articleId: number) => {
-  findArticleApi(articleId).then(res => {
+  findArticleApi({ id: articleId }).then(res => {
     article.value = res.data;
   });
 };

@@ -703,8 +703,8 @@ export interface CommentBackDTO {
   id?: number;
   type?: number;
   topic_title?: string;
-  user_avatar?: string;
-  user_nickname?: string;
+  avatar?: string;
+  nickname?: string;
   comment_content?: string;
   is_review?: number;
   created_at?: number;

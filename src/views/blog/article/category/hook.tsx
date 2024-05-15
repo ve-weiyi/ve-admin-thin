@@ -10,6 +10,7 @@ import {
   updateCategoryApi
 } from "@/api/category";
 import type { Category } from "@/api/types";
+import { formatDate } from "@/utils/formatDate.ts";
 
 const align = "center";
 
@@ -56,9 +57,7 @@ function getColumnFields(): Column[] {
       cellRenderer: (scope: any) => {
         return (
           <div>
-            <span>
-              {new Date(scope.row.created_at * 1000).toLocaleString()}
-            </span>
+            <span>{formatDate(scope.row.created_at)}</span>
           </div>
         );
       }

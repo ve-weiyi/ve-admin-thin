@@ -11,6 +11,7 @@ import {
   updateFriendLinkApi
 } from "@/api/friend_link";
 import type { FriendLink } from "@/api/types";
+import { formatDate } from "@/utils/formatDate.ts";
 
 const align = "center";
 
@@ -88,9 +89,7 @@ function getColumnFields(): Column[] {
             <el-icon class="table-icon">
               <Timer />
             </el-icon>
-            <span>
-              {new Date(scope.row.created_at * 1000).toLocaleString()}
-            </span>
+            <span>{formatDate(scope.row.created_at)}</span>
           </div>
         );
       }

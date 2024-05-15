@@ -9,6 +9,7 @@ import {
   findCommentBackListApi,
   updateCommentApi
 } from "@/api/comment";
+import { formatDate } from "@/utils/formatDate.ts";
 
 const align = "center";
 
@@ -55,15 +56,15 @@ function getColumnFields(): Column[] {
       cellRenderer: (scope: any) => {
         return (
           <div>
-            <img src={scope.row.user_avatar} width="40" height="40" />
+            <img src={scope.row.avatar} width="40" height="40" />
           </div>
         );
       }
     },
     {
-      key: "user_nickname",
+      key: "nickname",
       title: "评论人",
-      dataKey: "user_nickname",
+      dataKey: "nickname",
       width: 120,
       align: align
     },
@@ -135,9 +136,7 @@ function getColumnFields(): Column[] {
       cellRenderer: (scope: any) => {
         return (
           <div>
-            <span>
-              {new Date(scope.row.created_at * 1000).toLocaleString()}
-            </span>
+            <span>{formatDate(scope.row.created_at)}</span>
           </div>
         );
       }
