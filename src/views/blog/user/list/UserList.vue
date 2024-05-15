@@ -14,7 +14,7 @@
   </div>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import TablePage from "@/components/TablePage2/TablePage.vue";
 import { useTableHook } from "./hook";
 import { onMounted } from "vue";

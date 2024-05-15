@@ -18,8 +18,8 @@
         </el-form-item>
         <el-form-item class="align-right">
           <el-button type="primary" icon="Search" @click="refreshList">
-            搜索</el-button
-          >
+            搜索
+          </el-button>
           <el-button icon="Refresh" @click="resetSearch">重置</el-button>
         </el-form-item>
       </el-form>
@@ -127,8 +127,8 @@
                   @change="handleCheckAllFieldChange"
                 />
                 <el-button type="primary" link @click="resetTable">
-                  重置</el-button
-                >
+                  重置
+                </el-button>
               </div>
 
               <el-divider
@@ -255,8 +255,8 @@
       <template #footer>
         <el-button @click="cancelBatchDelete">取 消</el-button>
         <el-button type="primary" @click="confirmBatchDelete(selectionIds)">
-          确 定</el-button
-        >
+          确 定
+        </el-button>
       </template>
     </el-dialog>
 
@@ -487,7 +487,7 @@ function onUpdate(row: any) {
 
 function onDelete(id: number) {
   console.log("onDelete", id);
-  props.handleApi("delete", id).then(res => {
+  props.handleApi("delete", { id }).then(res => {
     ElMessage.success("删除成功");
     refreshList();
   });
@@ -725,7 +725,7 @@ function confirmBatchDelete(ids: number[]) {
 }
 
 function confirmDelete(id: number) {
-  onDelete({ id });
+  onDelete(id);
 }
 
 /** ******** end 批量删除 **********/

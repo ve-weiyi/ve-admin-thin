@@ -118,7 +118,7 @@
   </div>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { onMounted, ref, watch } from "vue";
 import Calender from "@/views/blog/home/components/Calender.vue";
 import LineChart from "@/views/blog/home/components/LineChart.vue";
@@ -179,10 +179,10 @@ const getData = () => {
     articleCount.value = res.data.article_count;
     articleStatisticsList.value = res.data.article_statistics_list;
 
-    if (res.data.unique_view_dto_list != null) {
+    if (res.data.unique_view_list != null) {
       const x = [];
       const y = [];
-      res.data.unique_view_dto_list.forEach(item => {
+      res.data.unique_view_list.forEach(item => {
         x.push(item.day);
         y.push(item.count);
       });
@@ -193,11 +193,11 @@ const getData = () => {
       };
     }
 
-    if (res.data.category_dto_list != null) {
+    if (res.data.category_list != null) {
       const series = [];
       const legend = [];
 
-      res.data.category_dto_list.forEach(item => {
+      res.data.category_list.forEach(item => {
         series.push({
           // value: item.article_count,
           value: 10,
@@ -212,10 +212,10 @@ const getData = () => {
       };
     }
 
-    if (res.data.article_rank_dto_list != null) {
+    if (res.data.article_view_rank_list != null) {
       const x = [];
       const y = [];
-      res.data.article_rank_dto_list.forEach(item => {
+      res.data.article_view_rank_list.forEach(item => {
         x.push(item.article_title);
         y.push(item.count);
       });
@@ -226,8 +226,8 @@ const getData = () => {
       };
     }
 
-    if (res.data.tag_dto_list != null) {
-      res.data.tag_dto_list.forEach(item => {
+    if (res.data.tag_list != null) {
+      res.data.tag_list.forEach(item => {
         tagDTOList.value.push({
           id: item.id,
           name: item.tag_name

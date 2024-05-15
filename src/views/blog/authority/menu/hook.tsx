@@ -1,4 +1,4 @@
-import { getCurrentInstance, h } from "vue";
+import { getCurrentInstance, h, onMounted } from "vue";
 import type { Column } from "element-plus";
 import { type FormField, RenderType } from "@/utils/render";
 import {
@@ -332,8 +332,12 @@ function handleApi(event: string, data: any) {
   }
 }
 
-let res = await findMenuListApi({});
-let parentOptions = res.data.list;
+let parentOptions = [];
+
+onMounted(async () => {
+  let res = await findMenuListApi({});
+  parentOptions = res.data.list;
+});
 
 export function useTableHook() {
   return {

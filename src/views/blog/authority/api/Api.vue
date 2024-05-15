@@ -9,7 +9,7 @@
       :handle-api="handleApi"
       table-name="接口"
     >
-      <template #operation="{ selectionIds, columnFieldsVisibility }">
+      <template #operation="">
         <el-button
           icon="CircleCheck"
           size="default"
@@ -23,7 +23,7 @@
   </div>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import TablePage from "@/components/TablePage2/TablePage.vue";
 import { useTableHook } from "./hook";
 import { onMounted, ref } from "vue";

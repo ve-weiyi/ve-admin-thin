@@ -102,11 +102,16 @@
     </el-dialog>
   </el-card>
 </template>
-<script lang="ts" setup>
+<script setup lang="ts">
 import { onMounted, reactive, ref } from "vue";
 import * as imageConversion from "image-conversion";
 import axios from "axios";
-import { ElMessage, ElNotification, UploadRequestOptions } from "element-plus";
+import {
+  ElMessage,
+  ElNotification,
+  UploadRawFile,
+  UploadRequestOptions
+} from "element-plus";
 import { findPageListApi } from "@/api/page";
 import "@/style/table.scss";
 import { Page } from "@/api/types";

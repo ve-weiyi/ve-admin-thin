@@ -29,10 +29,10 @@
   </div>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { defineComponent, ref, watch, watchEffect } from "vue";
 import { CheckboxValueType, ElTree } from "element-plus";
-import { MenuDetailsDTO } from "@/api/types";
+import { MenuDetails } from "@/api/types";
 
 // 父组件向子组件传输的数据
 const props = defineProps({
@@ -57,7 +57,7 @@ const emit = defineEmits(["changeRow"]);
 
 const filterText = ref("");
 const treeRef = ref<InstanceType<typeof ElTree>>();
-const treeData = ref<MenuDetailsDTO[]>(props.treeData);
+const treeData = ref<MenuDetails[]>(props.treeData);
 const defaultCheckIds = ref([]);
 const treeProps = ref({
   children: "children",

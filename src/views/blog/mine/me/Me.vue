@@ -21,9 +21,6 @@
               <el-form-item label="邮箱">
                 <el-input v-model="infoForm.email" size="default" />
               </el-form-item>
-              <el-form-item label="手机号">
-                <el-input v-model="infoForm.phone" size="default" />
-              </el-form-item>
               <el-form-item label="个人简介">
                 <el-input v-model="infoForm.intro" size="default" />
               </el-form-item>
@@ -87,7 +84,7 @@
   </div>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { onMounted, ref } from "vue";
 import { ElMessage } from "element-plus";
 import axios from "axios";

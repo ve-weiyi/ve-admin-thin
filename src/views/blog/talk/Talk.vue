@@ -111,7 +111,7 @@
   </div>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { computed, onMounted, ref } from "vue";
 import * as imageConversion from "image-conversion";
 import EmojiList from "@/assets/emojis/qq_emoji.json";

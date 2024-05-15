@@ -253,7 +253,7 @@
   </div>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { computed, onMounted, ref } from "vue";
 import { useTableHook } from "./photo";
 import { useRoute } from "vue-router";

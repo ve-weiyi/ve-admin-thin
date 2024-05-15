@@ -12,26 +12,26 @@
       :tab-list="tabList"
       table-name="评论管理"
     >
-      <template #operation="{ selectionIds, columnFieldsVisibility }">
-        <el-button
-          v-if="
-            columnFieldsVisibility.filter(item => item === 'selection').length >
-            0
-          "
-          :disabled="selectionIds.length === 0"
-          icon="CircleCheck"
-          size="default"
-          type="success"
-          @click="1"
-        >
-          批量通过
-        </el-button>
-      </template>
+      <!--      <template #operation="{ selectionIds, columnFieldsVisibility }">-->
+      <!--        <el-button-->
+      <!--          v-if="-->
+      <!--            columnFieldsVisibility.filter(item => item === 'selection').length >-->
+      <!--            0-->
+      <!--          "-->
+      <!--          :disabled="selectionIds.length === 0"-->
+      <!--          icon="CircleCheck"-->
+      <!--          size="default"-->
+      <!--          type="success"-->
+      <!--          @click="1"-->
+      <!--        >-->
+      <!--          批量通过-->
+      <!--        </el-button>-->
+      <!--      </template>-->
     </TablePage>
   </div>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import TablePage from "@/components/TablePage2/TablePage.vue";
 import { useTableHook } from "./hook";
 import { onMounted } from "vue";

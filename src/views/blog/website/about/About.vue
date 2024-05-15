@@ -27,7 +27,7 @@
     </el-card>
   </div>
 </template>
-<script lang="ts" setup>
+<script setup lang="ts">
 import { onMounted, ref } from "vue";
 import { ElNotification } from "element-plus";
 import { MdEditor } from "md-editor-v3";
@@ -54,7 +54,7 @@ const onUploadImg = async (files, callback) => {
           file_size: file.size,
           file_md5: ""
         };
-        uploadFileApi(file)
+        uploadFileApi(data)
           .then(res => rev(res))
           .catch(error => rej(error));
       });

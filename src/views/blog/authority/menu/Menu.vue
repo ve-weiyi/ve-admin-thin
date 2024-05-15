@@ -32,7 +32,7 @@
   </div>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { onMounted, ref } from "vue";
 import { useTableHook } from "./hook";
 import MenuForm from "./form.vue";

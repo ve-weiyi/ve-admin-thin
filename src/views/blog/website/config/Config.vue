@@ -206,8 +206,8 @@
                   @on-success="handleWeiXinSuccess"
                 >
                   <img
-                    v-if="websiteConfigForm.wei_xin_qr_code"
-                    :src="websiteConfigForm.wei_xin_qr_code"
+                    v-if="websiteConfigForm.weixin_qr_code"
+                    :src="websiteConfigForm.weixin_qr_code"
                     class="avatar"
                   />
                   <i v-else class="el-icon-plus avatar-uploader-icon" />
@@ -268,12 +268,13 @@
   </el-card>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { onMounted, ref } from "vue";
 import { ElMessage } from "element-plus";
 import { getWebsiteConfigApi, updateWebsiteConfigApi } from "@/api/website";
+import { WebsiteConfig } from "@/api/types.ts";
 
-const websiteConfigForm = ref({
+const websiteConfigForm = ref<WebsiteConfig>({
   website_avatar: "",
   website_name: "",
   website_author: "",
@@ -289,7 +290,7 @@ const websiteConfigForm = ref({
   user_avatar: "",
   tourist_avatar: "",
   is_reward: 1,
-  wei_xin_qr_code: "",
+  weixin_qr_code: "",
   alipay_qr_code: "",
   is_chat_room: 1,
   websocket_url: "",
@@ -335,7 +336,7 @@ function handleTouristAvatarSuccess(response) {
 }
 
 function handleWeiXinSuccess(response) {
-  websiteConfigForm.value.wei_xin_qr_code = response.data;
+  websiteConfigForm.value.weixin_qr_code = response.data;
 }
 
 function handleAlipaySuccess(response) {

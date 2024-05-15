@@ -6,7 +6,7 @@
   />
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import * as echarts from "echarts";
 import { EChartsOption } from "echarts";
 import {

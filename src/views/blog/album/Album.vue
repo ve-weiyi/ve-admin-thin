@@ -172,7 +172,7 @@
   </div>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { computed } from "vue";
 import { useTableHook } from "./album";
 import { useRouter } from "vue-router";

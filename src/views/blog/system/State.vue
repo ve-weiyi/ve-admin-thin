@@ -141,13 +141,13 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { getSystemStateApi } from "@/api/website";
 import { onUnmounted, ref } from "vue";
 
-const timer = ref(null);
-const state = ref({});
-const colors = ref([
+const timer = ref<any>(null);
+const state = ref<any>({});
+const colors = ref<any>([
   { color: "#5cb87a", percentage: 20 },
   { color: "#e6a23c", percentage: 40 },
   { color: "#f56c6c", percentage: 80 }
@@ -168,12 +168,6 @@ onUnmounted(() => {
   clearInterval(timer.value);
   timer.value = null;
 });
-</script>
-
-<script>
-export default {
-  name: "State"
-};
 </script>
 
 <style>
