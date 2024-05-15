@@ -4,7 +4,9 @@ import { type FormField, RenderType } from "@/utils/render";
 import { FixedDir } from "element-plus/es/components/table-v2/src/constants";
 import { Timer } from "@element-plus/icons-vue";
 
-import JsonViewer from "vue-json-viewer";
+// https://github.com/leezng/vue-json-pretty
+import VueJsonPretty from "vue-json-pretty";
+import "vue-json-pretty/lib/styles.css";
 
 import {
   createOperationLogApi,
@@ -265,11 +267,11 @@ function getFormFields(model: OperationLog): FormField[] {
       label: "请求参数",
       render: (field, model) => {
         return (
-          <JsonViewer
-            value={JSON.parse(model.request_data)}
-            copyable
-            boxed
-            expanded
+          <VueJsonPretty
+            data={JSON.parse(model.request_data)}
+            showIcon
+            collapsedNodeLength={5}
+            theme="light"
           />
         );
       }
@@ -279,11 +281,11 @@ function getFormFields(model: OperationLog): FormField[] {
       label: "返回数据",
       render: (field, model) => {
         return (
-          <JsonViewer
-            value={JSON.parse(model.response_data)}
-            copyable
-            boxed
-            expanded
+          <VueJsonPretty
+            data={JSON.parse(model.response_data)}
+            showIcon
+            collapsedNodeLength={5}
+            theme="light"
           />
         );
       }
