@@ -12,6 +12,7 @@ import {
 export default ({ mode }: ConfigEnv): UserConfigExport => {
   const { VITE_CDN, VITE_PORT, VITE_COMPRESSION, VITE_PUBLIC_PATH } =
     wrapperEnv(loadEnv(mode, root));
+  const env = loadEnv(mode, root);
   return {
     base: VITE_PUBLIC_PATH,
     root,
@@ -37,10 +38,16 @@ export default ({ mode }: ConfigEnv): UserConfigExport => {
       strictPort: false,
       /** 接口代理 */
       proxy: {
+        // mock代理
+        "/mock": {
+          target: env.VITE_MOCK_PROXY_URL,
+          ws: false,
+          changeOrigin: true,
+          rewrite: path => path.replace("", "")
+        },
         // 前缀
         "/api": {
-          target: "http://127.0.0.1:9999/", // 代理后的地址 =target/path
-          // target: "https://veweiyi.cn:9999/", // 代理后的地址 =target/path
+          target: env.VITE_API_PROXY_URL, // 代理后的地址 =target/path
           ws: true,
           /** 是否允许跨域 */
           changeOrigin: true,
@@ -60,6 +67,10 @@ export default ({ mode }: ConfigEnv): UserConfigExport => {
       sourcemap: false,
       // 消除打包大小超过500kb警告
       chunkSizeWarningLimit: 4000,
+      /** 打包文件的输出目录,默认值为 dist */
+      outDir: env.VITE_BUILD_OUTPUT_DIR,
+      /** 打包后静态资源目录 */
+      assetsDir: "assets",
       rollupOptions: {
         input: {
           index: pathResolve("./index.html", import.meta.url)
