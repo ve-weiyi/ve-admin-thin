@@ -1,6 +1,5 @@
 import { type FormField, RenderType } from "@/utils/render";
 import type { Column } from "element-plus";
-import { Timer } from "@element-plus/icons-vue";
 
 const align = "center";
 
@@ -136,15 +135,12 @@ function getColumnFields(
       key: "created_at",
       title: "创建时间",
       dataKey: "created_at",
-      width: 0,
+      width: 120,
       align: align,
       sortable: true,
       cellRenderer: (row: any) => {
         return (
           <div>
-            <el-icon class="table-icon">
-              <Timer />
-            </el-icon>
             <span>{new Date(row.created_at).toLocaleDateString()}</span>
           </div>
         );

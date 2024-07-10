@@ -14,10 +14,10 @@ export default {
     {
       path: "/example1",
       name: "example1",
-      component: () => import("@/views/blog/example/Example.vue"),
+      component: () => import("@/views/blog/test/Example.vue"),
       meta: {
         title: "测试",
-        showLink: true
+        showLink: false
       }
     }
   ]

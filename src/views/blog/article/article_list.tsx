@@ -1,10 +1,9 @@
 import { type FormField, RenderType } from "@/utils/render";
 import { type Column, ElMessage } from "element-plus";
-import { Timer } from "@element-plus/icons-vue";
 import {
   deleteArticleApi,
   findArticleListApi,
-  preDeleteArticleApi,
+  recycleArticleApi,
   topArticleApi
 } from "@/api/article";
 import { getCurrentInstance } from "vue";
@@ -62,14 +61,14 @@ function getColumnFields(): Column[] {
       key: "category_name",
       title: "分类",
       dataKey: "category_name",
-      width: 0,
+      width: 90,
       align: align
     },
     {
       key: "tag_name_list",
       title: "标签",
       dataKey: "tag_name_list",
-      width: 180,
+      width: 160,
       align: align,
       cellRenderer: (scope: any) => {
         return (
@@ -85,19 +84,19 @@ function getColumnFields(): Column[] {
       key: "views_count",
       title: "浏览量",
       dataKey: "views_count",
-      width: 0,
+      width: 70,
       align: align
     },
     {
       key: "like_count",
       title: "点赞量",
       dataKey: "like_count",
-      width: 120,
+      width: 70,
       align: align
     },
     {
       key: "type",
-      title: "文章类型",
+      title: "类型",
       dataKey: "type",
       width: 0,
       align: align,
@@ -142,15 +141,12 @@ function getColumnFields(): Column[] {
       key: "created_at",
       title: "创建时间",
       dataKey: "created_at",
-      width: 0,
+      width: 120,
       align: align,
       sortable: true,
       cellRenderer: (scope: any) => {
         return (
           <div>
-            <el-icon class="table-icon">
-              <Timer />
-            </el-icon>
             <span>{formatDate(scope.row.created_at)}</span>
           </div>
         );
@@ -168,6 +164,9 @@ function getColumnFields(): Column[] {
             {scope.row.is_delete === 0 && (
               <div>
                 <el-button
+                  text
+                  class="table-text-button"
+                  icon="edit"
                   type="primary"
                   size="default"
                   onClick={() => {
@@ -176,11 +175,15 @@ function getColumnFields(): Column[] {
                 >
                   编辑
                 </el-button>
-                <el-popconfirm
-                  title="确定删除吗？"
-                  onConfirm={() => {
+                <el-button
+                  text
+                  class="table-text-button"
+                  icon="delete"
+                  type="danger"
+                  size="default"
+                  onClick={() => {
                     // 逻辑删除
-                    preDeleteArticleApi({
+                    recycleArticleApi({
                       id: scope.row.id,
                       is_delete: 1
                     }).then(res => {
@@ -189,23 +192,38 @@ function getColumnFields(): Column[] {
                     });
                   }}
                 >
-                  {{
-                    reference: () => (
-                      <el-button type="danger" size="default">
-                        删除
-                      </el-button>
-                    )
-                  }}
-                </el-popconfirm>
+                  删除
+                </el-button>
               </div>
             )}
             {scope.row.is_delete === 1 && (
               <div>
-                <el-popconfirm
-                  title="确定恢复吗？"
-                  onConfirm={() => {
+                <el-button
+                  text
+                  class="table-text-button"
+                  icon="delete"
+                  type="danger"
+                  size="default"
+                  onClick={() => {
+                    // 物理删除
+                    deleteArticleApi(scope.row.id).then(res => {
+                      ElMessage.success("删除成功");
+                      instance.exposed.refreshList();
+                    });
+                  }}
+                >
+                  销毁
+                </el-button>
+
+                <el-button
+                  text
+                  class="table-text-button"
+                  icon="finished"
+                  type="success"
+                  size="default"
+                  onClick={() => {
                     // 逻辑删除
-                    preDeleteArticleApi({
+                    recycleArticleApi({
                       id: scope.row.id,
                       is_delete: 0
                     }).then(res => {
@@ -214,32 +232,8 @@ function getColumnFields(): Column[] {
                     });
                   }}
                 >
-                  {{
-                    reference: () => (
-                      <el-button type="success" size="default">
-                        恢复
-                      </el-button>
-                    )
-                  }}
-                </el-popconfirm>
-                <el-popconfirm
-                  title="确定彻底删除吗？"
-                  onConfirm={() => {
-                    // 物理删除
-                    deleteArticleApi(scope.row.id).then(res => {
-                      ElMessage.success("删除成功");
-                      instance.exposed.refreshList();
-                    });
-                  }}
-                >
-                  {{
-                    reference: () => (
-                      <el-button type="danger" size="default">
-                        删除
-                      </el-button>
-                    )
-                  }}
-                </el-popconfirm>
+                  恢复
+                </el-button>
               </div>
             )}
           </div>

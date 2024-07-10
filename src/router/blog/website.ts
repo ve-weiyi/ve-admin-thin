@@ -12,6 +12,36 @@ export default {
   },
   children: [
     {
+      path: "/albums/list",
+      name: "Albums",
+      component: () => import("@/views/blog/website/album/Album.vue"),
+      meta: { title: "相册管理" }
+    },
+    {
+      path: "/albums/:id",
+      name: "Photo",
+      component: () => import("@/views/blog/website/album/Photo.vue"),
+      meta: { title: "相册详情", showLink: false }
+    },
+    {
+      path: "/albums/photo/delete",
+      name: "Delete",
+      component: () => import("@/views/blog/website/album/Delete.vue"),
+      meta: { title: "相片回收站", showLink: false }
+    },
+    {
+      path: "/talk/list",
+      component: () => import("@/views/blog/website/talk/TalkList.vue"),
+      name: "talk_list",
+      meta: { title: "说说管理" }
+    },
+    {
+      path: "/message/links",
+      component: () => import("@/views/blog/website/link/FriendLink.vue"),
+      name: "links",
+      meta: { title: "友链管理" }
+    },
+    {
       path: "/website/config",
       component: () => import("@/views/blog/website/config/Config.vue"),
       name: "Config",

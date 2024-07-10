@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import { store } from "@/store";
-import type { LoginResp, Token, UserInfo } from "@/api/types";
+import type { LoginResp, Token, UserInfoResp } from "@/api/types";
 import cookies from "@/utils/cookies";
 import { useMultiTagsStoreHook } from "@/store/modules/multiTags";
 import { routerArrays } from "@/layout/types";
@@ -10,17 +10,15 @@ const useAdminStore = defineStore({
   id: "admin",
   state: (): {
     verifyCode: string;
-    userInfo: UserInfo;
+    userInfo: UserInfoResp;
   } => ({
     verifyCode: "",
-    userInfo: cookies.getItem<UserInfo>("user_info") || {}
+    userInfo: cookies.getItem<UserInfoResp>("user_info") || {}
   }),
   actions: {
     login(login: LoginResp) {
       cookies.setItem("token", login.token);
-      cookies.setItem("user_info", login.user_info);
       console.log("token", cookies.getItem<Token>("token"));
-      console.log("user_info", cookies.getItem<UserInfo>("user_info"));
     },
     logout() {
       cookies.clear();
@@ -35,13 +33,10 @@ const useAdminStore = defineStore({
     getToken(): Token {
       return cookies.getItem<Token>("token");
     },
-    getUserInfo(): UserInfo {
-      return cookies.getItem<UserInfo>("user_info");
+    getUserInfo(): UserInfoResp {
+      return cookies.getItem<UserInfoResp>("user_info");
     },
-    updateAvatar(avatar) {
-      this.avatar = avatar;
-    },
-    updateUserInfo(user: UserInfo) {
+    setUserInfo(user: UserInfoResp) {
       cookies.setItem("user_info", user);
     }
   }

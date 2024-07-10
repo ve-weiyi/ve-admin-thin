@@ -90,15 +90,15 @@ import { ElMessage } from "element-plus";
 import axios from "axios";
 import { useAdminStoreHook } from "@/store/modules/admin";
 import { uploadFileApi } from "@/api/file";
-import { UserInfo } from "@/api/types";
-import { getUserInfoApi, updateUserInfoApi } from "@/api/mine";
+import { UserInfoReq } from "@/api/types";
+import { getUserInfoApi, updateUserInfoApi } from "@/api/account";
 import AvatarCropper from "./AvatarCropper.vue";
 
 // 获取缓存信息
 const store = useAdminStoreHook();
 
 const activeName = ref("info");
-const infoForm = ref<UserInfo>({});
+const infoForm = ref<UserInfoReq>({});
 const passwordForm = ref({
   oldPassword: "",
   newPassword: "",
@@ -130,7 +130,7 @@ function confirmUpload(file: Blob) {
 
 const getUserInfo = () => {
   getUserInfoApi().then(res => {
-    store.updateUserInfo(res.data);
+    store.setUserInfo(res.data);
     infoForm.value = res.data;
   });
 };

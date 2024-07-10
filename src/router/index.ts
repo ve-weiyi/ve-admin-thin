@@ -15,14 +15,9 @@ import {
   getHistoryMode,
   getTopMenu,
   handleAliveRoute,
-  initRouter
+  initRouter,
 } from "./utils";
-import {
-  createRouter,
-  type RouteComponent,
-  type Router,
-  type RouteRecordRaw
-} from "vue-router";
+import { createRouter, type RouteComponent, type Router, type RouteRecordRaw } from "vue-router";
 import { useAdminStoreHook } from "@/store/modules/admin";
 
 /** 自动导入全部静态路由，无需再手动引入！匹配 src/router/modules 目录（任何嵌套级别）中具有 .ts 扩展名的所有文件，除了 remaining.ts 文件
@@ -107,7 +102,7 @@ router.beforeEach((to: ToRouteType, _from, next) => {
       handleAliveRoute(to);
     }
   }
-  const userInfo = useAdminStoreHook().getUserInfo();
+  const tk = useAdminStoreHook().getToken();
   NProgress.start();
   const externalLink = isUrl(to?.name as string);
   if (!externalLink) {
@@ -129,7 +124,7 @@ router.beforeEach((to: ToRouteType, _from, next) => {
     whiteList.includes(to.fullPath) ? next(_from.fullPath) : next();
   }
 
-  if (userInfo) {
+  if (tk) {
     // 无权限跳转403页面
     // if (
     //   to.meta?.roles &&

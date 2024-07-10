@@ -2,7 +2,6 @@ import { getCurrentInstance } from "vue";
 import type { Column } from "element-plus";
 import { type FormField, RenderType } from "@/utils/render";
 import { FixedDir } from "element-plus/es/components/table-v2/src/constants";
-import { Timer } from "@element-plus/icons-vue";
 
 // https://github.com/leezng/vue-json-pretty
 import VueJsonPretty from "vue-json-pretty";
@@ -136,9 +135,6 @@ function getColumnFields(): Column[] {
       cellRenderer: (scope: any) => {
         return (
           <div>
-            <el-icon class="table-icon">
-              <Timer />
-            </el-icon>
             <span>{formatDate(scope.row.created_at)}</span>
           </div>
         );
@@ -158,7 +154,7 @@ function getColumnFields(): Column[] {
               class="table-text-button"
               type="primary"
               size="small"
-              icon="view"
+              icon="edit"
               onClick={() => instance.exposed.openForm(scope.row)}
             >
               查看

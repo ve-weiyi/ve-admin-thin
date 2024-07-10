@@ -76,7 +76,7 @@ defineOptions({
           <template v-if="item.field">
             <component
               :is="builderFormRender(item, searchData)"
-              class="!w-[180px]"
+              class="!w-[150px]"
               style="justify-content: center; align-items: center"
             />
           </template>

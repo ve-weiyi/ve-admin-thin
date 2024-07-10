@@ -22,12 +22,6 @@ export default {
       component: () => import("@/views/blog/message/remark/Remark.vue"),
       name: "remark",
       meta: { title: "留言管理", keepAlive: true }
-    },
-    {
-      path: "/message/links",
-      component: () => import("@/views/blog/message/link/FriendLink.vue"),
-      name: "links",
-      meta: { title: "友链管理", keepAlive: true }
     }
   ]
 } satisfies RouteConfigsTable;

@@ -1,7 +1,6 @@
 import { getCurrentInstance } from "vue";
 import { type Column, ElTag } from "element-plus";
 import { type FormField, RenderType } from "@/utils/render";
-import { Timer } from "@element-plus/icons-vue";
 
 import {
   createRemarkApi,
@@ -105,9 +104,6 @@ function getColumnFields(): Column[] {
       cellRenderer: (scope: any) => {
         return (
           <div>
-            <el-icon class="table-icon">
-              <Timer />
-            </el-icon>
             <span>{formatDate(scope.row.created_at)}</span>
           </div>
         );

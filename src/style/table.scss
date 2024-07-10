@@ -37,8 +37,8 @@
 
 //表头加粗，显示card标题
 .table-title {
-  margin-left: 0rem;
-  margin-top: 0rem;
+  margin-left: 0;
+  margin-top: 0;
   font-size: 16px;
   font-weight: bold;
   color: #202a34;
@@ -71,7 +71,7 @@
   align-items: center;
   justify-content: space-between;
   margin-bottom: 0.5rem;
-  margin-top: 0.1rem;
+  margin-top: 0.5rem;
 }
 
 .pagination-container {
@@ -166,10 +166,10 @@
 }
 
 .table-text-button {
-  font-size: 12px;
+  font-size: 14px;
   font-weight: bold;
-  margin-left: 2px !important;
-  padding: 2px !important;
+  margin-left: 4px !important;
+  padding: 4px !important;
 }
 
 .table-tag {

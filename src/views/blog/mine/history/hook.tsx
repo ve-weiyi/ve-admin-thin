@@ -5,7 +5,7 @@ import { type FormField, RenderType } from "@/utils/render";
 import {
   deleteUserLoginHistoryListApi,
   findUserLoginHistoryListApi
-} from "@/api/mine";
+} from "@/api/account";
 import type { LoginHistory } from "@/api/types";
 
 const align = "center";
