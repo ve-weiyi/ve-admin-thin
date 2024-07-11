@@ -15,10 +15,15 @@ import {
   getHistoryMode,
   getTopMenu,
   handleAliveRoute,
-  initRouter,
+  initRouter
 } from "./utils";
-import { createRouter, type RouteComponent, type Router, type RouteRecordRaw } from "vue-router";
-import { useAdminStoreHook } from "@/store/modules/admin";
+import {
+  createRouter,
+  type RouteComponent,
+  type Router,
+  type RouteRecordRaw
+} from "vue-router";
+import { useAdminStoreHook } from "@/store/blog/admin.ts";
 
 /** 自动导入全部静态路由，无需再手动引入！匹配 src/router/modules 目录（任何嵌套级别）中具有 .ts 扩展名的所有文件，除了 remaining.ts 文件
  * 如何匹配所有文件请看：https://github.com/mrmlnc/fast-glob#basic-syntax
@@ -31,6 +36,7 @@ const modules: Record<string, any> = import.meta.glob(
   }
 );
 
+// import { routes } from "./constants.ts";
 /** 原始静态路由（未做任何处理） */
 const routes = [];
 
@@ -95,6 +101,7 @@ const whiteList = ["/login"];
 const { VITE_HIDE_HOME } = import.meta.env;
 
 router.beforeEach((to: ToRouteType, _from, next) => {
+  console.log("to.path", to.path);
   if (to.meta?.keepAlive) {
     handleAliveRoute(to, "add");
     // 页面整体刷新和点击标签页刷新
@@ -102,7 +109,7 @@ router.beforeEach((to: ToRouteType, _from, next) => {
       handleAliveRoute(to);
     }
   }
-  const tk = useAdminStoreHook().getToken();
+
   NProgress.start();
   const externalLink = isUrl(to?.name as string);
   if (!externalLink) {
@@ -124,6 +131,7 @@ router.beforeEach((to: ToRouteType, _from, next) => {
     whiteList.includes(to.fullPath) ? next(_from.fullPath) : next();
   }
 
+  const tk = useAdminStoreHook().getToken();
   if (tk) {
     // 无权限跳转403页面
     // if (
@@ -149,10 +157,7 @@ router.beforeEach((to: ToRouteType, _from, next) => {
       }
     } else {
       // 刷新
-      if (
-        usePermissionStoreHook().wholeMenus.length === 0 &&
-        to.path !== "/login"
-      ) {
+      if (useAdminStoreHook().getUserInfo() == null && to.path !== "/login") {
         initRouter().then((router: Router) => {
           if (!useMultiTagsStoreHook().getMultiTagsCache) {
             const { path } = to;
@@ -186,7 +191,26 @@ router.beforeEach((to: ToRouteType, _from, next) => {
             router.push(to.fullPath);
           }
         });
+
+        // 获取用户信息
+        // getUserInfoApi()
+        //   .then(res => {
+        //     console.log("getUserInfoApi res", res);
+        //     useAdminStoreHook().setUserInfo(res.data);
+        //     // 获取用户菜单信息
+        //     getUserMenusApi().then(res => {
+        //       console.log("getUserMenusApi res", res);
+        //       // handleAsyncRoutes(res.data.list);
+        //       // usePermissionStoreHook().handleWholeMenus(res.data.list);
+        //       // next({ ...to, replace: true });
+        //     });
+        //   })
+        //   .catch(err => {
+        //     useAdminStoreHook().logout();
+        //     // next({ path: "/login" });
+        //   });
       }
+
       toCorrectRoute();
     }
   } else {

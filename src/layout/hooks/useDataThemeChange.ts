@@ -13,7 +13,7 @@ import {
   lighten,
   toggleTheme
 } from "@pureadmin/theme/dist/browser-utils";
-import { useAdminStoreHook } from "@/store/modules/admin";
+import { useAdminStoreHook } from "@/store/blog/admin.ts";
 
 export function useDataThemeChange() {
   const { layoutTheme, layout } = useLayout();

@@ -32,7 +32,7 @@ import Check from "@iconify-icons/ep/check";
 import User from "@iconify-icons/ri/user-3-fill";
 import Info from "@iconify-icons/ri/information-line";
 import { loginApi } from "@/api/auth";
-import { useAdminStoreHook } from "@/store/modules/admin.ts";
+import { useAdminStoreHook } from "@/store/blog/admin.ts";
 
 defineOptions({
   name: "Login"
@@ -76,7 +76,9 @@ const onLogin = async (formEl: FormInstance | undefined) => {
           // 获取后端路由
           initRouter().then(() => {
             // 跳转到首页
-            router.push({ path: "/welcome" });
+            router.push({ path: "/welcome" }).then(() => {
+              message(t("login.pureLoginSuccess"), { type: "success" });
+            });
           });
         })
         .catch(err => {

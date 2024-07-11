@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { useRouter } from "vue-router";
-import noExist from "@/assets/status/404.svg?component";
+import noAccess from "./status/403.svg?component";
 
 defineOptions({
-  name: "404"
+  name: "403"
 });
 
 const router = useRouter();
@@ -11,7 +11,7 @@ const router = useRouter();
 
 <template>
   <div class="flex justify-center items-center h-[640px]">
-    <noExist />
+    <noAccess />
     <div class="ml-12">
       <p
         v-motion
@@ -28,7 +28,7 @@ const router = useRouter();
           }
         }"
       >
-        404
+        403
       </p>
       <p
         v-motion
@@ -45,7 +45,7 @@ const router = useRouter();
           }
         }"
       >
-        抱歉，你访问的页面不存在
+        抱歉，你无权访问该页面
       </p>
       <el-button
         v-motion

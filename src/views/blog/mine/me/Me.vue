@@ -88,7 +88,7 @@
 import { onMounted, ref } from "vue";
 import { ElMessage } from "element-plus";
 import axios from "axios";
-import { useAdminStoreHook } from "@/store/modules/admin";
+import { useAdminStoreHook } from "@/store/blog/admin.ts";
 import { uploadFileApi } from "@/api/file";
 import { UserInfoReq } from "@/api/types";
 import { getUserInfoApi, updateUserInfoApi } from "@/api/account";

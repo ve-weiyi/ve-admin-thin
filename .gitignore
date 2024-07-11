@@ -21,3 +21,4 @@ tests/**/coverage/
 *.sln
 tsconfig.tsbuildinfo
 /admin/
+_test

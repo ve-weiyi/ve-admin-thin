@@ -86,15 +86,19 @@ function getColumnFields(): Column[] {
         return (
           <el-switch
             v-model={scope.row.status}
-            active-value={1}
-            inactive-value={0}
+            active-value={0}
+            inactive-value={1}
             active-color="#13ce66"
-            inactive-color="#cccccc"
-            active-text="禁用"
-            inactive-text="正常"
+            inactive-color="#ff4949"
+            active-text="正常"
+            inactive-text="禁用"
             inline-prompt
             onChange={() => {
-              updateUserStatusApi(scope.row).then(res => {
+              let data = {
+                user_id: scope.row.id,
+                status: scope.row.status
+              };
+              updateUserStatusApi(data).then(res => {
                 ElMessage.success("更新状态成功");
               });
             }}

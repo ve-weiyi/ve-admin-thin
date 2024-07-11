@@ -221,11 +221,16 @@ function initRouter() {
     }
   } else {
     return new Promise(resolve => {
-      // getUserMenusApi().then(res => {
-      //   handleAsyncRoutes(cloneDeep(res.data.list));
-      //   resolve(router);
+      // getUserInfoApi().then(res => {
+      //   console.log("getUserInfoApi res", res);
+      //   useAdminStoreHook().setUserInfo(res.data);
+      //   // 获取用户菜单信息
+      //   getUserMenusApi().then(res => {
+      //     console.log("getUserMenusApi res", res);
+      //     handleAsyncRoutes(res.data.list);
+      //     resolve(router);
+      //   });
       // });
-
       getAsyncRoutes().then(({ data }) => {
         handleAsyncRoutes(cloneDeep(data));
         resolve(router);
@@ -429,6 +434,7 @@ export {
   getParentPaths,
   findRouteByPath,
   handleAliveRoute,
+  handleAsyncRoutes,
   formatTwoStageRoutes,
   formatFlatteningRoutes,
   filterNoPermissionTree

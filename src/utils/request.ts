@@ -4,7 +4,7 @@ import axios, {
   type InternalAxiosRequestConfig
 } from "axios";
 import { ElMessage, ElNotification } from "element-plus";
-import { useAdminStoreHook } from "@/store/modules/admin";
+import { useAdminStoreHook } from "@/store/blog/admin.ts";
 
 import MD5 from "crypto-js/md5";
 

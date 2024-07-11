@@ -7,10 +7,11 @@ import {
   topArticleApi
 } from "@/api/article";
 import { getCurrentInstance } from "vue";
-import router from "@/router";
 import { formatDate } from "@/utils/formatDate.ts";
+import { useRouter } from "vue-router";
 
 const align = "center";
+const router = useRouter();
 
 const typeOptions = (type: number) => {
   switch (type) {
