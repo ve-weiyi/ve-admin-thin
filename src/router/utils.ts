@@ -1,33 +1,37 @@
 import {
-  createWebHashHistory,
-  createWebHistory,
-  type RouteComponent,
+  type RouterHistory,
   type RouteRecordRaw,
-  type RouterHistory
+  type RouteComponent,
+  createWebHistory,
+  createWebHashHistory
 } from "vue-router";
 import { router } from "./index";
 import { isProxy, toRaw } from "vue";
 import { useTimeoutFn } from "@vueuse/core";
 import {
-  cloneDeep,
-  intersection,
-  isAllEmpty,
-  isIncludeAllChildren,
   isString,
-  storageLocal
+  cloneDeep,
+  isAllEmpty,
+  intersection,
+  storageLocal,
+  isIncludeAllChildren
 } from "@pureadmin/utils";
 import { getConfig } from "@/config";
 import { buildHierarchyTree } from "@/utils/tree";
-import { type DataInfo, userKey } from "@/utils/auth";
+import { userKey, type DataInfo } from "@/utils/auth";
 import { type menuType, routerArrays } from "@/layout/types";
 import { useMultiTagsStoreHook } from "@/store/modules/multiTags";
 import { usePermissionStoreHook } from "@/store/modules/permission";
-// 动态路由
-import { getAsyncRoutes } from "@/api/routes";
+import { getUserInfoApi, getUserMenusApi } from "@/api/account.ts";
+import { useAdminStoreHook } from "@/store/blog/admin.ts";
 
+const Layout = () => import("@/layout/index.vue");
 const IFrame = () => import("@/layout/frame.vue");
 // https://cn.vitejs.dev/guide/features.html#glob-import
 const modulesRoutes = import.meta.glob("/src/views/**/*.{vue,tsx}");
+
+// 动态路由
+import { getAsyncRoutes } from "@/api/routes";
 
 function handRank(routeInfo: any) {
   const { name, path, parentId, meta } = routeInfo;
@@ -186,6 +190,7 @@ function handleAsyncRoutes(routeList) {
         }
       }
     );
+    console.log("routeList", router.getRoutes());
     usePermissionStoreHook().handleWholeMenus(routeList);
   }
   if (!useMultiTagsStoreHook().getMultiTagsCache) {
@@ -221,22 +226,42 @@ function initRouter() {
     }
   } else {
     return new Promise(resolve => {
-      // getUserInfoApi().then(res => {
-      //   console.log("getUserInfoApi res", res);
-      //   useAdminStoreHook().setUserInfo(res.data);
-      //   // 获取用户菜单信息
-      //   getUserMenusApi().then(res => {
-      //     console.log("getUserMenusApi res", res);
-      //     handleAsyncRoutes(res.data.list);
-      //     resolve(router);
-      //   });
-      // });
       getAsyncRoutes().then(({ data }) => {
-        handleAsyncRoutes(cloneDeep(data));
-        resolve(router);
+        // handleAsyncRoutes(cloneDeep(data));
+        // resolve(router);
+        getUserInfoApi().then(res => {
+          console.log("getUserInfoApi res", res);
+          useAdminStoreHook().setUserInfo(res.data);
+          // 获取用户菜单信息
+          getUserMenusApi().then(res => {
+            console.log("getUserMenusApi res", res);
+            handleAsyncRoutes(snakeToCamel(res.data.list));
+            resolve(router);
+          });
+        });
       });
     });
   }
+}
+
+function snakeToCamel(obj: any) {
+  return Object.keys(obj).reduce(
+    (acc, key) => {
+      let value = obj[key];
+      if (Array.isArray(value)) {
+        value = value.map(snakeToCamel);
+      } else if (typeof value === "object" && value !== null) {
+        value = snakeToCamel(value);
+      }
+
+      let camelKey = key.replace(/(_[a-z])/g, match =>
+        match.substr(1).toUpperCase()
+      );
+      acc[camelKey] = value;
+      return acc;
+    },
+    Array.isArray(obj) ? [] : {}
+  );
 }
 
 /**
@@ -321,9 +346,10 @@ function handleAliveRoute({ name }: ToRouteType, mode?: string) {
       }, 100);
   }
 }
-
+console.log("modulesRoutesKeys--->", modulesRoutes);
 /** 过滤后端传来的动态路由 重新生成规范路由 */
 function addAsyncRoutes(arrRoutes: Array<RouteRecordRaw>) {
+  // console.log("arrRoutes", arrRoutes);
   if (!arrRoutes || !arrRoutes.length) {
     return;
   }
@@ -342,11 +368,19 @@ function addAsyncRoutes(arrRoutes: Array<RouteRecordRaw>) {
     if (v.meta?.frameSrc) {
       v.component = IFrame;
     } else {
+      // console.log("in v.component--->", v.component, v.path);
       // 对后端传component组件路径和不传做兼容（如果后端传component组件路径，那么path可以随便写，如果不传，component组件路径会跟path保持一致）
       const index = v?.component
-        ? modulesRoutesKeys.findIndex(ev => ev.includes(v.component as any))
-        : modulesRoutesKeys.findIndex(ev => ev.includes(v.path));
+        ? modulesRoutesKeys.findIndex(ev => {
+            let component = v.component as any;
+            return ev.includes(component) || component.includes(ev);
+          })
+        : modulesRoutesKeys.findIndex(ev => {
+            return ev.includes(v.path as any);
+          });
+
       v.component = modulesRoutes[modulesRoutesKeys[index]];
+      console.log("v.component--->", v.component);
     }
     if (v?.children && v.children.length) {
       addAsyncRoutes(v.children);

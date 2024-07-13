@@ -8,10 +8,9 @@ import {
 } from "@/api/article";
 import { getCurrentInstance } from "vue";
 import { formatDate } from "@/utils/formatDate.ts";
-import { useRouter } from "vue-router";
+import router from "@/router";
 
 const align = "center";
-const router = useRouter();
 
 const typeOptions = (type: number) => {
   switch (type) {

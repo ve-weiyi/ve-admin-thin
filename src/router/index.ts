@@ -1,4 +1,5 @@
 // import "@/utils/sso";
+import Cookies from "js-cookie";
 import { getConfig } from "@/config";
 import NProgress from "@/utils/progress";
 import { transformI18n } from "@/plugins/i18n";
@@ -6,22 +7,23 @@ import { buildHierarchyTree } from "@/utils/tree";
 import remainingRouter from "./modules/remaining";
 import { useMultiTagsStoreHook } from "@/store/modules/multiTags";
 import { usePermissionStoreHook } from "@/store/modules/permission";
-import { isAllEmpty, isUrl, openLink } from "@pureadmin/utils";
+import { isUrl, openLink, storageLocal, isAllEmpty } from "@pureadmin/utils";
 import {
   ascending,
-  findRouteByPath,
-  formatFlatteningRoutes,
-  formatTwoStageRoutes,
-  getHistoryMode,
   getTopMenu,
+  initRouter,
+  isOneOfArray,
+  getHistoryMode,
+  findRouteByPath,
   handleAliveRoute,
-  initRouter
+  formatTwoStageRoutes,
+  formatFlatteningRoutes
 } from "./utils";
 import {
-  createRouter,
-  type RouteComponent,
   type Router,
-  type RouteRecordRaw
+  createRouter,
+  type RouteRecordRaw,
+  type RouteComponent
 } from "vue-router";
 import { useAdminStoreHook } from "@/store/blog/admin.ts";
 
@@ -30,7 +32,8 @@ import { useAdminStoreHook } from "@/store/blog/admin.ts";
  * 如何排除文件请看：https://cn.vitejs.dev/guide/features.html#negative-patterns
  */
 const modules: Record<string, any> = import.meta.glob(
-  ["./blog/**/*.ts", "./modules/**/*.ts", "!./modules/**/remaining.ts"],
+  ["./modules/**/*.ts", "!./modules/**/remaining.ts"],
+  // ["./blog/**/*.ts", "./modules/**/*.ts", "!./modules/**/remaining.ts"],
   {
     eager: true
   }
@@ -114,18 +117,13 @@ router.beforeEach((to: ToRouteType, _from, next) => {
   const externalLink = isUrl(to?.name as string);
   if (!externalLink) {
     to.matched.some(item => {
-      if (!item.meta.title) {
-        return "";
-      }
+      if (!item.meta.title) return "";
       const Title = getConfig().Title;
-      if (Title) {
+      if (Title)
         document.title = `${transformI18n(item.meta.title)} | ${Title}`;
-      } else {
-        document.title = transformI18n(item.meta.title);
-      }
+      else document.title = transformI18n(item.meta.title);
     });
   }
-
   /** 如果已经登录并存在登录信息后不能跳转到路由白名单，而是继续保持在当前页面 */
   function toCorrectRoute() {
     whiteList.includes(to.fullPath) ? next(_from.fullPath) : next();
@@ -134,13 +132,7 @@ router.beforeEach((to: ToRouteType, _from, next) => {
   const tk = useAdminStoreHook().getToken();
   if (tk) {
     // 无权限跳转403页面
-    // if (
-    //   to.meta?.roles &&
-    //   !isOneOfArray(
-    //     to.meta?.roles,
-    //     userInfo?.roles.map(v => v.role_name)
-    //   )
-    // ) {
+    // if (to.meta?.roles && !isOneOfArray(to.meta?.roles, userInfo?.roles)) {
     //   next({ path: "/error/403" });
     // }
     // 开启隐藏首页后在浏览器地址栏手动输入首页welcome路由则跳转到404页面
@@ -157,7 +149,10 @@ router.beforeEach((to: ToRouteType, _from, next) => {
       }
     } else {
       // 刷新
-      if (useAdminStoreHook().getUserInfo() == null && to.path !== "/login") {
+      if (
+        usePermissionStoreHook().wholeMenus.length === 0 &&
+        to.path !== "/login"
+      ) {
         initRouter().then((router: Router) => {
           if (!useMultiTagsStoreHook().getMultiTagsCache) {
             const { path } = to;
@@ -187,30 +182,9 @@ router.beforeEach((to: ToRouteType, _from, next) => {
             }
           }
           // 确保动态路由完全加入路由列表并且不影响静态路由（注意：动态路由刷新时router.beforeEach可能会触发两次，第一次触发动态路由还未完全添加，第二次动态路由才完全添加到路由列表，如果需要在router.beforeEach做一些判断可以在to.name存在的条件下去判断，这样就只会触发一次）
-          if (isAllEmpty(to.name)) {
-            router.push(to.fullPath);
-          }
+          if (isAllEmpty(to.name)) router.push(to.fullPath);
         });
-
-        // 获取用户信息
-        // getUserInfoApi()
-        //   .then(res => {
-        //     console.log("getUserInfoApi res", res);
-        //     useAdminStoreHook().setUserInfo(res.data);
-        //     // 获取用户菜单信息
-        //     getUserMenusApi().then(res => {
-        //       console.log("getUserMenusApi res", res);
-        //       // handleAsyncRoutes(res.data.list);
-        //       // usePermissionStoreHook().handleWholeMenus(res.data.list);
-        //       // next({ ...to, replace: true });
-        //     });
-        //   })
-        //   .catch(err => {
-        //     useAdminStoreHook().logout();
-        //     // next({ path: "/login" });
-        //   });
       }
-
       toCorrectRoute();
     }
   } else {
@@ -218,7 +192,7 @@ router.beforeEach((to: ToRouteType, _from, next) => {
       if (whiteList.indexOf(to.path) !== -1) {
         next();
       } else {
-        useAdminStoreHook().logout();
+        useAdminStoreHook().removeToken();
         next({ path: "/login" });
       }
     } else {

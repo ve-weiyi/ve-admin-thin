@@ -62,7 +62,9 @@ const ruleForm = reactive({
 });
 
 const onLogin = async (formEl: FormInstance | undefined) => {
-  if (!formEl) return;
+  if (!formEl) {
+    return;
+  }
   await formEl.validate((valid, fields) => {
     if (valid) {
       loading.value = true;
@@ -72,7 +74,7 @@ const onLogin = async (formEl: FormInstance | undefined) => {
           console.log("res", res);
           message("登录成功", { type: "success" });
           // 保存token
-          useAdminStoreHook().login(res.data);
+          useAdminStoreHook().setToken(res.data.token);
           // 获取后端路由
           initRouter().then(() => {
             // 跳转到首页
@@ -96,8 +98,9 @@ const immediateDebounce: any = debounce(
 );
 
 useEventListener(document, "keypress", ({ code }) => {
-  if (code === "Enter" && !disabled.value && !loading.value)
+  if (code === "Enter" && !disabled.value && !loading.value) {
     immediateDebounce(ruleFormRef.value);
+  }
 });
 </script>
 

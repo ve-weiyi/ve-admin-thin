@@ -75,7 +75,7 @@ requests.interceptors.response.use(
         });
         break;
       case 402:
-        useAdminStoreHook().logout();
+        useAdminStoreHook().removeToken();
         ElNotification({
           title: "登录过期",
           message: response.data.message,

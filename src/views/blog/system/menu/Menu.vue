@@ -40,7 +40,6 @@ import { formRules } from "./utils/rule.ts";
 
 import TablePage from "@/components/TablePage2/TablePage.vue";
 import { ElMessage, ElMessageBox } from "element-plus";
-import { constantMenus } from "@/router";
 import { cleanMenuListApi, syncMenuListApi } from "@/api/menu.ts";
 import { RouteConfigsTable } from "@/api/types.ts";
 
@@ -55,6 +54,9 @@ const {
 const defaultOrder = { id: "asc" };
 const formRef = ref(null);
 const tableRef = ref<InstanceType<typeof TablePage>>();
+const dynamicMenus: Record<string, any> = import.meta.glob(
+  "@/router/blog/**.vue"
+);
 
 function Clean(evt: MouseEvent) {
   ElMessageBox.confirm(
@@ -92,7 +94,7 @@ function Sync(evt: MouseEvent) {
     }
   )
     .then(() => {
-      const menus = constantMenus as RouteConfigsTable[];
+      const menus = dynamicMenus as RouteConfigsTable[];
       syncMenuListApi({ menus: convertMenu(menus) }).then(res => {
         ElMessage.success("同步成功");
       });
@@ -101,7 +103,7 @@ function Sync(evt: MouseEvent) {
       ElMessage.warning("同步取消");
     });
 
-  console.log("menu-->", constantMenus);
+  console.log("menu-->", dynamicMenus);
 }
 
 function convertMenu(menus: RouteConfigsTable[]) {

@@ -1,14 +1,14 @@
 import { defineStore } from "pinia";
 import {
-  ascending,
   type cacheType,
-  constantMenus,
+  store,
   debounce,
-  filterNoPermissionTree,
-  filterTree,
-  formatFlatteningRoutes,
+  ascending,
   getKeyList,
-  store
+  filterTree,
+  constantMenus,
+  filterNoPermissionTree,
+  formatFlatteningRoutes
 } from "../utils";
 import { useMultiTagsStoreHook } from "./multiTags";
 
@@ -27,15 +27,22 @@ export const usePermissionStore = defineStore({
   actions: {
     /** 组装整体路由生成的菜单 */
     handleWholeMenus(routes: any[]) {
-      this.wholeMenus = filterNoPermissionTree(
-        filterTree(ascending(this.constantMenus.concat(routes)))
+      routes = routes.filter(v => {
+        for (const c of this.constantMenus) {
+          if (v.path == c.path) {
+            console.log("this.path", v.path == c.path, v.path, c.path);
+            return false;
+          }
+        }
+        return true;
+      });
+
+      this.wholeMenus = filterTree(
+        ascending(this.constantMenus.concat(routes))
       );
       this.flatteningRoutes = formatFlatteningRoutes(
         this.constantMenus.concat(routes)
       );
-
-      console.log("this.wholeMenus", this.wholeMenus);
-      console.log("this.flatteningRoutes", this.flatteningRoutes);
     },
     cacheOperate({ mode, name }: cacheType) {
       const delIndex = this.cachePageList.findIndex(v => v === name);
