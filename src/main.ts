@@ -34,6 +34,8 @@ import "tippy.js/dist/tippy.css";
 import "tippy.js/themes/light.css";
 import VueTippy from "vue-tippy";
 import { loadPlugins } from "@/plugins";
+import Echarts from "@/components/Echarts/index.vue";
+import SvgIcon from "@/components/SvgIcon/index.vue";
 
 const app = createApp(App);
 
@@ -44,6 +46,8 @@ Object.keys(directives).forEach(key => {
 app.component("IconifyIconOffline", IconifyIconOffline);
 app.component("IconifyIconOnline", IconifyIconOnline);
 app.component("FontIcon", FontIcon);
+app.component("Echarts", Echarts);
+app.component("svg-icon", SvgIcon);
 
 app.component("Auth", Auth);
 

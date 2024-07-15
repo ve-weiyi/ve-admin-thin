@@ -1,6 +1,5 @@
-
 export interface AboutMe {
-  content?: string; 
+  content?: string;
 }
 
 export interface AdminHomeInfo {
@@ -37,7 +36,7 @@ export interface ApiDetails {
   status?: number; // 状态 1开，2关
   created_at?: number; // 创建时间
   updated_at?: number; // 更新时间
-  children?: ApiDetails[]; 
+  children?: ApiDetails[];
 }
 
 export interface ArticleBackDTO {
@@ -82,7 +81,7 @@ export interface ArticleRecycleReq {
 }
 
 export interface ArticleStatisticsDTO {
-  day?: string; // 日期
+  date?: string; // 日期
   count?: number; // 数量
 }
 
@@ -98,7 +97,7 @@ export interface ArticleViewRankDTO {
 }
 
 export interface BatchResp {
-  success_count?: number; 
+  success_count?: number;
 }
 
 export interface BlogHomeInfo {
@@ -118,27 +117,27 @@ export interface Category {
 }
 
 export interface CategoryDTO {
-  id?: number; 
+  id?: number;
   category_name?: string; // 分类名
 }
 
 export interface CategoryDetails {
-  id?: number; 
+  id?: number;
   category_name?: string; // 分类名
-  article_count?: number; 
+  article_count?: number;
   created_at?: number; // 创建时间
   updated_at?: number; // 更新时间
 }
 
 export interface CommentBackDTO {
-  id?: number; 
-  type?: number; 
-  topic_title?: string; 
+  id?: number;
+  type?: number;
+  topic_title?: string;
   nickname?: string; // 用户昵称
   avatar?: string; // 用户头像
-  comment_content?: string; 
-  is_review?: number; 
-  created_at?: number; 
+  comment_content?: string;
+  is_review?: number;
+  created_at?: number;
 }
 
 export interface CommentDTO {
@@ -200,17 +199,15 @@ export interface CommentReply {
 }
 
 export interface CommentUserInfo {
-  id?: number; 
-  nickname?: string; 
-  avatar?: string; 
-  website?: string; 
+  id?: number;
+  nickname?: string;
+  avatar?: string;
+  website?: string;
 }
 
-export interface EmptyReq {
-}
+export interface EmptyReq {}
 
-export interface EmptyResp {
-}
+export interface EmptyResp {}
 
 export interface FriendLink {
   id?: number; // id
@@ -223,15 +220,15 @@ export interface FriendLink {
 }
 
 export interface IdReq {
-  id?: number; 
+  id?: number;
 }
 
 export interface IdsReq {
-  ids?: number[]; 
+  ids?: number[];
 }
 
 export interface LoginHistory {
-  id?: number; 
+  id?: number;
   login_type?: string; // 登录类型
   agent?: string; // 代理
   ip_address?: string; // ip host
@@ -240,13 +237,13 @@ export interface LoginHistory {
 }
 
 export interface LoginReq {
-  username?: string; 
-  password?: string; 
-  code?: string; 
+  username?: string;
+  password?: string;
+  code?: string;
 }
 
 export interface LoginResp {
-  token?: Token; 
+  token?: Token;
 }
 
 export interface MenuDetails {
@@ -259,13 +256,12 @@ export interface MenuDetails {
   component?: string; // Layout组件
   redirect?: string; // 路由重定向
   meta?: Meta; // meta配置
-  children?: MenuDetails[]; 
+  children?: MenuDetails[];
   created_at?: number; // 创建时间
   updated_at?: number; // 更新时间
 }
 
-export interface MenuPageQuery {
-}
+export interface MenuPageQuery {}
 
 export interface Meta {
   title?: string; // 菜单名称
@@ -328,26 +324,26 @@ export interface PageDTO {
 }
 
 export interface PageLimit {
-  page?: number; 
-  page_size?: number; 
+  page?: number;
+  page_size?: number;
 }
 
 export interface PageQuery {
-  page?: number; 
-  page_size?: number; 
-  sorts?: PageSort[]; 
-  conditions?: PageCondition[]; 
+  page?: number;
+  page_size?: number;
+  sorts?: PageSort[];
+  conditions?: PageCondition[];
 }
 
 export interface PageResp {
-  page?: number; 
-  page_size?: number; 
-  total?: number; 
-  list?: any; 
+  page?: number;
+  page_size?: number;
+  total?: number;
+  list?: any;
 }
 
 export interface PageSort {
-  field?: string; 
+  field?: string;
   order?: string; // asc | desc
 }
 
@@ -374,16 +370,15 @@ export interface PhotoAlbum {
   photo_count?: number; // 照片数量
 }
 
-export interface PingReq {
-}
+export interface PingReq {}
 
 export interface PingResp {
-  env?: string; 
-  name?: string; 
-  version?: string; 
-  runtime?: string; 
-  description?: string; 
-  rpc_status?: string[]; 
+  env?: string;
+  name?: string;
+  version?: string;
+  runtime?: string;
+  description?: string;
+  rpc_status?: string[];
 }
 
 export interface Remark {
@@ -400,20 +395,20 @@ export interface Remark {
 }
 
 export interface Response {
-  code?: number; 
-  message?: string; 
-  data?: any; 
-  trace_id?: string; 
+  code?: number;
+  message?: string;
+  data?: any;
+  trace_id?: string;
 }
 
 export interface RestHeader {
-  header_country?: string; 
-  header_language?: string; 
-  header_timezone?: string; 
-  header_app_name?: string; 
-  header_x_user_id?: string; 
-  header_x_auth_token?: string; 
-  header_terminal_id?: string; 
+  header_country?: string;
+  header_language?: string;
+  header_timezone?: string;
+  header_app_name?: string;
+  header_x_user_id?: string;
+  header_x_auth_token?: string;
+  header_terminal_id?: string;
 }
 
 export interface Role {
@@ -438,19 +433,19 @@ export interface RoleDetails {
   is_default?: number; // 是否默认角色 0否 1是
   created_at?: number; // 创建时间
   updated_at?: number; // 更新时间
-  menu_id_list?: number[]; 
-  api_id_list?: number[]; 
+  menu_id_list?: number[];
+  api_id_list?: number[];
 }
 
 export interface RoleLabel {
-  role_name?: string; 
-  role_comment?: string; 
+  role_name?: string;
+  role_comment?: string;
 }
 
 export interface RoleResourcesResp {
-  role_id?: number; 
-  api_ids?: number[]; 
-  menu_ids?: number[]; 
+  role_id?: number;
+  api_ids?: number[];
+  menu_ids?: number[];
 }
 
 export interface RouteConfigsTable {
@@ -464,7 +459,7 @@ export interface RouteConfigsTable {
 }
 
 export interface SyncMenuReq {
-  menus?: RouteConfigsTable[]; 
+  menus?: RouteConfigsTable[];
 }
 
 export interface Tag {
@@ -519,32 +514,32 @@ export interface Transition {
 }
 
 export interface UniqueViewDTO {
-  day?: string; // 日期
+  date?: string; // 日期
   count?: number; // 数量
 }
 
 export interface UpdateRoleApisReq {
-  role_id?: number; 
-  api_ids?: number[]; 
+  role_id?: number;
+  api_ids?: number[];
 }
 
 export interface UpdateRoleMenusReq {
-  role_id?: number; 
-  menu_ids?: number[]; 
+  role_id?: number;
+  menu_ids?: number[];
 }
 
 export interface UpdateUserRolesReq {
-  user_id?: number; 
-  role_ids?: number[]; 
+  user_id?: number;
+  role_ids?: number[];
 }
 
 export interface UpdateUserStatusReq {
-  user_id?: number; 
+  user_id?: number;
   status?: number; // 状态: -1删除 0正常 1禁用
 }
 
 export interface UploadFileReq {
-  label?: string; 
+  label?: string;
   file?: any; // 文件
   file_size?: number; // 文件大小
   file_md5?: string; // 文件md5值
@@ -563,19 +558,19 @@ export interface UploadFileResp {
 }
 
 export interface User extends UserInfoExt {
-  id?: number; 
-  username?: string; 
-  nickname?: string; 
-  avatar?: string; 
-  status?: number; 
-  login_type?: string; 
+  id?: number;
+  username?: string;
+  nickname?: string;
+  avatar?: string;
+  status?: number;
+  login_type?: string;
   ip_address?: string; // ip host
   ip_source?: string; // ip 源
-  created_at?: number; 
-  updated_at?: number; 
-  login_at?: number; 
-  logout_at?: number; 
-  roles?: RoleLabel[]; 
+  created_at?: number;
+  updated_at?: number;
+  login_at?: number;
+  logout_at?: number;
+  roles?: RoleLabel[];
 }
 
 export interface UserApi {
@@ -588,16 +583,16 @@ export interface UserApi {
   status?: number; // 状态 1开，2关
   created_at?: number; // 创建时间
   updated_at?: number; // 更新时间
-  children?: UserApi[]; 
+  children?: UserApi[];
 }
 
 export interface UserApisResp {
-  list?: UserApi[]; 
+  list?: UserApi[];
 }
 
 export interface UserArea {
-  name?: string; 
-  value?: number; 
+  name?: string;
+  value?: number;
 }
 
 export interface UserInfoExt {
@@ -629,7 +624,7 @@ export interface UserMenu {
   component?: string; // Layout组件
   redirect?: string; // 路由重定向
   meta?: UserMenuMeta; // meta配置
-  children?: UserMenu[]; 
+  children?: UserMenu[];
 }
 
 export interface UserMenuMeta {
@@ -651,7 +646,7 @@ export interface UserMenuMeta {
 }
 
 export interface UserMenusResp {
-  list?: UserMenu[]; 
+  list?: UserMenu[];
 }
 
 export interface UserRole {
@@ -664,12 +659,12 @@ export interface UserRole {
   is_default?: number; // 是否默认角色 0否 1是
   created_at?: number; // 创建时间
   updated_at?: number; // 更新时间
-  menu_id_list?: number[]; 
-  resource_id_list?: number[]; 
+  menu_id_list?: number[];
+  resource_id_list?: number[];
 }
 
 export interface UserRolesResp {
-  list?: UserRole[]; 
+  list?: UserRole[];
 }
 
 export interface WebsiteConfig {

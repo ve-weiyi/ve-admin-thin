@@ -13,6 +13,7 @@ import {
   nextTick,
   onBeforeUnmount,
   onMounted,
+  reactive,
   ref,
   Ref,
   ShallowRef,
@@ -54,44 +55,68 @@ const initChart = () => {
 
 const updateCharts = () => {
   option.value = {
+    xAxis: {
+      data: props.data.xAxis,
+      boundaryGap: false,
+      axisTick: {
+        show: false
+      }
+    },
+    grid: {
+      left: 8,
+      right: 35,
+      bottom: 0,
+      top: 30,
+      containLabel: true
+    },
     tooltip: {
       trigger: "axis",
       axisPointer: {
         type: "cross"
-      }
-    },
-    color: ["#3888fa"],
-    legend: {
-      data: ["访问量"]
-    },
-    grid: {
-      left: "0%",
-      right: "0%",
-      bottom: "0%",
-      top: "10%",
-      containLabel: true
-    },
-    xAxis: {
-      data: props.data.xAxis,
-      axisLine: {
-        lineStyle: {
-          color: "#666"
-        }
-      }
+      },
+      padding: [5, 10]
     },
     yAxis: {
-      axisLine: {
-        lineStyle: {
-          color: "#048CCE"
-        }
+      axisTick: {
+        show: false
       }
+    },
+    legend: {
+      data: ["访问量(PV)", "独立访客(UV)"]
     },
     series: [
       {
-        name: "访问量",
+        name: "访问量(PV)",
+        itemStyle: {
+          color: "#FF005A"
+        },
+        lineStyle: {
+          color: "#FF005A",
+          width: 2
+        },
+        smooth: true,
         type: "line",
         data: props.data.values,
-        smooth: true
+        animationDuration: 2800,
+        animationEasing: "cubicInOut"
+      },
+      {
+        name: "独立访客(UV)",
+        smooth: true,
+        type: "line",
+        itemStyle: {
+          color: "#3888fa"
+        },
+        lineStyle: {
+          color: "#3888fa",
+          width: 2
+        },
+        areaStyle: {
+          color: "#f3f8ff"
+        },
+        data: [] as number[],
+        animationDuration: 2800,
+        animationEasing: "quadraticOut"
       }
     ]
   };

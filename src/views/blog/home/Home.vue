@@ -1,240 +1,307 @@
 <template>
-  <div class="app-container">
-    <!-- 统计数据 -->
-    <el-row :gutter="30">
-      <el-col :span="6">
-        <el-card>
-          <div class="card-icon-container">
-            <i class="iconfont icon-user-fill" style="color: #40c9c6" />
+  <div class="dashboard-container">
+    <github-corner class="github-corner" />
+    <el-row :gutter="40" class="panel-group">
+      <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
+        <div class="card-panel">
+          <div class="card-panel-icon-wrapper icon-view">
+            <svg-icon
+              icon-class="button"
+              size="4em"
+              class-tagName="card-panel-icon"
+            />
           </div>
-          <div class="card-desc">
-            <div class="card-title">访问量</div>
-            <div class="card-count">{{ viewsCount }}</div>
+          <div class="card-panel-description">
+            <div class="card-panel-text">访问量</div>
+            <span class="card-panel-num">{{ viewCount }}</span>
           </div>
-        </el-card>
+        </div>
       </el-col>
-      <el-col :span="6">
-        <el-card>
-          <div class="card-icon-container">
-            <i class="iconfont icon-user-fill" style="color: #34bfa3" />
+      <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
+        <div class="card-panel">
+          <div class="card-panel-icon-wrapper icon-money">
+            <svg-icon
+              icon-class="edit"
+              size="3rem"
+              class-tagName="card-panel-icon"
+            />
           </div>
-          <div class="card-desc">
-            <div class="card-title">用户量</div>
-            <div class="card-count">{{ userCount }}</div>
+          <div class="card-panel-description">
+            <div class="card-panel-text">文章量</div>
+            <span class="card-panel-num">{{ articleCount }}</span>
           </div>
-        </el-card>
+        </div>
       </el-col>
-      <el-col :span="6">
-        <el-card>
-          <div class="card-icon-container">
-            <i class="iconfont icon-a-filelist-fill" style="color: #f4516c" />
+      <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
+        <div class="card-panel">
+          <div class="card-panel-icon-wrapper icon-people">
+            <svg-icon
+              icon-class="peoples"
+              size="4em"
+              lass-tagName="card-panel-icon"
+            />
           </div>
-          <div class="card-desc">
-            <div class="card-title">文章量</div>
-            <div class="card-count">{{ articleCount }}</div>
+          <div class="card-panel-description">
+            <div class="card-panel-text">用户量</div>
+            <span class="card-panel-num">{{ userCount }}</span>
           </div>
-        </el-card>
+        </div>
       </el-col>
-      <el-col :span="6">
-        <el-card>
-          <div class="card-icon-container">
-            <i class="iconfont icon-a-message3-fill" style="color: #36a3f7" />
+      <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
+        <div class="card-panel">
+          <div class="card-panel-icon-wrapper icon-message">
+            <svg-icon
+              icon-class="comment"
+              size="4em"
+              class-tagName="card-panel-icon"
+            />
           </div>
-          <div class="card-desc">
-            <div class="card-title">留言量</div>
-            <div class="card-count">{{ messageCount }}</div>
+          <div class="card-panel-description">
+            <div class="card-panel-text">留言量</div>
+            <span class="card-panel-num">{{ messageCount }}</span>
           </div>
-        </el-card>
+        </div>
       </el-col>
     </el-row>
-    <!-- 一周访问量展示 -->
-    <el-card style="margin-top: 1.25rem">
-      <div class="e-title">一周访问量</div>
-      <div style="height: 350px">
-        <LineChart v-loading="loading" :data="viewCountData" />
+    <el-row class="data-card">
+      <div class="title">一周访问量✨</div>
+      <Echarts :options="userView" height="350px" />
+    </el-row>
+
+    <el-row :gutter="32" style="margin-top: 32px">
+      <el-col :xs="24" :sm="24" :lg="8">
+        <div class="chart-wrapper">
+          <div class="title">文章浏览量排行🚀</div>
+          <Echarts :options="ariticleRank" height="350px" />
+        </div>
+      </el-col>
+      <el-col :xs="24" :sm="24" :lg="8">
+        <div class="chart-wrapper">
+          <div class="title">文章分类统计🍉</div>
+          <Echarts :options="category" height="350px" />
+        </div>
+      </el-col>
+      <el-col :xs="24" :sm="24" :lg="8">
+        <div class="chart-wrapper">
+          <div class="title">文章标签统计🌈</div>
+          <TagCloud v-if="tagLoad" :tag-list="tagList" />
+        </div>
+      </el-col>
+    </el-row>
+
+    <el-row class="data-card" style="margin-top: 32px">
+      <div class="title">文章贡献统计🎉</div>
+      <Calender style="width: 100%" :values="articleStatisticsList" />
+    </el-row>
+
+    <!-- 用户地域分布 -->
+    <el-card style="margin-top: 32px">
+      <div class="title">用户地域分布</div>
+      <div v-loading="loading" style="height: 450px">
+        <div class="chart-wrapper">
+          <el-radio-group v-model="type">
+            <el-radio :value="1">用户</el-radio>
+            <el-radio :value="2">游客</el-radio>
+          </el-radio-group>
+        </div>
+        <ChinaMap v-loading="loading" :data="areaData" />
       </div>
     </el-card>
-    <!-- 文章贡献统计 -->
-    <el-card style="margin-top: 1.25rem">
-      <div class="e-title">文章贡献统计</div>
-      <div v-loading="loading">
-        <Calender
-          v-loading="loading"
-          :data="articleStatisticsList"
-          end-date="2023-01-01"
-          start-date="2022-01-01"
-        />
-      </div>
-    </el-card>
-    <el-row :gutter="20" style="margin-top: 1.25rem">
-      <!-- 文章浏览量排行 -->
-      <el-col :span="16">
-        <el-card>
-          <div class="e-title">文章浏览量排行</div>
-          <div style="height: 350px">
-            <Rank v-loading="loading" :data="articleRankData" />
-            <!--            <v-chart :options="ariticleRank" v-loading="loading" />-->
-          </div>
-        </el-card>
-      </el-col>
-      <!-- 分类数据统计 -->
-      <el-col :span="8">
-        <el-card>
-          <div class="e-title">文章分类统计</div>
-          <div style="height: 350px">
-            <Category v-loading="loading" :data="categoryData" />
-            <!--            <v-chart :options="category"  />-->
-          </div>
-        </el-card>
-      </el-col>
-    </el-row>
-    <el-row :gutter="20" style="margin-top: 1.25rem">
-      <!-- 用户地域分布 -->
-      <el-col :span="12">
-        <el-card>
-          <div class="e-title">用户地域分布</div>
-          <div v-loading="loading" style="height: 350px">
-            <div class="area-wrapper">
-              <el-radio-group v-model="type">
-                <el-radio :label="1">用户</el-radio>
-                <el-radio :label="2">游客</el-radio>
-              </el-radio-group>
-            </div>
-            <ChinaMap v-loading="loading" :data="areaData" />
-            <!--            <v-chart :options="userAreaMap" />-->
-          </div>
-        </el-card>
-      </el-col>
-      <!-- 文章标签统计 -->
-      <el-col :span="12">
-        <el-card>
-          <div class="e-title">文章标签统计</div>
-          <div v-loading="loading" style="height: 350px">
-            <!--       <tag-cloud style="margin-top: 1.5rem" :values="tagDTOList" />-->
-          </div>
-        </el-card>
-      </el-col>
-    </el-row>
   </div>
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref, watch } from "vue";
+import GithubCorner from "@/components/GithubCorner/index.vue";
+import TagCloud from "@/components/TagCloud/index.vue";
 import Calender from "@/views/blog/home/components/Calender.vue";
-import LineChart from "@/views/blog/home/components/LineChart.vue";
 import ChinaMap from "@/views/blog/home/components/ChinaMap.vue";
-import Category from "@/views/blog/home/components/Category.vue";
-import Rank from "@/views/blog/home/components/Rank.vue";
-import { findUserAreasApi } from "@/api/account";
-import { getAdminHomeInfoApi } from "@/api/website";
 
-const viewsCount = ref(0);
-const messageCount = ref(0);
-const userCount = ref(0);
-const articleCount = ref(0);
-const articleStatisticsList = ref([]);
-const tagDTOList = ref([]);
+import { onMounted, reactive, ref } from "vue";
+import { getAdminHomeInfoApi } from "@/api/website.ts";
+import { ArticleStatisticsDTO, TagDTO, UserArea } from "@/api/types.ts";
+import { findUserAreasApi } from "@/api/account.ts";
+
 const loading = ref(true);
 
-const categoryData = ref<{
-  legendData: string[];
-  seriesData: number[];
-}>({
-  legendData: [],
-  seriesData: []
-});
+const tagList = ref<TagDTO[]>([]);
+const viewCount = ref(0);
+const messageCount = ref(0);
+const userCount = ref(0);
+const tagLoad = ref(false);
+const articleCount = ref(0);
+const articleStatisticsList = ref<ArticleStatisticsDTO[]>([]);
+const areaData = ref<UserArea[]>([]);
 
-const viewCountData = ref<{
-  xAxis: string[];
-  values: number[];
-}>({
-  xAxis: [],
-  values: []
+let userView = reactive({
+  xAxis: {
+    data: [] as string[],
+    boundaryGap: false,
+    axisTick: {
+      show: false
+    }
+  },
+  grid: {
+    left: 8,
+    right: 35,
+    bottom: 0,
+    top: 30,
+    containLabel: true
+  },
+  tooltip: {
+    trigger: "axis",
+    axisPointer: {
+      type: "cross"
+    },
+    padding: [5, 10]
+  },
+  yAxis: {
+    axisTick: {
+      show: false
+    }
+  },
+  legend: {
+    data: ["访问量(PV)", "独立访客(UV)"]
+  },
+  series: [
+    {
+      name: "访问量(PV)",
+      itemStyle: {
+        color: "#FF005A"
+      },
+      lineStyle: {
+        color: "#FF005A",
+        width: 2
+      },
+      smooth: true,
+      type: "line",
+      data: [] as number[],
+      animationDuration: 2800,
+      animationEasing: "cubicInOut"
+    },
+    {
+      name: "独立访客(UV)",
+      smooth: true,
+      type: "line",
+      itemStyle: {
+        color: "#3888fa"
+      },
+      lineStyle: {
+        color: "#3888fa",
+        width: 2
+      },
+      areaStyle: {
+        color: "#f3f8ff"
+      },
+      data: [] as number[],
+      animationDuration: 2800,
+      animationEasing: "quadraticOut"
+    }
+  ]
 });
-
-const articleRankData = ref<{
-  xAxis: string[];
-  values: number[];
-}>({
-  xAxis: [],
-  values: []
+let category = reactive({
+  tooltip: {
+    trigger: "item",
+    formatter: "{a} <br/>{b} : {c} ({d}%)"
+  },
+  legend: {
+    top: "bottom"
+  },
+  series: [
+    {
+      name: "分类统计",
+      type: "pie",
+      radius: [15, 95],
+      center: ["50%", "38%"],
+      roseType: "area",
+      itemStyle: {
+        borderRadius: 6
+      },
+      data: [] as {
+        value: number;
+        name: string;
+      }[]
+    }
+  ]
 });
-
-const areaData = ref<{
-  type: number;
-  data: { name?: string; value?: number }[];
-}>({
-  type: 1,
-  data: []
+let ariticleRank = reactive({
+  tooltip: {
+    trigger: "axis",
+    axisPointer: {
+      type: "shadow"
+    }
+  },
+  color: ["#58AFFF"],
+  grid: {
+    left: "0%",
+    right: "0%",
+    bottom: "0%",
+    top: "10%",
+    containLabel: true
+  },
+  xAxis: {
+    data: [] as string[],
+    axisTick: {
+      alignWithLabel: true
+    }
+  },
+  yAxis: {
+    type: "value",
+    axisTick: {
+      show: false
+    }
+  },
+  series: [
+    {
+      name: "浏览量",
+      type: "bar",
+      data: [] as number[]
+    }
+  ]
 });
-
-// 获取数据
-const getData = () => {
-  // 发送请求获取数据
+const getList = () => {
+  loading.value = true;
   getAdminHomeInfoApi().then(res => {
-    console.log("res", res);
-    viewsCount.value = res.data.views_count;
+    viewCount.value = res.data.views_count;
     messageCount.value = res.data.message_count;
     userCount.value = res.data.user_count;
     articleCount.value = res.data.article_count;
     articleStatisticsList.value = res.data.article_statistics_list;
-
+    if (res.data.category_list != null) {
+      res.data.category_list.forEach(item => {
+        category.series[0].data.push({
+          value: item.id,
+          name: item.category_name
+        });
+      });
+    }
+    if (res.data.tag_list != null) {
+      tagList.value = res.data.tag_list;
+      tagLoad.value = true;
+    }
+    if (res.data.article_view_rank_list != null) {
+      res.data.article_view_rank_list.forEach(item => {
+        ariticleRank.series[0].data.push(item.count);
+        ariticleRank.xAxis.data.push(item.article_title);
+      });
+    }
     if (res.data.unique_view_list != null) {
       const x = [];
       const y = [];
       res.data.unique_view_list.forEach(item => {
-        x.push(item.day);
+        x.push(item.date);
         y.push(item.count);
       });
 
-      viewCountData.value = {
-        xAxis: x,
-        values: y
-      };
+      userView.xAxis.data.push(...x);
+      userView.series[0].data.push(...y);
     }
-
-    if (res.data.category_list != null) {
-      const series = [];
-      const legend = [];
-
-      res.data.category_list.forEach(item => {
-        series.push({
-          // value: item.article_count,
-          value: 10,
-          name: item.category_name
-        });
-        legend.push(item.category_name);
-      });
-
-      categoryData.value = {
-        legendData: legend,
-        seriesData: series
-      };
-    }
-
-    if (res.data.article_view_rank_list != null) {
-      const x = [];
-      const y = [];
-      res.data.article_view_rank_list.forEach(item => {
-        x.push(item.article_title);
-        y.push(item.count);
-      });
-
-      articleRankData.value = {
-        xAxis: x,
-        values: y
-      };
-    }
-
-    if (res.data.tag_list != null) {
-      res.data.tag_list.forEach(item => {
-        tagDTOList.value.push({
-          id: item.id,
-          name: item.tag_name
-        });
-      });
-    }
-
+    // if (res.data.userViewVOList != null) {
+    //   res.data.userViewVOList.forEach((item) => {
+    //     userView.xAxis.data.push(item.date);
+    //     userView.series[0].data.push(item.pv);
+    //     userView.series[1].data.push(item.uv);
+    //   });
+    // }
     loading.value = false;
   });
 };
@@ -245,59 +312,152 @@ const listUserArea = () => {
   // 发送请求获取用户地域分布数据
   findUserAreasApi().then(res => {
     // userAreaMap.series[0].data = res.data
-    areaData.value.data = res.data.list;
+    areaData.value = res.data.list;
   });
 };
 
-// 在组件创建时获取数据
 onMounted(() => {
-  getData();
-  listUserArea();
-});
-
-// 监听type变化，重新获取用户地域分布数据
-watch(type, () => {
+  getList();
   listUserArea();
 });
 </script>
-
-<style scoped>
-.card-icon-container {
-  display: inline-block;
-  font-size: 3rem;
-}
-
-.area-wrapper {
-  display: flex;
-  justify-content: center;
-}
-
-.card-desc {
-  font-weight: bold;
-  float: right;
-}
-
-.card-title {
-  margin-top: 0.3rem;
-  line-height: 18px;
-  color: rgba(0, 0, 0, 0.45);
-  font-size: 1rem;
-}
-
-.card-count {
-  margin-top: 0.75rem;
-  color: #666;
-  font-size: 1.25rem;
-}
-
-.echarts {
-  width: 100%;
-  height: 100%;
-}
-
-.e-title {
-  font-size: 13px;
-  color: #202a34;
+<style lang="scss" scoped>
+.title {
+  font-size: 14px;
+  color: var(--el-text-color-secondary);
   font-weight: 700;
+}
+
+.data-card {
+  background: var(--el-bg-color-overlay);
+  padding: 1rem;
+}
+
+.dashboard-container {
+  padding: 32px;
+  background: var(--el-bg-color-page);
+  position: relative;
+
+  .github-corner {
+    position: absolute;
+    top: 0px;
+    border: 0;
+    right: 0;
+  }
+
+  .chart-wrapper {
+    background: var(--el-bg-color-overlay);
+    padding: 1rem;
+    //margin-bottom: 2rem;
+  }
+}
+
+.panel-group {
+  margin-top: 18px;
+
+  .card-panel-col {
+    margin-bottom: 32px;
+  }
+
+  .card-panel {
+    height: 108px;
+    cursor: pointer;
+    font-size: 12px;
+    position: relative;
+    overflow: hidden;
+    color: #666;
+    background: var(--el-bg-color-overlay);
+    box-shadow: 4px 4px 40px rgba(0, 0, 0, 0.05);
+    border-color: rgba(0, 0, 0, 0.05);
+
+    &:hover {
+      .card-panel-icon-wrapper {
+        color: #fff;
+      }
+
+      .icon-people {
+        background: #40c9c6;
+      }
+
+      .icon-message {
+        background: #36a3f7;
+      }
+
+      .icon-money {
+        background: #f4516c;
+      }
+
+      .icon-view {
+        background: #34bfa3;
+      }
+    }
+
+    .icon-people {
+      color: #40c9c6;
+    }
+
+    .icon-message {
+      color: #36a3f7;
+    }
+
+    .icon-money {
+      color: #f4516c;
+    }
+
+    .icon-view {
+      color: #34bfa3;
+    }
+
+    .card-panel-icon-wrapper {
+      float: left;
+      margin: 14px 0 0 14px;
+      padding: 16px;
+      transition: all 0.38s ease-out;
+      border-radius: 6px;
+    }
+
+    .card-panel-description {
+      float: right;
+      font-weight: bold;
+      margin: 26px;
+      margin-left: 0px;
+
+      .card-panel-text {
+        line-height: 18px;
+        color: var(--el-text-color-secondary);
+        font-size: 16px;
+        margin-bottom: 12px;
+      }
+
+      .card-panel-num {
+        font-size: 20px;
+      }
+    }
+  }
+}
+
+@media (max-width: 1024px) {
+  .chart-wrapper {
+    padding: 8px;
+  }
+}
+
+@media (max-width: 550px) {
+  .card-panel-description {
+    display: none;
+  }
+
+  .card-panel-icon-wrapper {
+    float: none !important;
+    width: 100%;
+    height: 100%;
+    margin: 0 !important;
+
+    .svg-icon {
+      display: block;
+      margin: 14px auto !important;
+      float: none !important;
+    }
+  }
 }
 </style>

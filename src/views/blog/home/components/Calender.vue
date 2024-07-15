@@ -1,58 +1,42 @@
 <template>
-  <div
-    ref="container"
-    :class="props.className"
-    :style="{ height: props.height, width: props.width }"
-  />
+  <div ref="chartDom" :style="{ width: width, height: height }" />
 </template>
 
 <script setup lang="ts">
+import { useResizeObserver } from "@vueuse/core";
 import * as echarts from "echarts";
-import { EChartsOption } from "echarts";
 import {
+  markRaw,
   nextTick,
   onBeforeUnmount,
   onMounted,
   ref,
-  Ref,
-  ShallowRef,
-  shallowRef,
+  watch,
   watchEffect
 } from "vue";
 
-type ECharts = echarts.ECharts;
+const chartDom = ref<HTMLElement>();
+const myChart = ref<echarts.EChartsType>();
 
 const props = defineProps({
-  data: {
-    type: Array as () => { day: string; count: number }[],
+  // options: {
+  //   type: Object,
+  //   default: {},
+  //   required: true
+  // },
+  values: {
+    type: Array as () => { date?: string; count?: number }[],
     default: () => [
-      { day: "2022-01-18", count: 100 },
-      { day: "2022-01-19", count: 100 }
+      { date: "2022-01-18", count: 100 },
+      { date: "2022-01-19", count: 100 }
     ]
   },
-  startDate: {
-    type: String,
-    default: () => {
-      const date = new Date();
-      console.log(
-        "startDate",
-        date.getFullYear(),
-        date.getMonth(),
-        date.getDate()
-      );
-      const year = date.getFullYear() - 1;
-      const month = date.getMonth() + 1;
-      const day = date.getDate() - 1;
-      return `${year}-${month}-${day}`;
-    }
+  rangeColor: {
+    type: Array as PropType<string[]>
   },
   endDate: {
-    type: String,
-    default: new Date().toISOString().slice(0, 10)
-  },
-  className: {
-    type: String,
-    default: "chart"
+    type: Date,
+    default: new Date()
   },
   width: {
     type: String,
@@ -64,31 +48,23 @@ const props = defineProps({
   }
 });
 
-const chart: ShallowRef<ECharts | null> = shallowRef(null);
-const container: Ref<HTMLElement | null> = ref(null);
-const option: Ref<EChartsOption | null> = shallowRef(null);
-
-const initChart = () => {
-  chart.value = echarts.init(container.value as HTMLElement);
-};
-
-const updateCharts = () => {
-  if (!chart.value) {
-    return;
-  }
+function newOptions() {
   const colorRange = ["#ebedf0", "#40c463", "#0be148", "#30a14e", "#216e39"];
-  const startYear = props.startDate.split("-")[0];
-  const endYear = props.endDate.split("-")[0];
+  const startYear = props.endDate.getFullYear() - 1;
+  const endYear = props.endDate.getFullYear();
   const rangeMin = 0;
   let rangeMax = 5;
 
+  const startDate = `${props.endDate.getFullYear() - 1}-${props.endDate.getMonth()}-${props.endDate.getDay()}`;
+  const endDate = `${props.endDate.getFullYear()}-${props.endDate.getMonth()}-${props.endDate.getDay()}`;
+
   const data: [string, number][] = [];
-  const date = +echarts.time.parse(props.startDate);
-  const end = +echarts.time.parse(props.endDate);
+  const date = +echarts.time.parse(startDate);
+  const end = +echarts.time.parse(endDate);
   const dayTime = 3600 * 24 * 1000;
   for (let time = date; time < end; time += dayTime) {
     const key = echarts.time.format(time, "{yyyy}-{MM}-{dd}", false);
-    const count = props.data.find(item => item.day === key)?.count || 0;
+    const count = props.values.find(item => item.date === key)?.count || 0;
     // Math.floor(Math.random() * rangeMax)]
     if (count > rangeMax) {
       rangeMax = count;
@@ -96,7 +72,7 @@ const updateCharts = () => {
     data.push([key, count]);
   }
 
-  option.value = {
+  const option = {
     title: {
       top: 30,
       left: "center",
@@ -131,7 +107,7 @@ const updateCharts = () => {
       left: 30,
       right: 30,
       cellSize: ["auto", 13],
-      range: [props.startDate, props.endDate],
+      range: [startDate, endDate],
       // 月份样式
       splitLine: {
         show: false
@@ -163,27 +139,45 @@ const updateCharts = () => {
     }
   };
 
-  chart.value.setOption(option.value);
-};
+  return option;
+}
+
+// watch(
+//   () => props.values,
+//   newValues => {
+//     console.log("newValues", newValues);
+//     myChart.value?.setOption(newOptions());
+//   },
+//   {
+//     deep: true
+//   }
+// );
 
 // watchEffect 会自动追踪依赖并在其变化时执行回调函数。
 watchEffect(() => {
-  if (!chart.value) {
+  if (!myChart.value) {
     return;
   }
-  updateCharts();
+  console.log("option.value", newOptions());
+  myChart.value?.setOption(newOptions());
 });
 
 onMounted(() => {
   nextTick(() => {
-    initChart();
+    myChart.value = markRaw(echarts.init(chartDom.value!));
+    myChart.value.setOption(newOptions(), true);
+    useResizeObserver(chartDom.value, () => {
+      myChart.value?.resize();
+    });
   });
 });
 onBeforeUnmount(() => {
-  if (!chart.value) {
+  if (!myChart.value) {
     return;
   }
-  chart.value.dispose();
-  chart.value = null;
+  myChart.value.dispose();
+  myChart.value = null;
 });
 </script>
+
+<style scoped></style>
