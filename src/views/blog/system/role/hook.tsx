@@ -13,31 +13,17 @@ import { formatDate } from "@/utils/formatDate.ts";
 
 const align = "center";
 
-const methodOpt = [
-  {
-    label: "GET",
-    value: "GET"
-  },
-  {
-    label: "POST",
-    value: "POST"
-  },
-  {
-    label: "PUT",
-    value: "PUT"
-  },
-  {
-    label: "DELETE",
-    value: "DELETE"
-  },
-  {
-    label: "NULL",
-    value: ""
-  }
-];
-
 function getSearchFields(): FormField[] {
   return [
+    {
+      type: RenderType.Input,
+      label: "角色标识",
+      field: "role_key",
+      searchRules: {
+        flag: "and",
+        rule: "like"
+      }
+    },
     {
       type: RenderType.Input,
       label: "角色名称",
@@ -49,23 +35,16 @@ function getSearchFields(): FormField[] {
     },
     {
       type: RenderType.Select,
-      label: "权限范围",
-      field: "role_domain",
-      options: methodOpt,
+      label: "角色状态",
+      field: "is_disable",
       searchRules: {
         flag: "and",
         rule: "="
-      }
-    },
-    {
-      type: RenderType.Select,
-      label: "权限标签",
-      field: "role_comment",
-      options: methodOpt,
-      searchRules: {
-        flag: "and",
-        rule: "like"
-      }
+      },
+      options: [
+        { label: "已启用", value: 0 },
+        { label: "已禁用", value: 1 }
+      ]
     }
   ];
 }
@@ -84,8 +63,13 @@ function getColumnFields(): Column[] {
       title: "id",
       dataKey: "id",
       width: 100,
-      align: align,
-      sortable: true
+      align: align
+    },
+    {
+      title: "角色标识",
+      dataKey: "role_name",
+      width: 120,
+      align: align
     },
     {
       title: "角色名称",
@@ -94,20 +78,14 @@ function getColumnFields(): Column[] {
       align: align
     },
     {
-      title: "角色范围",
-      dataKey: "role_domain",
-      width: 0,
-      align: align
-    },
-    {
-      title: "角色标签",
+      title: "角色备注",
       dataKey: "role_comment",
-      width: 120,
+      width: 0,
       align: align,
       sortable: true
     },
     {
-      title: "是否启用",
+      title: "状态",
       dataKey: "is_disable",
       width: 120,
       align: align,
@@ -120,10 +98,10 @@ function getColumnFields(): Column[] {
             v-model={scope.row.is_disable}
             active-color="#13ce66"
             inactive-color="#cccccc"
-            active-value={1}
-            inactive-value={0}
-            active-text="禁用"
-            inactive-text="启用"
+            active-value={0}
+            inactive-value={1}
+            active-text="已启用"
+            inactive-text="已禁用"
             inline-prompt
             onClick={() => {
               updateRoleApi(scope.row).then(res => {
@@ -165,7 +143,7 @@ function getColumnFields(): Column[] {
     {
       title: "创建时间",
       dataKey: "created_at",
-      width: 0,
+      width: 140,
       align: align,
       sortable: true,
       cellRenderer: (scope: any) => {
@@ -244,13 +222,13 @@ function getFormFields(row: any): FormField[] {
   return [
     {
       type: RenderType.Input,
-      field: "role_name",
-      label: "角色名称"
+      field: "role_key",
+      label: "角色标识"
     },
     {
       type: RenderType.Input,
-      field: "role_domain",
-      label: "权限访问"
+      field: "role_name",
+      label: "角色名称"
     },
     {
       type: RenderType.Input,

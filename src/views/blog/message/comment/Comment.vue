@@ -10,7 +10,8 @@
       :add-enable="false"
       :edit-enable="false"
       :tab-list="tabList"
-      table-name="评论管理"
+      table-name="评论"
+      table-title="评论列表"
     >
       <!--      <template #operation="{ selectionIds, columnFieldsVisibility }">-->
       <!--        <el-button-->
@@ -32,7 +33,7 @@
 </template>
 
 <script setup lang="ts">
-import TablePage from "@/components/TablePage2/TablePage.vue";
+import TablePage from "@/components/TablePage/TablePage.vue";
 import { useTableHook } from "./hook";
 import { onMounted } from "vue";
 

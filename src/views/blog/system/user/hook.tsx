@@ -199,6 +199,12 @@ findRoleListApi({}).then(res => {
 
 // 表单字段
 function getFormFields(model: any): FormField[] {
+  const ids: number[] = [];
+  model.roles?.forEach(item => {
+    ids.push(item.role_id);
+  });
+
+  model.role_ids = ids;
   return [
     {
       type: RenderType.Input,
@@ -207,7 +213,7 @@ function getFormFields(model: any): FormField[] {
     },
     {
       type: RenderType.MultiSelect,
-      field: "roles",
+      field: "role_ids",
       label: "角色",
       options: roleOptions
     }
@@ -221,7 +227,7 @@ function handleApi(event: string, data: any) {
     case "create":
       return null;
     case "update":
-      return updateUserRolesApi({ user_id: data.id, role_ids: data.roles });
+      return updateUserRolesApi({ user_id: data.id, role_ids: data.role_ids });
     case "delete":
       return null;
     case "deleteByIds":

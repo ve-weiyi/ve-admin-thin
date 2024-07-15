@@ -3,6 +3,7 @@
     <!-- 表格搜索条件 -->
     <VeTableSearch
       ref="searchRef"
+      v-model="searchData"
       :searchFields="searchFields"
       :loading="loading"
       @refresh="refreshList"
@@ -27,21 +28,13 @@
           新增{{ tableName }}
         </el-button>
       </template>
+
       <template v-slot="{ size, dynamicColumns }">
-        <!-- 表格菜单 -->
-        <div v-if="statusList.length !== 0" class="status-menu">
-          <span>状态</span>
-          <template v-for="item of statusList" :key="item.value">
-            <span
-              :class="isActive(item.value)"
-              @click="handleStatusCheck(item.value)"
-            >
-              {{ item.label }}
-            </span>
-          </template>
-        </div>
+        <slot name="table-top" />
+
+        <!-- 批量选择提示 -->
         <div
-          v-if="tableRef?.selectionIds.length > 0"
+          v-if="selectionIds.length > 0"
           class="bg-[var(--el-fill-color-light)] w-full h-[46px] mb-2 pl-4 flex items-center"
         >
           <div class="flex-auto">
@@ -49,7 +42,7 @@
               style="font-size: var(--el-font-size-base)"
               class="text-[rgba(42,46,54,0.5)] dark:text-[rgba(220,220,242,0.5)]"
             >
-              已选 {{ tableRef?.selectionIds.length }} 项
+              已选 {{ selectionIds.length }} 项
             </span>
             <el-button type="primary" text @click="cancelBatchDelete()">
               取消选择
@@ -66,18 +59,21 @@
                 size="default"
                 icon="Delete"
                 text
-                :disabled="tableRef?.selectionIds.length === 0"
+                :disabled="selectionIds.length === 0"
               >
                 批量删除
               </el-button>
             </template>
           </el-popconfirm>
         </div>
+
+        <!-- 表格 -->
         <VeTable
           ref="tableRef"
+          v-model="orderData"
+          v-model:selection-ids="selectionIds"
           row-key="id"
           :data="tableData"
-          :order-data="defaultOrder"
           :size="size"
           :columnFields="dynamicColumns"
           @refresh="refreshList"
@@ -89,6 +85,13 @@
             <slot :name="t.slot" :record="record" :value="value" />
           </template>
         </VeTable>
+
+        <!-- 分页 -->
+        <VeTablePagination
+          v-if="pageData.total > 0"
+          v-model="pageData"
+          @pagination="refreshList"
+        />
       </template>
     </VeTableBar>
 
@@ -134,14 +137,31 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted, reactive, ref } from "vue";
+import { computed, onMounted, reactive, ref, toRefs } from "vue";
 import { Column, ElMessage, FormInstance, FormRules } from "element-plus";
 import { builderFormRender, FormField } from "@/utils/render.tsx";
 import VeTable from "@/components/VeTable/Table.vue";
 import VeTableBar from "@/components/VeTable/TableBar.vue";
 import VeTableSearch from "@/components/VeTable/TableSearch.vue";
+import VeTablePagination from "@/components/VeTable/TablePagination.vue";
 import cloneDeep from "lodash/cloneDeep";
 import "@/style/table.scss";
+
+const data = reactive({
+  selectionIds: [],
+  pageData: {
+    currentPage: 1,
+    pageSize: 10,
+    total: 20
+  },
+  searchData: {} as any,
+  orderData: {} as any,
+  tableData: [],
+  formData: {} as any
+});
+
+const { selectionIds, pageData, searchData, orderData, tableData, formData } =
+  toRefs(data);
 
 const props = defineProps({
   getColumnFields: {
@@ -181,12 +201,6 @@ const props = defineProps({
   editEnable: {
     type: Boolean,
     default: true
-  },
-  statusList: {
-    type: Array<StatusTag>,
-    default: () => {
-      return [];
-    }
   }
 });
 
@@ -196,22 +210,106 @@ const loading = ref(false);
 
 // 表格结构定义
 const tableRef = ref();
-const tableData = ref<any[]>([]);
 const tableFields = ref<Column[]>(props.getColumnFields());
 
-/** ******** start 搜索 **********/
 // 搜索表单定义
-const searchRef = ref(null);
-const searchData = ref<any>({});
+const searchRef = ref();
 const searchFields = ref<FormField[]>(props.getSearchFields());
 
-/** ******** end 搜索 **********/
+/** ******** api 操作 **********/
+async function refreshList(query?: PageQuery): Promise<any> {
+  // const search = searchData.value;
+  // const order = tableRef.value?.getOrderData();
+  // const pagination = tableRef.value?.getPaginationData();
 
-/** ******** start 新增、修改 表单 **********/
+  console.log("refreshList", query);
+
+  const conditions: Condition[] = query?.conditions || [];
+  const sorts: Sort[] = query?.sorts || [];
+
+  // 搜索条件
+  for (const key in searchData.value) {
+    const item = searchFields.value.find(v => v.field === key);
+    const value = searchData.value[key];
+    if (value === "") {
+      continue;
+    }
+    conditions.push({
+      field: key,
+      value: value instanceof String ? value : JSON.stringify(value),
+      logic: item?.searchRules.flag || "and",
+      operator: item?.searchRules.rule || "="
+    });
+  }
+
+  // 排序条件
+  for (const key in orderData.value) {
+    const value = orderData.value[key];
+    sorts.push({
+      field: key,
+      order: value
+    });
+  }
+
+  const page: PageQuery = {
+    page: pageData.value.currentPage,
+    page_size: pageData.value.pageSize,
+    sorts: sorts,
+    conditions: conditions
+  };
+
+  loading.value = true;
+  return props.handleApi("list", page).then(res => {
+    if (res.data.page_size !== pageData.value.pageSize) {
+      pageData.value.currentPage = res.data.page;
+      pageData.value.pageSize = res.data.page_size;
+    }
+
+    tableData.value = res.data.list;
+    pageData.value.total = res.data.total;
+    loading.value = false;
+    // setTimeout(() => {
+    //   loading.value = false
+    // }, 300)
+  });
+}
+
+async function onCreate(row: any): Promise<any> {
+  console.log("onCreate", row);
+  return props.handleApi("create", row).then(res => {
+    ElMessage.success("创建成功");
+    refreshList();
+  });
+}
+
+async function onUpdate(row: any): Promise<any> {
+  console.log("onUpdate", row);
+  return props.handleApi("update", row).then(res => {
+    ElMessage.success("更新成功");
+    refreshList();
+  });
+}
+
+async function onDelete(row: any): Promise<any> {
+  console.log("onDelete", row);
+  return props.handleApi("delete", row).then(res => {
+    ElMessage.success("删除成功");
+    refreshList();
+  });
+}
+
+async function onDeleteByIds(ids: number[]): Promise<any> {
+  console.log("onDeleteByIds", ids);
+  return props.handleApi("deleteByIds", { ids: ids }).then(res => {
+    ElMessage.success("批量删除成功");
+    refreshList();
+  });
+}
+
+/** ******** 新增、修改 表单 **********/
 // 添加表单定义
 const formRef = ref<FormInstance | null>(null);
 const formRules: FormRules = reactive({});
-const formData = ref<any>({});
 const formFields = ref<FormField[]>(props.getFormFields({}));
 const formVisibility = ref(false);
 
@@ -258,9 +356,13 @@ function submitForm(row: any) {
   formRef.value?.validate((valid: boolean, fields: any) => {
     if (valid) {
       if (row.id === undefined || row.id === 0) {
-        onCreate(row);
+        onCreate(row).then(() => {
+          closeForm();
+        });
       } else {
-        onUpdate(row);
+        onUpdate(row).then(() => {
+          closeForm();
+        });
       }
     } else {
       console.error("表单校验不通过", fields);
@@ -268,9 +370,7 @@ function submitForm(row: any) {
   });
 }
 
-/** ******** end 新增、修改 **********/
-
-/** ******** start 批量删除 **********/
+/** ******** 批量删除 **********/
 
 // 取消批量删除
 function cancelBatchDelete() {
@@ -283,133 +383,8 @@ function confirmBatchDelete() {
   onDeleteByIds(ids);
 }
 
-/** ******** end 批量删除 **********/
-
-/** ******** start status menu **********/
-type StatusTag = {
-  value: number | string;
-  label: string;
-  condition: any;
-};
-
-const status = ref<any>(
-  props.statusList.length > 0 ? props.statusList[0].value : 0
-);
-
-const isActive = (value: string | number) => {
-  return value === status.value ? "status-menu-active" : "status-menu-normal";
-};
-// 选择了状态
-const handleStatusCheck = (value: string | number) => {
-  status.value = value;
-  refreshList();
-};
-
-/** ******** start status menu **********/
-
-function onCreate(row: any) {
-  console.log("onCreate", row);
-  props.handleApi("create", row).then(res => {
-    ElMessage.success("创建成功");
-    closeForm();
-    refreshList();
-  });
-}
-
-function onUpdate(row: any) {
-  console.log("onUpdate", row);
-  props.handleApi("update", row).then(res => {
-    ElMessage.success("更新成功");
-    closeForm();
-    refreshList();
-  });
-}
-
-function onDelete(row: any) {
-  console.log("onDelete", row);
-  props.handleApi("delete", row).then(res => {
-    ElMessage.success("删除成功");
-    refreshList();
-  });
-}
-
-function onDeleteByIds(ids: number[]) {
-  console.log("onDeleteByIds", ids);
-  props.handleApi("deleteByIds", { ids: ids }).then(res => {
-    ElMessage.success("批量删除成功");
-    refreshList();
-  });
-}
-
-function refreshList() {
-  const search = searchRef.value?.getSearchData();
-  const order = tableRef.value?.getOrderData();
-  const pagination = tableRef.value?.getPaginationData();
-
-  // console.log("refreshList", orderData, searchData)
-
-  const conditions: Condition[] = [];
-  const sorts: Sort[] = [];
-
-  const statusData =
-    props.statusList.find(v => v.value === status.value)?.condition || {};
-  // 状态条件
-  for (const key in statusData) {
-    const value = statusData[key];
-    conditions.push({
-      field: key,
-      value: value instanceof String ? value : JSON.stringify(value),
-      logic: "and",
-      operator: "="
-    });
-  }
-
-  // 搜索条件
-  for (const key in search) {
-    const item = searchFields.value.find(v => v.field === key);
-    const value = search[key];
-    conditions.push({
-      field: key,
-      value: value instanceof String ? value : JSON.stringify(value),
-      logic: item?.searchRules.flag || "and",
-      operator: item?.searchRules.rule || "="
-    });
-  }
-
-  // 排序条件
-  for (const key in order) {
-    const value = order[key];
-    sorts.push({
-      field: key,
-      order: value
-    });
-  }
-
-  const page: PageQuery = {
-    page: pagination.currentPage,
-    page_size: pagination.pageSize,
-    sorts: sorts,
-    conditions: conditions
-  };
-
-  loading.value = true;
-  props.handleApi("list", page).then(res => {
-    if (res.data.page_size !== pagination.pageSize) {
-      pagination.currentPage = res.data.page;
-      pagination.pageSize = res.data.page_size;
-    }
-
-    tableData.value = res.data.list;
-    pagination.total = res.data.total;
-    loading.value = false;
-    // setTimeout(() => {
-    //   loading.value = false
-    // }, 300)
-  });
-}
-
 function resetSearch() {
-  searchData.value = {};
+  searchRef.value?.clearSearch();
 }
 
 // 重置表格
@@ -420,6 +395,7 @@ function resetTable() {
 }
 
 onMounted(() => {
+  orderData.value = props.defaultOrder;
   resetSearch();
   resetTable();
   refreshList();
@@ -431,9 +407,9 @@ defineExpose({
   onDelete,
   onDeleteByIds,
   refreshList,
-  resetForm,
   openForm,
   closeForm,
+  resetForm,
   submitForm
 });
 </script>

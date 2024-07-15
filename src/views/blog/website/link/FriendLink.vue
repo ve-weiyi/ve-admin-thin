@@ -16,7 +16,7 @@
 </template>
 
 <script setup lang="ts">
-import TablePage from "@/components/TablePage2/TablePage.vue";
+import TablePage from "@/components/TablePage/TablePage.vue";
 import { useTableHook } from "./hook.tsx";
 import { onMounted } from "vue";
 

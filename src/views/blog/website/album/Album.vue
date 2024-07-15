@@ -8,7 +8,7 @@
           icon="plus"
           size="default"
           type="primary"
-          @click="openForm(null)"
+          @click="addFormVisibility = true"
         >
           新建相册
         </el-button>
@@ -80,21 +80,14 @@
         </el-col>
       </el-row>
       <!-- 分页 -->
-      <el-pagination
-        :current-page="pagination.currentPage"
-        :hide-on-single-page="false"
-        :layout="pagination.layout"
-        :page-size="pagination.pageSize"
-        :page-sizes="pagination.pageSizes"
-        :total="pagination.total"
-        background
-        class="pagination-container"
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
+      <VeTablePagination
+        v-if="pageData.total > 0"
+        v-model="pageData"
+        @pagination="refreshList"
       />
     </el-card>
     <!-- 新增模态框 -->
-    <el-dialog v-model="formVisibility" top="10vh" width="35%">
+    <el-dialog v-model="addFormVisibility" top="10vh" width="35%">
       <template #header>
         <div class="dialog-title-container">
           <el-icon>
@@ -145,7 +138,7 @@
         </el-form-item>
       </el-form>
       <template #footer>
-        <el-button @click="closeForm">取 消</el-button>
+        <el-button @click="addFormVisibility = false">取 消</el-button>
         <el-button type="primary" @click="submitForm(formData)">
           确 定
         </el-button>
@@ -173,44 +166,52 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from "vue";
-import { useTableHook } from "./album.tsx";
+import { computed, onMounted, reactive, toRefs } from "vue";
 import { useRouter } from "vue-router";
 import * as imageConversion from "image-conversion";
 import { UploadRawFile, UploadRequestOptions } from "element-plus";
 import { uploadFileApi } from "@/api/file.ts";
-import { Icon as IconifyIcon } from "@iconify/vue";
 import "@/style/table.scss";
+import { findPhotoAlbumListApi } from "@/api/photo_album.ts";
+import VeTablePagination from "@/components/VeTable/TablePagination.vue";
+
+const data = reactive({
+  loading: false,
+  batchDeleteVisibility: false,
+  addFormVisibility: false,
+  selectionIds: [],
+  pageData: {
+    currentPage: 1,
+    pageSize: 10,
+    total: 20
+  },
+  searchData: {} as any,
+  orderData: {} as any,
+  tableData: [],
+  formData: {} as any
+});
 
 const {
-  onDelete,
-  onDeleteByIds,
-  refreshList,
-  handleSortChange,
-  handleSelectionChange,
-  handleSizeChange,
-  handleCurrentChange,
-  openForm,
-  closeForm,
-  submitForm,
-  resetForm,
-  resetSearch,
-  resetTable,
-  pagination,
   loading,
-  formVisibility,
   batchDeleteVisibility,
-  confirmDelete,
-  confirmBatchDelete,
-  cancelBatchDelete,
-  searchRef,
+  addFormVisibility,
+  selectionIds,
+  pageData,
   searchData,
-  tableRef,
+  orderData,
   tableData,
-  formRef,
-  formData,
-  selectionIds
-} = useTableHook();
+  formData
+} = toRefs(data);
+
+function refreshList() {
+  findPhotoAlbumListApi({}).then(res => {
+    tableData.value = res.data.list;
+  });
+}
+
+onMounted(() => {
+  refreshList();
+});
 
 // 路由
 const router = useRouter();
@@ -267,16 +268,21 @@ const handleCommand = command => {
   const type = command.substring(0, 6);
   const data = command.substring(6);
   if (type.includes("update")) {
-    openForm(data);
+    formData.value = data;
+    addFormVisibility.value = true;
   } else if (type.includes("delete")) {
-    openDelete(data);
+    batchDeleteVisibility.value = true;
   }
 };
 
-const openDelete = data => {
-  formData.value = data;
-  batchDeleteVisibility.value = true;
-};
+function submitForm(data) {
+  console.log("submitForm", data);
+}
+
+function confirmDelete(data) {
+  console.log("confirmDelete", data);
+  batchDeleteVisibility.value = false;
+}
 </script>
 
 <style scoped>

@@ -1,5 +1,5 @@
 import { getCurrentInstance } from "vue";
-import { type Column, ElTag } from "element-plus";
+import { type Column, ElMessage, ElTag } from "element-plus";
 import { type FormField, RenderType } from "@/utils/render";
 
 import {
@@ -99,7 +99,7 @@ function getColumnFields(): Column[] {
         return (
           <div>
             <span>
-              {scope.row.is_review === 1 && <ElTag type="success">正常</ElTag>}
+              {scope.row.is_review === 1 && <ElTag type="success">通过</ElTag>}
               {scope.row.is_review === 0 && (
                 <ElTag type="warning">审核中</ElTag>
               )}
@@ -151,9 +151,17 @@ function getColumnFields(): Column[] {
           <div>
             {scope.row.is_review === 0 && (
               <el-button
+                text
+                class="table-text-button"
+                icon="CircleCheck"
                 type="success"
                 size="default"
-                onClick={() => instance.exposed.openForm(scope.row)}
+                onClick={() => {
+                  scope.row.is_review = 1;
+                  updateCommentApi(scope.row).then(res => {
+                    ElMessage.success("审核通过");
+                  });
+                }}
               >
                 通过
               </el-button>
@@ -164,7 +172,13 @@ function getColumnFields(): Column[] {
             >
               {{
                 reference: () => (
-                  <el-button type="danger" size="default">
+                  <el-button
+                    text
+                    class="table-text-button"
+                    icon="delete"
+                    type="danger"
+                    size="default"
+                  >
                     删除
                   </el-button>
                 )
@@ -181,6 +195,15 @@ function getColumnFields(): Column[] {
 function getSearchFields(): FormField[] {
   return [
     {
+      type: RenderType.Input,
+      label: "用户昵称",
+      field: "nickname",
+      searchRules: {
+        flag: "and",
+        rule: "like"
+      }
+    },
+    {
       type: RenderType.Select,
       label: "来源",
       field: "type",
@@ -191,13 +214,17 @@ function getSearchFields(): FormField[] {
       }
     },
     {
-      type: RenderType.Input,
-      label: "用户昵称",
-      field: "nickname",
+      type: RenderType.Select,
+      label: "留言状态",
+      field: "is_review",
       searchRules: {
         flag: "and",
-        rule: "like"
-      }
+        rule: "="
+      },
+      options: [
+        { label: "通过", value: 1 },
+        { label: "审核中", value: 0 }
+      ]
     }
   ];
 }

@@ -29,7 +29,7 @@
           icon="deleteItem"
           size="default"
           type="danger"
-          @click="batchDeletePhoto = true"
+          @click="batchDeleteVisibility = true"
         >
           批量删除
         </el-button>
@@ -62,17 +62,10 @@
         </el-checkbox-group>
       </el-row>
       <!-- 分页 -->
-      <el-pagination
-        :current-page="pagination.currentPage"
-        :hide-on-single-page="true"
-        :layout="pagination.layout"
-        :page-size="pagination.pageSize"
-        :page-sizes="pagination.pageSizes"
-        :total="pagination.total"
-        background
-        class="pagination-container"
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
+      <VeTablePagination
+        v-if="pageData.total > 0"
+        v-model="pageData"
+        @pagination="refreshList"
       />
       <!-- 批量删除对话框 -->
       <el-dialog v-model="batchDeleteVisibility" width="30%">
@@ -86,7 +79,7 @@
         </template>
         <div style="font-size: 1rem">是否删除选中照片？</div>
         <template #footer>
-          <el-button @click="cancelBatchDelete">取 消</el-button>
+          <el-button @click="batchDeleteVisibility = false">取 消</el-button>
           <el-button type="primary" @click="confirmBatchDelete(selectionIds)">
             确 定
           </el-button>
@@ -97,41 +90,51 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from "vue";
-import { useTableHook } from "./delete.tsx";
+import { computed, onMounted, reactive, ref, toRefs } from "vue";
+import { findPhotoAlbumListApi } from "@/api/photo_album.ts";
+import VeTablePagination from "@/components/VeTable/TablePagination.vue";
+
+const data = reactive({
+  loading: false,
+  batchDeleteVisibility: false,
+  addFormVisibility: false,
+  selectionIds: [],
+  pageData: {
+    currentPage: 1,
+    pageSize: 10,
+    total: 20
+  },
+  searchData: {} as any,
+  orderData: {} as any,
+  tableData: [],
+  formData: {} as any
+});
 
 const {
-  onFindList,
-  onCreate,
-  onUpdate,
-  onDelete,
-  onDeleteByIds,
-  resetSearch,
-  resetTable,
-  refreshList,
-  handleSortChange,
-  handleSelectionChange,
-  handleSizeChange,
-  handleCurrentChange,
-  resetForm,
-  openForm,
-  closeForm,
-  submitForm,
-  confirmDelete,
-  cancelBatchDelete,
-  confirmBatchDelete,
-  pagination,
   loading,
   batchDeleteVisibility,
-  formVisibility,
-  searchRef,
+  addFormVisibility,
+  selectionIds,
+  pageData,
   searchData,
-  tableRef,
+  orderData,
   tableData,
-  formRef,
-  formData,
-  selectionIds
-} = useTableHook();
+  formData
+} = toRefs(data);
+
+function refreshList() {
+  findPhotoAlbumListApi({}).then(res => {
+    tableData.value = res.data.list;
+  });
+}
+
+onMounted(() => {
+  refreshList();
+});
+
+function confirmBatchDelete(ids) {
+  console.log(ids);
+}
 
 const dialogTitle = computed(() => {
   if (formData.value.id == 0) {
@@ -143,7 +146,8 @@ const dialogTitle = computed(() => {
 
 const isIndeterminate = computed(() => {
   return (
-    selectionIds.length > 0 && selectionIds.length < tableData.value.length
+    selectionIds.value.length > 0 &&
+    selectionIds.value.length < tableData.value.length
   );
 });
 
@@ -170,8 +174,6 @@ const updatePhotoDelete = item => {
     });
   }
 };
-
-const batchDeletePhoto = ref(false);
 
 onMounted(() => {
   loading.value = false;

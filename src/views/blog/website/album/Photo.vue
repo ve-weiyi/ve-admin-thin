@@ -89,8 +89,8 @@
                         <template #dropdown>
                           <el-dropdown-menu>
                             <el-dropdown-item :command="photo"
-                              >编辑</el-dropdown-item
-                            >
+                              >编辑
+                            </el-dropdown-item>
                           </el-dropdown-menu>
                         </template>
                       </el-dropdown>
@@ -110,16 +110,10 @@
         </el-checkbox-group>
       </el-row>
       <!-- 分页 -->
-      <el-pagination
-        :current-page="pagination.currentPage"
-        :layout="pagination.layout"
-        :page-size="pagination.pageSize"
-        :page-sizes="pagination.pageSizes"
-        :total="pagination.total"
-        background
-        class="pagination-container"
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
+      <VeTablePagination
+        v-if="pageData.total > 0"
+        v-model="pageData"
+        @pagination="refreshList"
       />
       <!-- 上传模态框 -->
       <el-dialog v-model="uploadPhoto" top="10vh" width="70%">
@@ -179,7 +173,7 @@
         </template>
       </el-dialog>
       <!-- 编辑对话框 -->
-      <el-dialog v-model="formVisibility" width="30%">
+      <el-dialog v-model="addFormVisibility" width="30%">
         <template #header>
           <div class="dialog-title-container">修改信息</div>
         </template>
@@ -192,7 +186,7 @@
           </el-form-item>
         </el-form>
         <template #footer>
-          <el-button @click="closeForm">取 消</el-button>
+          <el-button @click="addFormVisibility = false">取 消</el-button>
           <el-button type="primary" @click="submitForm(formData)">
             确 定
           </el-button>
@@ -261,50 +255,68 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from "vue";
-import { useTableHook } from "./photo.tsx";
+import { computed, onMounted, reactive, ref, toRefs } from "vue";
 import { useRoute } from "vue-router";
 import * as imageConversion from "image-conversion";
 import { findPhotoAlbumApi } from "@/api/photo_album.ts";
 import { PhotoAlbum } from "@/api/types.ts";
 import { CheckboxValueType, UploadRawFile } from "element-plus";
+import VeTablePagination from "@/components/VeTable/TablePagination.vue";
+import { findPhotoListApi } from "@/api/photo.ts";
+
+const data = reactive({
+  loading: false,
+  batchDeleteVisibility: false,
+  addFormVisibility: false,
+  selectionIds: [],
+  pageData: {
+    currentPage: 1,
+    pageSize: 10,
+    total: 20
+  },
+  searchData: {} as any,
+  orderData: {} as any,
+  tableData: [],
+  formData: {} as any
+});
 
 const {
-  onFindList,
-  onCreate,
-  onUpdate,
-  onDelete,
-  onDeleteByIds,
-  resetSearch,
-  resetTable,
-  refreshList,
-  handleSortChange,
-  handleSelectionChange,
-  handleSizeChange,
-  handleCurrentChange,
-  resetForm,
-  openForm,
-  closeForm,
-  submitForm,
-  confirmDelete,
-  cancelBatchDelete,
-  confirmBatchDelete,
-  pagination,
   loading,
   batchDeleteVisibility,
-  formVisibility,
-  searchRef,
+  addFormVisibility,
+  selectionIds,
+  pageData,
   searchData,
-  tableRef,
+  orderData,
   tableData,
-  formRef,
-  formData,
-  selectionIds
-} = useTableHook();
+  formData
+} = toRefs(data);
+
+function refreshList() {
+  const data: PageQuery = {
+    conditions: [{ field: "album_id", value: albumId }]
+  };
+  findPhotoListApi(data).then(res => {
+    tableData.value = res.data.list;
+  });
+}
+
+onMounted(() => {
+  getAlbumInfo(albumId);
+});
+
+function submitForm(formData) {
+  console.log("submitForm", formData);
+}
+
+function confirmBatchDelete(ids) {
+  console.log(ids);
+}
 
 const isIndeterminate = computed(() => {
   return (
-    selectionIds.length > 0 && selectionIds.length < tableData.value.length
+    selectionIds.value.length > 0 &&
+    selectionIds.value.length < tableData.value.length
   );
 });
 
@@ -312,21 +324,25 @@ const checkAll = ref(false);
 
 function handleCheckAllChange(value: boolean) {
   checkAll.value = value;
-  selectionIds.length = 0;
+  const ids = [];
   if (value) {
     tableData.value.forEach(item => {
-      selectionIds.push(item.id);
+      ids.push(item.id);
     });
   }
+  selectionIds.value = ids;
   console.log("handleCheckAllChange", value, selectionIds);
 }
 
 function handleCheckedPhotoChange(value: CheckboxValueType[]) {
   checkAll.value = value.length === tableData.value.length;
-  selectionIds.length = 0;
+
+  const ids = [];
   value.forEach(item => {
-    selectionIds.push(item as number);
+    ids.push(item as number);
   });
+
+  selectionIds.value = ids;
   console.log("handleCheckedPhotoChange", value, selectionIds);
 }
 
@@ -384,9 +400,10 @@ function getAlbumInfo(id: number) {
 
 function handleCommand(command) {
   if (command.includes("update")) {
-    openForm(command.slice(6));
+    formData.value = command.slice(6);
+    addFormVisibility.value = true;
   } else if (command.includes("delete")) {
-    onDelete(command.slice(6));
+    console.log("delete", command);
   }
 }
 
@@ -401,14 +418,6 @@ function updatePhotoAlbum() {
 function updatePhotoDelete(id: number | null) {
   console.log("updatePhotoDelete", id);
 }
-
-onMounted(() => {
-  getAlbumInfo(albumId);
-  resetForm(null);
-  resetSearch();
-  resetTable();
-  refreshList();
-});
 </script>
 
 <style scoped>

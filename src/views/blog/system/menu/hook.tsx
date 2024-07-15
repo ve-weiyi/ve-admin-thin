@@ -64,22 +64,45 @@ function getColumnFields(): Column[] {
       title: "菜单名称",
       dataKey: "title",
       align: "left",
-      width: 0,
+      width: 140,
       cellRenderer: (scope: any) => (
         <>
-          <span class="inline-block mr-1">
-            {h(useRenderIcon(scope.row.icon), {
-              style: { paddingTop: "1px" }
-            })}
-          </span>
-          <span>{transformI18n(scope.row.title)}</span>
+          <span>{transformI18n(scope.row.meta.title)}</span>
         </>
       )
+    },
+    {
+      dataKey: "icon",
+      title: "图标",
+      width: 80,
+      align: align,
+      cellRenderer: (scope: any) => {
+        return (
+          <>
+            <span class="inline-block mr-1">
+              {h(useRenderIcon(scope.row.icon), {
+                style: { paddingTop: "1px" }
+              })}
+            </span>
+          </>
+        );
+      }
+    },
+    {
+      dataKey: "rank",
+      title: "排序",
+      width: 80,
+      align: align,
+      sortable: true,
+      cellRenderer: (scope: any) => {
+        return <span>{scope.row.meta.rank}</span>;
+      }
     },
     {
       title: "菜单类型",
       dataKey: "type",
       width: 100,
+      align: align,
       cellRenderer: (scope: any) => (
         <el-tag
           size={"default"}
@@ -94,21 +117,6 @@ function getColumnFields(): Column[] {
       dataKey: "path",
       title: "路由路径",
       width: 0
-    },
-    // {
-    //   key: "component",
-    //   title: "路由组件",
-    //   dataKey: "component",
-    //   width: 120,
-    // },
-    {
-      dataKey: "rank",
-      title: "排序",
-      width: 80,
-      sortable: true,
-      cellRenderer: (scope: any) => {
-        return <span>{scope.row.meta.rank}</span>;
-      }
     },
     {
       dataKey: "show_link",
@@ -140,7 +148,7 @@ function getColumnFields(): Column[] {
     {
       title: "创建时间",
       dataKey: "created_at",
-      width: 0,
+      width: 140,
       sortable: true,
       cellRenderer: (scope: any) => {
         return (

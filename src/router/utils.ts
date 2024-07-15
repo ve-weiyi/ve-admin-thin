@@ -204,6 +204,10 @@ function handleAsyncRoutes(routeList) {
   addPathMatch();
 }
 
+const dynamicMenus: Record<string, any> = import.meta.glob(
+  "@/router/blog/**.vue"
+);
+console.log("dynamicMenus res", dynamicMenus);
 /** 初始化路由（`new Promise` 写法防止在异步请求中造成无限循环）*/
 function initRouter() {
   if (getConfig()?.CachingAsyncRoutes) {
@@ -235,7 +239,11 @@ function initRouter() {
           // 获取用户菜单信息
           getUserMenusApi().then(res => {
             console.log("getUserMenusApi res", res);
-            handleAsyncRoutes(snakeToCamel(res.data.list));
+            if (res.data.list != null) {
+              handleAsyncRoutes(snakeToCamel(res.data.list));
+            } else {
+              handleAsyncRoutes([]);
+            }
             resolve(router);
           });
         });
@@ -346,7 +354,9 @@ function handleAliveRoute({ name }: ToRouteType, mode?: string) {
       }, 100);
   }
 }
+
 console.log("modulesRoutesKeys--->", modulesRoutes);
+
 /** 过滤后端传来的动态路由 重新生成规范路由 */
 function addAsyncRoutes(arrRoutes: Array<RouteRecordRaw>) {
   // console.log("arrRoutes", arrRoutes);

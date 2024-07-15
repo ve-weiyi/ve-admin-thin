@@ -9,22 +9,9 @@
         :get-search-fields="getSearchFields"
         :handle-api="handleApi"
         table-name="角色"
+        table-title="角色列表"
       >
         <template #operation="{ record, value }">
-          <el-button
-            class="table-text-button"
-            text
-            type="primary"
-            size="small"
-            icon="edit"
-            @click="
-              (evt: MouseEvent) => {
-                openDrawer(record, value);
-              }
-            "
-          >
-            权限
-          </el-button>
           <el-button
             class="table-text-button"
             text
@@ -60,6 +47,20 @@
               </el-button>
             </template>
           </el-popconfirm>
+          <el-button
+            class="table-text-button"
+            text
+            type="primary"
+            size="small"
+            icon="edit"
+            @click="
+              (evt: MouseEvent) => {
+                openDrawer(record, value);
+              }
+            "
+          >
+            权限
+          </el-button>
         </template>
       </TablePage>
     </div>
@@ -73,24 +74,32 @@
       size="40%"
     >
       <template #header>
-        <h4 style="font-size: 20px; font-weight: bold">权限设置</h4>
+        <h5 style="font-size: 20px; font-weight: bold">权限设置</h5>
       </template>
-      <el-tabs type="border-card">
+      <el-tabs type="border-card" style="height: 80%">
         <el-tab-pane label="角色菜单权限">
-          <Menus
-            ref="menus"
-            :row="formData.menu_ids"
+          <Tree
+            ref="menuTree"
             :tree-data="menuList"
-            @changeRow="onMenusChange"
-          />
+            :default-check-ids="formData.menu_ids"
+            @on-node-check="onMenusChange"
+          >
+            <template #default="{ node, data }">
+              <span>{{ data.name }} {{ data.path }}</span>
+            </template>
+          </Tree>
         </el-tab-pane>
         <el-tab-pane label="角色接口权限">
-          <Api
-            ref="apis"
-            :row="formData.api_ids"
+          <Tree
+            ref="apiTree"
             :tree-data="apiList"
-            @changeRow="onApiChange"
-          />
+            :default-check-ids="formData.api_ids"
+            @on-node-check="onApiChange"
+          >
+            <template #default="{ node, data }">
+              <span>{{ data.name }} {{ data.path }}</span>
+            </template>
+          </Tree>
         </el-tab-pane>
       </el-tabs>
       <template #footer>
@@ -106,15 +115,14 @@
 <script setup lang="ts">
 import { defineComponent, onMounted, ref } from "vue";
 import { useTableHook } from "./hook.tsx";
-import TablePage from "@/components/TablePage2/TablePage.vue";
+import TablePage from "@/components/TablePage/TablePage.vue";
 import { ElMessage, ElMessageBox } from "element-plus";
 import {
   findRoleResourcesApi,
   updateRoleApisApi,
   updateRoleMenusApi
 } from "@/api/role.ts";
-import Menus from "./components/menus.vue";
-import Api from "./components/api.vue";
+import Tree from "./components/tree.vue";
 import { findApiListApi } from "@/api/api.ts";
 import { findMenuListApi } from "@/api/menu.ts";
 
@@ -124,21 +132,19 @@ const { getSearchFields, getColumnFields, getFormFields, handleApi } =
   useTableHook();
 
 const tableRef = ref<InstanceType<typeof TablePage>>();
-
-const drawer = ref(false);
 const menuList = ref([]);
 const apiList = ref([]);
-const activeMenus = ref([]);
-const activeApis = ref([]);
-const formData = ref<any>();
 
-const onMenusChange = (key: any, value: any) => {
-  console.log("onMenusChange", key, value);
-  activeMenus.value = value;
+const drawer = ref(false);
+const formData = ref<any>();
+const menuTree = ref();
+const apiTree = ref();
+
+const onMenusChange = (value: any) => {
+  console.log("onMenusChange", value);
 };
-const onApiChange = (key: any, value: any) => {
-  console.log("onApiChange", key, value);
-  activeApis.value = value;
+const onApiChange = (value: any) => {
+  console.log("onApiChange", value);
 };
 
 const handleClose = (done: () => void) => {
@@ -174,9 +180,9 @@ const openDrawer = (r, v) => {
 };
 
 function updateMenus() {
-  const v1 = activeMenus.value
-    ? JSON.stringify(activeMenus.value.sort(fun))
-    : "[]";
+  const ids = menuTree.value.getCheckedKeys();
+
+  const v1 = ids ? JSON.stringify(ids.sort(fun)) : "[]";
   const v2 = formData.value.menu_ids
     ? JSON.stringify(formData.value.menu_ids.sort(fun))
     : "[]";
@@ -187,7 +193,7 @@ function updateMenus() {
   if (!isEqual) {
     updateRoleMenusApi({
       role_id: formData.value.role_id,
-      menu_ids: activeMenus.value
+      menu_ids: ids
     }).then(res => {
       ElMessage.success("操作成功");
       tableRef.value.refreshList();
@@ -196,9 +202,9 @@ function updateMenus() {
 }
 
 function updateApis() {
-  const v1 = activeApis.value
-    ? JSON.stringify(activeApis.value.sort(fun))
-    : "[]";
+  const ids = apiTree.value.getCheckedKeys();
+
+  const v1 = ids ? JSON.stringify(ids.sort(fun)) : "[]";
   const v2 = formData.value.api_ids
     ? JSON.stringify(formData.value.api_ids.sort(fun))
     : "[]";
@@ -209,7 +215,7 @@ function updateApis() {
   if (!isEqual) {
     updateRoleApisApi({
       role_id: formData.value.role_id,
-      api_ids: activeApis.value
+      api_ids: ids
     }).then(res => {
       ElMessage.success("操作成功");
       tableRef.value.refreshList();

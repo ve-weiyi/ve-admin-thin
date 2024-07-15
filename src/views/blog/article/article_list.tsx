@@ -288,20 +288,11 @@ function handleApi(event: string, data: any) {
   }
 }
 
-const statusList = [
-  { value: "all", label: "全部", condition: { is_delete: 0 } },
-  { value: "public", label: "公开", condition: { is_delete: 0, status: 0 } },
-  { value: "private", label: "私密", condition: { is_delete: 0, status: 1 } },
-  { value: "draft", label: "草稿", condition: { is_delete: 0, status: 2 } },
-  { value: "delete", label: "回收站", condition: { is_delete: 1 } }
-];
-
 export function useTableHook() {
   return {
     getColumnFields,
     getSearchFields,
     getFormFields,
-    handleApi,
-    statusList
+    handleApi
   };
 }

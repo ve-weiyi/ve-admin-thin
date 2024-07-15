@@ -32,14 +32,13 @@ import { useAdminStoreHook } from "@/store/blog/admin.ts";
  * 如何排除文件请看：https://cn.vitejs.dev/guide/features.html#negative-patterns
  */
 const modules: Record<string, any> = import.meta.glob(
-  ["./modules/**/*.ts", "!./modules/**/remaining.ts"],
-  // ["./blog/**/*.ts", "./modules/**/*.ts", "!./modules/**/remaining.ts"],
+  // ["./modules/**/*.ts", "!./modules/**/remaining.ts"],
+  ["./blog/**/*.ts", "./modules/**/*.ts", "!./modules/**/remaining.ts"],
   {
     eager: true
   }
 );
 
-// import { routes } from "./constants.ts";
 /** 原始静态路由（未做任何处理） */
 const routes = [];
 

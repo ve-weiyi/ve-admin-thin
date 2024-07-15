@@ -41,23 +41,10 @@
       </template>
     </el-table-column>
   </el-table>
-  <!-- 分页 -->
-  <el-pagination
-    class="table-pagination"
-    background
-    :current-page="paginationData.currentPage"
-    :page-size="paginationData.pageSize"
-    :total="paginationData.total"
-    :page-sizes="paginationData.pageSizes"
-    :layout="paginationData.layout"
-    @size-change="handleSizeChange"
-    @current-change="handleCurrentChange"
-  />
 </template>
 
 <script setup lang="ts">
 import { onMounted, PropType, reactive, ref, useSlots, watchEffect } from "vue";
-import { defaultPaginationData, Pagination } from "@/utils/render";
 import { Column, TableInstance } from "element-plus";
 import defaultProps from "element-plus/es/components/table/src/table/defaults";
 
@@ -67,15 +54,20 @@ const props = defineProps({
     type: Array<Column>,
     default: []
   },
-  orderData: {
-    type: Object,
-    default: () => ({})
-  },
-  paginationData: {
-    type: Object as PropType<Pagination>,
-    default: () => defaultPaginationData
-  },
   ...defaultProps
+});
+
+// 排序条件,{k:v}
+const orderData = defineModel({
+  type: Object as any,
+  default: {},
+  required: true
+});
+
+// 选择的id
+const selectionIds = defineModel("selectionIds", {
+  type: Array as PropType<number[]>,
+  default: []
 });
 
 // 父组件向子组件传输的事件
@@ -101,39 +93,17 @@ const columnFields = ref<Column[]>(props.columnFields);
 
 // 表格数据定义
 const tableData = ref<any[]>(props.data);
-// 排序条件,{k:v}
-const orderData = ref<any>(props.orderData);
-// 分页参数
-const paginationData = ref<Pagination>(props.paginationData);
-
-// 选择的id
-const selectionIds = reactive<number[]>([]);
-
-// 分页大小改变回调
-function handleSizeChange(val: number) {
-  console.log(`${val} items per page`);
-  paginationData.value.pageSize = val;
-  if (
-    paginationData.value.pageSizes.filter(item => item === val).length !== 0
-  ) {
-    refreshList();
-  }
-}
-
-// 分页回调
-function handleCurrentChange(val: number) {
-  console.log(`current page: ${val}`);
-  paginationData.value.currentPage = val;
-  refreshList();
-}
 
 // 批量选择回调
 function handleSelectionChange(rows: any[]) {
   console.log("handleSelectionChange", rows);
-  selectionIds.length = 0;
+
+  const ids = [];
   rows.forEach(item => {
-    selectionIds.push(item.id);
+    ids.push(item.id);
   });
+
+  selectionIds.value = ids;
 }
 
 /** *
@@ -143,12 +113,14 @@ function handleSelectionChange(rows: any[]) {
  * prop就是该列的prop。
  * */
 function handleSortChange({ column, prop, order }) {
-  // console.log("handleSortChange", prop, order)
+  console.log("handleSortChange", prop, order);
 
-  const value = order === "ascending" ? "asc" : "desc";
-  orderData.value = Object.assign({ [prop]: value }, orderData.value);
-  orderData.value[prop] = value;
-  console.log("handleSortChange orderData", orderData.value);
+  // 删除属性
+  delete orderData.value[prop];
+  if (order) {
+    const value = order.includes("asc") ? "asc" : "desc";
+    orderData.value = Object.assign({ [prop]: value }, orderData.value);
+  }
   emit("refresh");
 }
 
@@ -165,24 +137,12 @@ function getTableData() {
   return tableData.value;
 }
 
-function getOrderData() {
-  return orderData.value;
-}
-
-function getPaginationData() {
-  return paginationData.value;
-}
-
 defineExpose({
-  getOrderData,
-  getPaginationData,
   selectionIds,
   getTableRef,
   refreshList,
   handleSortChange,
-  handleSelectionChange,
-  handleSizeChange,
-  handleCurrentChange
+  handleSelectionChange
 });
 
 onMounted(() => {
@@ -204,10 +164,4 @@ defineOptions({
 });
 </script>
 
-<style lang="scss" scoped>
-.table-pagination {
-  float: right;
-  margin-top: 1.25rem;
-  margin-bottom: 1.25rem;
-}
-</style>
+<style lang="scss" scoped></style>

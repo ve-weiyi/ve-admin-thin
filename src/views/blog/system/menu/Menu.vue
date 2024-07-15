@@ -2,7 +2,6 @@
   <div>
     <TablePage
       ref="tableRef"
-      table-title="菜单管理"
       table-name="菜单"
       :add-enable="true"
       :edit-enable="true"
@@ -38,7 +37,7 @@ import { useTableHook } from "./hook.tsx";
 import MenuForm from "./form.vue";
 import { formRules } from "./utils/rule.ts";
 
-import TablePage from "@/components/TablePage2/TablePage.vue";
+import TablePage from "@/components/TablePage/TablePage.vue";
 import { ElMessage, ElMessageBox } from "element-plus";
 import { cleanMenuListApi, syncMenuListApi } from "@/api/menu.ts";
 import { RouteConfigsTable } from "@/api/types.ts";

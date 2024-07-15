@@ -26,24 +26,25 @@ const loading = ref(props.loading);
 // 表搜素条件定义
 const searchRef = ref<FormInstance | null>(null);
 const searchFields = ref<FormField[]>(props.searchFields);
+
 // 搜索条件,{k:v}
-const searchData = ref<any>({});
+const searchData = defineModel({
+  type: Object as any,
+  default: {},
+  required: true
+});
 
 function refreshList() {
   // console.log("refreshList")
   emit("refresh");
 }
 
-function resetSearch() {
+function clearSearch() {
   searchData.value = {};
 }
 
-function getSearchData() {
-  return searchData.value;
-}
-
 defineExpose({
-  getSearchData
+  clearSearch
 });
 
 onMounted(() => {
@@ -90,7 +91,7 @@ defineOptions({
           >
             搜索
           </el-button>
-          <el-button icon="Refresh" @click="resetSearch">重置</el-button>
+          <el-button icon="Refresh" @click="clearSearch">重置</el-button>
         </el-form-item>
       </el-form>
     </el-card>

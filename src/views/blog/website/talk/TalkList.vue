@@ -87,17 +87,10 @@
         </div>
       </div>
       <!-- 分页 -->
-      <el-pagination
-        :current-page="pagination.currentPage"
-        :hide-on-single-page="false"
-        :layout="pagination.layout"
-        :page-size="pagination.pageSize"
-        :page-sizes="pagination.pageSizes"
-        :total="pagination.total"
-        background
-        class="pagination-container"
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
+      <VeTablePagination
+        v-if="pageData.total > 0"
+        v-model="pageData"
+        @pagination="refreshList"
       />
       <!-- 删除对话框 -->
       <el-dialog v-model="isDelete" width="30%">
@@ -124,51 +117,42 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from "vue";
-import { useTableHook } from "./talk_list.tsx";
+import { computed, onMounted, reactive, ref, toRefs } from "vue";
 import Talk from "./Talk.vue";
+import VeTablePagination from "@/components/VeTable/TablePagination.vue";
+import { deleteTalkApi, findTalkListApi } from "@/api/talk.ts";
 
-const {
-  onFindList,
-  onCreate,
-  onUpdate,
-  onDelete,
-  resetSearch,
-  resetTable,
-  refreshList,
-  handleSortChange,
-  handleSelectionChange,
-  handleSizeChange,
-  handleCurrentChange,
-  resetForm,
-  openForm,
-  closeForm,
-  submitForm,
-  confirmDelete,
-  cancelBatchDelete,
-  confirmBatchDelete,
-  pagination,
-  loading,
-  batchDeleteVisibility,
-  formVisibility,
-  searchRef,
-  searchData,
-  tableRef,
-  tableData,
-  formRef,
-  formData,
-  selectionIds
-} = useTableHook();
+const data = reactive({
+  selectionIds: [],
+  pageData: {
+    currentPage: 1,
+    pageSize: 10,
+    total: 20
+  },
+  searchData: {} as any,
+  orderData: {} as any,
+  tableData: [],
+  formData: {} as any
+});
+
+const { selectionIds, pageData, searchData, orderData, tableData, formData } =
+  toRefs(data);
+
+function refreshList() {
+  findTalkListApi({}).then(res => {
+    tableData.value = res.data.list;
+  });
+}
+
+onMounted(() => {
+  refreshList();
+});
 
 const status = ref(1);
 const isEdit = ref(false);
 const isDelete = ref(false);
 const previewList = ref([]);
 const talkId = ref(0);
-
-onMounted(() => {
-  refreshList();
-});
 
 function handleCommand(command) {
   const arr = command.split(",");
@@ -185,7 +169,13 @@ function handleCommand(command) {
 }
 
 function handDelete() {
-  confirmDelete(talkId.value);
+  const data = {
+    id: talkId.value
+  };
+  deleteTalkApi(data).then(() => {
+    refreshList();
+  });
+
   isDelete.value = false;
 }
 
@@ -194,14 +184,14 @@ function handPublish() {
   isEdit.value = true;
 }
 
-function changeStatus(status) {
-  searchData.value.status = status;
+function changeStatus(s) {
+  status.value = s;
   refreshList();
 }
 
 const isActive = computed(() => {
-  return function (status) {
-    return status === searchData.value.status ? "active-status" : "status";
+  return function (s) {
+    return status.value === s ? "active-status" : "status";
   };
 });
 </script>

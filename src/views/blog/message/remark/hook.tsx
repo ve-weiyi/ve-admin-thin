@@ -1,5 +1,5 @@
 import { getCurrentInstance } from "vue";
-import { type Column, ElTag } from "element-plus";
+import { type Column, ElMessage, ElTag } from "element-plus";
 import { type FormField, RenderType } from "@/utils/render";
 
 import {
@@ -48,10 +48,17 @@ function getColumnFields(): Column[] {
       }
     },
     {
+      key: "nickname",
+      title: "昵称",
+      dataKey: "nickname",
+      width: 140,
+      align: align
+    },
+    {
       key: "message_content",
       title: "留言内容",
       dataKey: "message_content",
-      width: 140,
+      width: 0,
       align: align,
       cellRenderer: (scope: any) => {
         return (
@@ -72,7 +79,7 @@ function getColumnFields(): Column[] {
       key: "ip_source",
       title: "IP来源",
       dataKey: "ip_source",
-      width: 0,
+      width: 140,
       align: align
     },
     {
@@ -85,7 +92,7 @@ function getColumnFields(): Column[] {
         return (
           <div>
             <span>
-              {scope.row.is_review === 1 && <ElTag type="success">正常</ElTag>}
+              {scope.row.is_review === 1 && <ElTag type="success">通过</ElTag>}
               {scope.row.is_review === 0 && (
                 <ElTag type="warning">审核中</ElTag>
               )}
@@ -119,9 +126,17 @@ function getColumnFields(): Column[] {
           <div>
             {scope.row.is_review === 0 && (
               <el-button
+                text
+                class="table-text-button"
+                icon="CircleCheck"
                 type="success"
                 size="default"
-                onClick={() => instance.exposed.openForm(scope.row)}
+                onClick={() => {
+                  scope.row.is_review = 1;
+                  updateRemarkApi(scope.row).then(res => {
+                    ElMessage.success("审核通过");
+                  });
+                }}
               >
                 通过
               </el-button>
@@ -132,7 +147,13 @@ function getColumnFields(): Column[] {
             >
               {{
                 reference: () => (
-                  <el-button type="danger" size="default">
+                  <el-button
+                    text
+                    class="table-text-button"
+                    icon="delete"
+                    type="danger"
+                    size="default"
+                  >
                     删除
                   </el-button>
                 )
@@ -156,6 +177,19 @@ function getSearchFields(): FormField[] {
         flag: "and",
         rule: "like"
       }
+    },
+    {
+      type: RenderType.Select,
+      label: "留言状态",
+      field: "is_review",
+      searchRules: {
+        flag: "and",
+        rule: "="
+      },
+      options: [
+        { label: "通过", value: 1 },
+        { label: "审核中", value: 0 }
+      ]
     }
   ];
 }

@@ -1,24 +1,6 @@
 import type { VNode } from "vue";
 import type { FormRules } from "element-plus";
 
-/** 表格分页参数 */
-export interface Pagination {
-  total?: number;
-  currentPage?: number;
-  pageSizes?: number[];
-  pageSize?: number;
-  layout?: string;
-}
-
-/** 默认的分页参数 */
-export const defaultPaginationData: Pagination = {
-  total: 0,
-  currentPage: 1,
-  pageSizes: [10, 20, 50],
-  pageSize: 10,
-  layout: "total, sizes, prev, pager, next, jumper"
-};
-
 // 表单字段类型
 export enum RenderType {
   Textarea = "textarea",
@@ -103,6 +85,15 @@ export function formRender(field: FormField, model: any): VNode {
           v-model={model[field.field]}
           clearable
           placeholder={`请选择${field.label}`}
+          onClear={() => {
+            const keyToDelete = field.field;
+            // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
+            delete model[keyToDelete];
+            console.log("model", model);
+          }}
+          onChange={(value: any) => {
+            console.log("value", value, model[field.field]);
+          }}
         >
           {field.options.map(item => (
             <el-option key={item.value} label={item.label} value={item.value} />
