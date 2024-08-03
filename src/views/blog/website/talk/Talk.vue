@@ -113,13 +113,12 @@
 
 <script setup lang="ts">
 import { computed, onMounted, ref, toRefs, watch } from "vue";
-import * as imageConversion from "image-conversion";
+import { compressImage, uploadFileLabel } from "@/utils/file.ts";
 import EmojiList from "@/assets/emojis/qq_emoji.json";
 import Editor from "@/views/blog/website/talk/Editor.vue";
 import { createTalkApi, findTalkApi, updateTalkApi } from "@/api/talk.ts";
 import { TalkDetails } from "@/api/types.ts";
 import { ElMessage, UploadRawFile, UploadRequestOptions } from "element-plus";
-import { uploadFileApi } from "@/api/file.ts";
 
 const props = defineProps({
   modelValue: {
@@ -186,34 +185,19 @@ function addEmoji(key, value) {
   console.log("talk.value.content", talk.value.content);
 }
 
-// 上传文件时触发
+// 上传文件之前的钩子，参数为上传的文件， 若返回false或者返回 Promise 且被 reject，则停止上传。
 function beforeUpload(rawFile: UploadRawFile) {
   console.log("beforeUpload", rawFile.name, rawFile.size);
 
-  if (rawFile.size / 1024 < 200) {
+  if (rawFile.size / 1024 < 500) {
     return true;
   }
 
-  return new Promise<Blob>((resolve, reject) => {
-    // 压缩到200KB,这里的200就是要压缩的大小,可自定义
-    imageConversion.compressAccurately(rawFile, 200).then((res: Blob) => {
-      console.log("compressAccurately", res.size);
-      resolve(res);
-    });
-  });
+  return compressImage(rawFile);
 }
 
-function onUpload(obj: UploadRequestOptions) {
-  console.log("onUpload", obj);
-
-  let file = obj.file;
-  const data = {
-    label: "avatar",
-    file: file,
-    file_size: file.size,
-    file_md5: ""
-  };
-  return uploadFileApi(data);
+function onUpload(options: UploadRequestOptions) {
+  return uploadFileLabel(options, "talk");
 }
 
 function afterUpload(res: any) {

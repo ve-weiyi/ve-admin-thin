@@ -229,6 +229,7 @@ import { findArticleApi, saveArticleApi } from "@/api/article";
 import { uploadFileApi } from "@/api/file";
 import { ArticleBackDTO, Category, Tag } from "@/api/types";
 import { ElMessage, UploadRawFile, UploadRequestOptions } from "element-plus";
+import { compressImage, uploadFileLabel } from "@/utils/file.ts";
 
 const route = useRoute();
 const router = useRouter();
@@ -282,28 +283,25 @@ function openModel() {
   addOrEdit.value = true;
 }
 
-function onUpload(options: UploadRequestOptions) {
-  console.log("onUpload", options.filename);
-  const data = {
-    label: "cover",
-    file: options.file,
-    file_size: options.file.size,
-    file_md5: ""
-  };
-  return uploadFileApi(data);
-}
-
+// 上传文件之前的钩子，参数为上传的文件， 若返回false或者返回 Promise 且被 reject，则停止上传。
 function beforeUpload(rawFile: UploadRawFile) {
-  console.log("beforeUpload", rawFile.size);
+  console.log("beforeUpload", rawFile.name, rawFile.size);
+
+  // if (rawFile.type !== "image/jpeg" && rawFile.type !== "image/png") {
+  //   console.log("只能上传jpg与png格式");
+  //   return false;
+  // }
+
   if (rawFile.size / 1024 < 500) {
-    return rawFile;
+    return true;
   }
 
-  // 压缩到200KB,这里的200就是要压缩的大小,可自定义
-  imageConversion.compressAccurately(rawFile, 200).then((res: Blob) => {
-    console.log("compressAccurately", res.size);
-    return res;
-  });
+  return compressImage(rawFile);
+}
+
+function onUpload(options: UploadRequestOptions) {
+  console.log("onUpload", options.filename);
+  return uploadFileLabel(options, "article");
 }
 
 function afterUpload(response: any) {

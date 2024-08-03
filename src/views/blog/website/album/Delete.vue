@@ -34,18 +34,18 @@
           批量删除
         </el-button>
       </div>
-      <!-- 照片列表 -->
-      <el-row v-loading="loading" :gutter="10" class="photo-container">
-        <!-- 空状态 -->
-        <el-empty
-          v-if="tableData.length === 0"
-          description="暂无照片"
-          style="width: 100%"
-        />
-        <el-checkbox-group
-          v-model="selectionIds"
-          @change="handleCheckedPhotoChange"
-        >
+      <!-- 空状态 -->
+      <el-empty
+        v-if="tableData.length === 0"
+        description="暂无照片"
+        style="width: 100%"
+      />
+      <el-checkbox-group
+        v-model="selectionIds"
+        @change="handleCheckedPhotoChange"
+      >
+        <!-- 照片列表 -->
+        <el-row v-loading="loading" :gutter="10" class="picture-list">
           <el-col v-for="item in tableData" :key="item.id" :md="4">
             <el-checkbox :label="item.id" :value="item.id">
               <div class="photo-item">
@@ -59,8 +59,8 @@
               </div>
             </el-checkbox>
           </el-col>
-        </el-checkbox-group>
-      </el-row>
+        </el-row>
+      </el-checkbox-group>
       <!-- 分页 -->
       <VeTablePagination
         v-if="pageData.total > 0"
@@ -91,8 +91,8 @@
 
 <script setup lang="ts">
 import { computed, onMounted, reactive, ref, toRefs } from "vue";
-import { findPhotoAlbumListApi } from "@/api/photo_album.ts";
 import VeTablePagination from "@/components/VeTable/TablePagination.vue";
+import { findPhotoListApi } from "@/api/photo.ts";
 
 const data = reactive({
   loading: false,
@@ -102,10 +102,8 @@ const data = reactive({
   pageData: {
     currentPage: 1,
     pageSize: 10,
-    total: 20
+    total: 10
   },
-  searchData: {} as any,
-  orderData: {} as any,
   tableData: [],
   formData: {} as any
 });
@@ -113,17 +111,14 @@ const data = reactive({
 const {
   loading,
   batchDeleteVisibility,
-  addFormVisibility,
   selectionIds,
   pageData,
-  searchData,
-  orderData,
   tableData,
   formData
 } = toRefs(data);
 
 function refreshList() {
-  findPhotoAlbumListApi({}).then(res => {
+  findPhotoListApi({}).then(res => {
     tableData.value = res.data.list;
   });
 }
@@ -135,14 +130,6 @@ onMounted(() => {
 function confirmBatchDelete(ids) {
   console.log(ids);
 }
-
-const dialogTitle = computed(() => {
-  if (formData.value.id == 0) {
-    return "添加友链";
-  } else {
-    return "编辑友链";
-  }
-});
 
 const isIndeterminate = computed(() => {
   return (
@@ -216,5 +203,15 @@ onMounted(() => {
   font-size: 14px;
   margin-top: 0.3rem;
   text-align: center;
+}
+
+.picture-list .el-checkbox {
+  display: inline-block !important;
+}
+
+.picture-list .el-checkbox__input {
+  position: absolute !important;
+  top: 0.3rem;
+  left: 0.8rem;
 }
 </style>

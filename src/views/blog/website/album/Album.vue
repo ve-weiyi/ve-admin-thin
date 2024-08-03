@@ -50,18 +50,16 @@
           <div class="album-item" @click="checkPhoto(item)">
             <!-- 相册操作 -->
             <div class="album-operation">
-              <el-dropdown @command="handleCommand">
-                <iconify-icon icon="ri:more-fill" style="color: #fff" />
+              <el-dropdown @command="cmd => handleCommand(cmd, item)">
+                <el-icon>
+                  <MoreFilled />
+                </el-icon>
                 <template #dropdown>
                   <el-dropdown-menu>
-                    <el-dropdown-item
-                      :command="'update' + JSON.stringify(item)"
-                    >
-                      <iconify-icon icon="ri:edit-fill" />
+                    <el-dropdown-item icon="edit" :command="'update'">
                       编辑
                     </el-dropdown-item>
-                    <el-dropdown-item :command="'delete' + item.id">
-                      <iconify-icon icon="ep:delete-filled" />
+                    <el-dropdown-item icon="delete" :command="'delete'">
                       删除
                     </el-dropdown-item>
                   </el-dropdown-menu>
@@ -103,10 +101,10 @@
         size="default"
       >
         <el-form-item label="相册名称">
-          <el-input v-model="formData.albumName" style="width: 220px" />
+          <el-input v-model="formData.album_desc" style="width: 220px" />
         </el-form-item>
         <el-form-item label="相册描述">
-          <el-input v-model="formData.albumDesc" style="width: 220px" />
+          <el-input v-model="formData.album_desc" style="width: 220px" />
         </el-form-item>
         <el-form-item label="相册封面">
           <el-upload
@@ -118,13 +116,13 @@
             drag
             multiple
           >
-            <i v-if="!formData.albumCover" class="el-icon-upload" />
-            <div v-if="!formData.albumCover" class="el-upload__text">
+            <i v-if="!formData.album_cover" class="el-icon-upload" />
+            <div v-if="!formData.album_cover" class="el-upload__text">
               将文件拖到此处，或<em>点击上传</em>
             </div>
             <img
               v-else
-              :src="formData.albumCover"
+              :src="formData.album_cover"
               height="180px"
               width="360px"
             />
@@ -139,9 +137,7 @@
       </el-form>
       <template #footer>
         <el-button @click="addFormVisibility = false">取 消</el-button>
-        <el-button type="primary" @click="submitForm(formData)">
-          确 定
-        </el-button>
+        <el-button type="primary" @click="confirmSave"> 确 定</el-button>
       </template>
     </el-dialog>
     <!-- 删除对话框 -->
@@ -157,9 +153,7 @@
       <div style="font-size: 1rem">是否删除该相册？</div>
       <template #footer>
         <el-button @click="batchDeleteVisibility = false">取 消</el-button>
-        <el-button type="primary" @click="confirmDelete(formData)">
-          确 定
-        </el-button>
+        <el-button type="primary" @click="confirmDelete"> 确 定</el-button>
       </template>
     </el-dialog>
   </div>
@@ -168,37 +162,61 @@
 <script setup lang="ts">
 import { computed, onMounted, reactive, toRefs } from "vue";
 import { useRouter } from "vue-router";
-import * as imageConversion from "image-conversion";
-import { UploadRawFile, UploadRequestOptions } from "element-plus";
-import { uploadFileApi } from "@/api/file.ts";
+import { ElMessage, UploadRawFile, UploadRequestOptions } from "element-plus";
 import "@/style/table.scss";
-import { findPhotoAlbumListApi } from "@/api/photo_album.ts";
+import {
+  createPhotoAlbumApi,
+  deletePhotoAlbumApi,
+  findPhotoAlbumListApi,
+  updatePhotoAlbumApi
+} from "@/api/photo_album.ts";
 import VeTablePagination from "@/components/VeTable/TablePagination.vue";
+import { PhotoAlbum } from "@/api/types.ts";
+import { compressImage, uploadFileLabel } from "@/utils/file.ts";
+
+// 上传文件之前的钩子，参数为上传的文件， 若返回false或者返回 Promise 且被 reject，则停止上传。
+function beforeUpload(rawFile: UploadRawFile) {
+  console.log("beforeUpload", rawFile.name, rawFile.size);
+
+  if (rawFile.size / 1024 < 500) {
+    return true;
+  }
+
+  return compressImage(rawFile);
+}
+
+function onUpload(options: UploadRequestOptions) {
+  console.log("onUpload", options.filename);
+  return uploadFileLabel(options, "photo");
+}
+
+function afterUpload(res: any) {
+  console.log("afterUpload", res);
+  formData.value.album_cover = res.data.file_url;
+}
 
 const data = reactive({
   loading: false,
+  deleteId: 0,
   batchDeleteVisibility: false,
   addFormVisibility: false,
-  selectionIds: [],
   pageData: {
     currentPage: 1,
     pageSize: 10,
     total: 20
   },
   searchData: {} as any,
-  orderData: {} as any,
   tableData: [],
-  formData: {} as any
+  formData: {} as PhotoAlbum
 });
 
 const {
   loading,
+  deleteId,
   batchDeleteVisibility,
   addFormVisibility,
-  selectionIds,
   pageData,
   searchData,
-  orderData,
   tableData,
   formData
 } = toRefs(data);
@@ -218,70 +236,55 @@ const router = useRouter();
 
 const dialogTitle = computed(() => {
   if (formData.value.id == 0) {
-    return "添加友链";
+    return "添加相册";
   } else {
-    return "编辑友链";
+    return "编辑相册";
   }
 });
 
-// 上传文件时触发
-function beforeUpload(rawFile: UploadRawFile) {
-  console.log("beforeUpload", rawFile.name, rawFile.size);
-
-  if (rawFile.size / 1024 < 200) {
-    return true;
-  }
-
-  return new Promise<Blob>((resolve, reject) => {
-    // 压缩到200KB,这里的200就是要压缩的大小,可自定义
-    imageConversion.compressAccurately(rawFile, 200).then((res: Blob) => {
-      console.log("compressAccurately", res.size);
-      resolve(res);
-    });
-  });
-}
-
-function onUpload(options: UploadRequestOptions) {
-  const data = {
-    label: "album",
-    file: options.file,
-    file_size: options.file.size,
-    file_md5: ""
-  };
-  return uploadFileApi(data);
-}
-
-function afterUpload(res: any) {
-  console.log("afterUpload", res);
-  formData.value.albumCover = res.data.file_url;
-}
-
 const checkDelete = () => {
-  router.push({ path: "/photos/delete" });
+  router.push({ path: "/albums/photo/delete" });
 };
 
 const checkPhoto = item => {
   router.push({ path: "/albums/" + item.id });
 };
 
-const handleCommand = command => {
-  const type = command.substring(0, 6);
-  const data = command.substring(6);
-  if (type.includes("update")) {
+const handleCommand = (command: string, data: PhotoAlbum) => {
+  if (command.includes("update")) {
     formData.value = data;
     addFormVisibility.value = true;
-  } else if (type.includes("delete")) {
+  } else if (command.includes("delete")) {
+    deleteId.value = parseInt(data.id);
     batchDeleteVisibility.value = true;
   }
 };
 
-function submitForm(data) {
-  console.log("submitForm", data);
+function confirmSave() {
+  let data = formData.value;
+  console.log("confirmSave", data);
+  if (data.id > 0) {
+    createPhotoAlbumApi(data).then(res => {
+      batchDeleteVisibility.value = false;
+      ElMessage.success("创建成功");
+      refreshList();
+    });
+  } else {
+    updatePhotoAlbumApi(data).then(res => {
+      batchDeleteVisibility.value = false;
+      ElMessage.success("编辑成功");
+      refreshList();
+    });
+  }
 }
 
-function confirmDelete(data) {
-  console.log("confirmDelete", data);
-  batchDeleteVisibility.value = false;
+function confirmDelete() {
+  console.log("confirmDelete", deleteId.value);
+  deletePhotoAlbumApi({ id: deleteId.value }).then(res => {
+    batchDeleteVisibility.value = false;
+    ElMessage.success("删除成功");
+    refreshList();
+  });
 }
 </script>
 

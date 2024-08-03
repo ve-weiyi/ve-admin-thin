@@ -58,7 +58,7 @@
         <el-form-item label="页面封面">
           <el-upload
             :before-upload="beforeUpload"
-            :http-request="uploadImage"
+            :http-request="onUpload"
             :on-success="afterUpload"
             :show-file-list="false"
             class="upload-cover"
@@ -104,7 +104,7 @@
 </template>
 <script setup lang="ts">
 import { onMounted, reactive, ref } from "vue";
-import * as imageConversion from "image-conversion";
+import { compressImage, uploadFileLabel } from "@/utils/file.ts";
 import axios from "axios";
 import {
   ElMessage,
@@ -115,7 +115,6 @@ import {
 import { findPageListApi } from "@/api/page";
 import "@/style/table.scss";
 import { Page } from "@/api/types";
-import { uploadFileApi } from "@/api/file";
 
 const keywords = ref("");
 const loading = ref(true);
@@ -176,36 +175,24 @@ const addOrEditPage = () => {
   addOrEdit.value = false;
 };
 
-function uploadImage(options: UploadRequestOptions) {
-  const data = {
-    label: "page",
-    file: options.file,
-    file_size: options.file.size,
-    file_md5: ""
-  };
-  return uploadFileApi(data);
+// 上传文件之前的钩子，参数为上传的文件， 若返回false或者返回 Promise 且被 reject，则停止上传。
+function beforeUpload(rawFile: UploadRawFile) {
+  console.log("beforeUpload", rawFile.name, rawFile.size);
+
+  if (rawFile.size / 1024 < 500) {
+    return true;
+  }
+
+  return compressImage(rawFile);
+}
+
+function onUpload(options: UploadRequestOptions) {
+  return uploadFileLabel(options, "page");
 }
 
 const afterUpload = response => {
   pageForum.page_cover = response.data;
 };
-
-// 上传文件时触发
-function beforeUpload(rawFile: UploadRawFile) {
-  console.log("beforeUpload", rawFile.name, rawFile.size);
-
-  if (rawFile.size / 1024 < 200) {
-    return true;
-  }
-
-  return new Promise<Blob>((resolve, reject) => {
-    // 压缩到200KB,这里的200就是要压缩的大小,可自定义
-    imageConversion.compressAccurately(rawFile, 200).then((res: Blob) => {
-      console.log("compressAccurately", res.size);
-      resolve(res);
-    });
-  });
-}
 
 const handleCommand = command => {
   console.log("command", command);
