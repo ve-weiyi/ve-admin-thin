@@ -1,72 +1,38 @@
 import request from "@/utils/request";
-import type {
-  BatchResp,
-  CommentBackDTO,
-  CommentNewReq,
-  EmptyResp,
-  IdReq,
-  IdsReq,
-  PageQuery,
-  PageResp
-} from "./types";
+import { CommentQuery, PageResp, CommentReviewReq, CommentBackDTO, IdsReq, BatchResp, IdReq } from "./types";
 
-/** "创建评论" */
-export function createCommentApi(
-  data?: CommentNewReq
-): Promise<IApiResponseData<CommentNewReq>> {
+/** "批量删除评论" */
+export function batchDeleteCommentApi(data?: IdsReq): Promise<IApiResponse<BatchResp>> {
   return request({
-    url: "/api/v1/comment/create_comment",
-    method: "post",
-    data: data
+    url: "/api/v1/comment/batch_delete_comment",
+    method: "delete",
+    data: data,
   });
 }
+
 /** "删除评论" */
-export function deleteCommentApi(
-  data?: IdReq
-): Promise<IApiResponseData<EmptyResp>> {
+export function deleteCommentApi(data?: IdReq): Promise<IApiResponse<BatchResp>> {
   return request({
     url: "/api/v1/comment/delete_comment",
     method: "delete",
-    data: data
+    data: data,
   });
 }
-/** "批量删除评论" */
-export function deleteCommentListApi(
-  data?: IdsReq
-): Promise<IApiResponseData<BatchResp>> {
-  return request({
-    url: "/api/v1/comment/delete_comment_list",
-    method: "delete",
-    data: data
-  });
-}
-/** "查询评论" */
-export function findCommentApi(
-  data?: IdReq
-): Promise<IApiResponseData<CommentBackDTO>> {
-  return request({
-    url: "/api/v1/comment/find_comment",
-    method: "post",
-    data: data
-  });
-}
+
 /** "查询评论列表(后台)" */
-export function findCommentBackListApi(
-  data?: PageQuery
-): Promise<IApiResponseData<PageResp>> {
+export function findCommentBackListApi(data?: CommentQuery): Promise<IApiResponse<PageResp>> {
   return request({
     url: "/api/v1/comment/find_comment_back_list",
     method: "post",
-    data: data
+    data: data,
   });
 }
-/** "更新评论" */
-export function updateCommentApi(
-  data?: CommentNewReq
-): Promise<IApiResponseData<CommentNewReq>> {
+
+/** "更新评论审核状态" */
+export function updateCommentReviewApi(data?: CommentReviewReq): Promise<IApiResponse<CommentBackDTO>> {
   return request({
-    url: "/api/v1/comment/update_comment",
+    url: "/api/v1/comment/update_comment_review",
     method: "put",
-    data: data
+    data: data,
   });
 }

@@ -9,7 +9,7 @@ import {
   updateUserStatusApi
 } from "@/api/account.ts";
 import { findRoleListApi } from "@/api/role.ts";
-import { formatDate } from "@/utils/formatDate.ts";
+import { formatDate } from "@/utils/date.ts";
 
 const align = "center";
 

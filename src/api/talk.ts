@@ -1,70 +1,47 @@
 import request from "@/utils/request";
-import type {
-  BatchResp,
-  IdReq,
-  IdsReq,
-  PageQuery,
-  PageResp,
-  TalkDetails
-} from "./types";
+import { TalkNewReq, TalkBackDTO, IdReq, BatchResp, TalkQuery, PageResp } from "./types";
 
 /** "分页获取说说列表" */
-export function findTalkListApi(
-  data?: PageQuery
-): Promise<IApiResponseData<PageResp>> {
+export function findTalkListApi(data?: TalkQuery): Promise<IApiResponse<PageResp>> {
   return request({
     url: "/api/v1/talk/find_talk_list",
     method: "post",
-    data: data
+    data: data,
   });
 }
+
 /** "创建说说" */
-export function createTalkApi(
-  data?: TalkDetails
-): Promise<IApiResponseData<TalkDetails>> {
+export function addTalkApi(data?: TalkNewReq): Promise<IApiResponse<TalkBackDTO>> {
   return request({
-    url: "/api/v1/talk/create_talk",
+    url: "/api/v1/talk/add_talk",
     method: "post",
-    data: data
+    data: data,
   });
 }
+
 /** "删除说说" */
-export function deleteTalkApi(
-  data?: IdReq
-): Promise<IApiResponseData<BatchResp>> {
+export function deleteTalkApi(data?: IdReq): Promise<IApiResponse<BatchResp>> {
   return request({
     url: "/api/v1/talk/delete_talk",
     method: "delete",
-    data: data
+    data: data,
   });
 }
-/** "批量删除说说" */
-export function deleteTalkListApi(
-  data?: IdsReq
-): Promise<IApiResponseData<BatchResp>> {
-  return request({
-    url: "/api/v1/talk/delete_talk_list",
-    method: "delete",
-    data: data
-  });
-}
+
 /** "查询说说" */
-export function findTalkApi(
-  data?: IdReq
-): Promise<IApiResponseData<TalkDetails>> {
+export function getTalkApi(data?: IdReq): Promise<IApiResponse<TalkBackDTO>> {
   return request({
-    url: "/api/v1/talk/find_talk",
+    url: "/api/v1/talk/get_talk",
     method: "post",
-    data: data
+    data: data,
   });
 }
+
 /** "更新说说" */
-export function updateTalkApi(
-  data?: TalkDetails
-): Promise<IApiResponseData<TalkDetails>> {
+export function updateTalkApi(data?: TalkNewReq): Promise<IApiResponse<TalkBackDTO>> {
   return request({
     url: "/api/v1/talk/update_talk",
     method: "put",
-    data: data
+    data: data,
   });
 }

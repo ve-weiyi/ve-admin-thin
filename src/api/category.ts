@@ -1,70 +1,47 @@
 import request from "@/utils/request";
-import type {
-  BatchResp,
-  Category,
-  IdReq,
-  IdsReq,
-  PageQuery,
-  PageResp
-} from "./types";
+import { PageResp, CategoryNewReq, CategoryBackDTO, IdsReq, BatchResp, IdReq, CategoryQuery } from "./types";
 
 /** "分页获取文章分类列表" */
-export function findCategoryListApi(
-  data?: PageQuery
-): Promise<IApiResponseData<PageResp>> {
+export function findCategoryListApi(data?: CategoryQuery): Promise<IApiResponse<PageResp>> {
   return request({
     url: "/api/v1/category/find_category_list",
     method: "post",
-    data: data
+    data: data,
   });
 }
+
 /** "创建文章分类" */
-export function createCategoryApi(
-  data?: Category
-): Promise<IApiResponseData<Category>> {
+export function addCategoryApi(data?: CategoryNewReq): Promise<IApiResponse<CategoryBackDTO>> {
   return request({
-    url: "/api/v1/category/create_category",
+    url: "/api/v1/category/add_category",
     method: "post",
-    data: data
+    data: data,
   });
 }
+
+/** "批量删除文章分类" */
+export function batchDeleteCategoryApi(data?: IdsReq): Promise<IApiResponse<BatchResp>> {
+  return request({
+    url: "/api/v1/category/batch_delete_category",
+    method: "delete",
+    data: data,
+  });
+}
+
 /** "删除文章分类" */
-export function deleteCategoryApi(
-  data?: IdReq
-): Promise<IApiResponseData<BatchResp>> {
+export function deleteCategoryApi(data?: IdReq): Promise<IApiResponse<BatchResp>> {
   return request({
     url: "/api/v1/category/delete_category",
     method: "delete",
-    data: data
+    data: data,
   });
 }
-/** "批量删除文章分类" */
-export function deleteCategoryListApi(
-  data?: IdsReq
-): Promise<IApiResponseData<BatchResp>> {
-  return request({
-    url: "/api/v1/category/delete_category_list",
-    method: "delete",
-    data: data
-  });
-}
-/** "查询文章分类" */
-export function findCategoryApi(
-  data?: IdReq
-): Promise<IApiResponseData<Category>> {
-  return request({
-    url: "/api/v1/category/find_category",
-    method: "post",
-    data: data
-  });
-}
+
 /** "更新文章分类" */
-export function updateCategoryApi(
-  data?: Category
-): Promise<IApiResponseData<Category>> {
+export function updateCategoryApi(data?: CategoryNewReq): Promise<IApiResponse<CategoryBackDTO>> {
   return request({
     url: "/api/v1/category/update_category",
     method: "put",
-    data: data
+    data: data,
   });
 }

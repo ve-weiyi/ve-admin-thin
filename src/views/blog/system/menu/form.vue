@@ -14,15 +14,15 @@ import {
   showLinkOptions,
   showParentOptions
 } from "./utils/enums.ts";
-import { MenuDetails } from "@/api/types.ts";
+import { MenuBackDTO } from "@/api/types.ts";
 
 const props = defineProps({
   model: {
-    type: Object as () => MenuDetails,
-    default: () => ({}) as MenuDetails
+    type: Object as () => MenuBackDTO,
+    default: () => ({}) as MenuBackDTO
   },
   menuOptions: {
-    type: Array as () => MenuDetails[],
+    type: Array as () => MenuBackDTO[],
     default: () => []
   }
 });

@@ -37,7 +37,7 @@ export default {
     },
     {
       path: "/message/links",
-      component: () => import("@/views/blog/website/link/FriendLink.vue"),
+      component: () => import("@/views/blog/website/link/Friend.vue"),
       name: "links",
       meta: { title: "友链管理" }
     },

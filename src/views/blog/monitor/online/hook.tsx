@@ -4,7 +4,7 @@ import { type FormField, RenderType } from "@/utils/render.tsx";
 import { FixedDir } from "element-plus/es/components/table-v2/src/constants";
 
 import { findOnlineUserListApi, updateUserStatusApi } from "@/api/account.ts";
-import { formatDate } from "@/utils/formatDate.ts";
+import { formatDate } from "@/utils/date.ts";
 
 const align = "center";
 

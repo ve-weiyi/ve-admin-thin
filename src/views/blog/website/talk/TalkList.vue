@@ -121,9 +121,9 @@ import { computed, onMounted, reactive, ref, toRefs } from "vue";
 import Talk from "./Talk.vue";
 import VeTablePagination from "@/components/VeTable/TablePagination.vue";
 import { deleteTalkApi, findTalkListApi } from "@/api/talk.ts";
+import { TalkQuery } from "@/api/types.ts";
 
 const data = reactive({
-  selectionIds: [],
   pageData: {
     currentPage: 1,
     pageSize: 10,
@@ -135,12 +135,18 @@ const data = reactive({
   formData: {} as any
 });
 
-const { selectionIds, pageData, searchData, orderData, tableData, formData } =
-  toRefs(data);
+const { pageData, searchData, orderData, tableData, formData } = toRefs(data);
 
 function refreshList() {
-  findTalkListApi({}).then(res => {
+  let data: TalkQuery = {
+    page: pageData.value.currentPage,
+    page_size: pageData.value.pageSize,
+    status: status.value
+  };
+
+  findTalkListApi(data).then(res => {
     tableData.value = res.data.list;
+    pageData.value.total = res.data.total;
   });
 }
 

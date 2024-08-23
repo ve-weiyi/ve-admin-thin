@@ -27,13 +27,6 @@
           发布文章
         </el-button>
       </div>
-      <!-- 文章内容 -->
-      <!--      <mavon-editor-->
-      <!--        ref="mdRef"-->
-      <!--        v-model="article.article_content"-->
-      <!--        @imgAdd="uploadImg"-->
-      <!--        style="height: calc(100vh - 260px)"-->
-      <!--      />-->
       <MdEditor
         ref="mdRef"
         v-model="article.article_content"
@@ -153,7 +146,7 @@
             </el-popover>
           </el-form-item>
           <el-form-item label="文章类型">
-            <el-select v-model="article.type" placeholder="请选择类型">
+            <el-select v-model="article.article_type" placeholder="请选择类型">
               <el-option
                 v-for="item in typeList"
                 :key="item.type"
@@ -163,7 +156,7 @@
             </el-select>
           </el-form-item>
           <!-- 文章类型 -->
-          <el-form-item v-if="article.type != 1" label="原文地址">
+          <el-form-item v-if="article.article_type != 1" label="原文地址">
             <el-input
               v-model="article.original_url"
               placeholder="请填写原文链接"
@@ -225,22 +218,23 @@ import { MdEditor } from "md-editor-v3";
 import "md-editor-v3/lib/style.css";
 import { findCategoryListApi } from "@/api/category";
 import { findTagListApi } from "@/api/tag";
-import { findArticleApi, saveArticleApi } from "@/api/article";
+import { getArticleApi, updateArticleApi } from "@/api/article";
 import { uploadFileApi } from "@/api/file";
-import { ArticleBackDTO, Category, Tag } from "@/api/types";
+import { ArticleBackDTO, CategoryBackDTO, TagBackDTO } from "@/api/types";
 import { ElMessage, UploadRawFile, UploadRequestOptions } from "element-plus";
 import { compressImage, uploadFileLabel } from "@/utils/file.ts";
+import { formatDate } from "@/utils/date.ts";
 
 const route = useRoute();
 const router = useRouter();
 const article = ref<ArticleBackDTO>({
   id: null,
-  article_title: "",
+  article_title: formatDate(new Date(), "yyyy-MM-dd"),
   article_content: "",
   article_cover: "",
   category_name: null,
   tag_name_list: [],
-  type: 1,
+  article_type: 1,
   original_url: "",
   is_top: 0,
   status: 1
@@ -252,8 +246,8 @@ const addOrEdit = ref(false);
 const autoSave = ref(true);
 const categoryName = ref("");
 const tagName = ref("");
-const categoryList = ref<Category[]>([]);
-const tagList = ref<Tag[]>([]);
+const categoryList = ref<CategoryBackDTO[]>([]);
+const tagList = ref<TagBackDTO[]>([]);
 const typeList = ref([
   {
     type: 1,
@@ -271,11 +265,11 @@ const typeList = ref([
 
 function openModel() {
   if (article.value.article_title.trim() === "") {
-    alert("文章标题不能为空");
+    ElMessage.error("文章标题不能为空");
     return;
   }
   if (article.value.article_content.trim() === "") {
-    alert("文章内容不能为空");
+    ElMessage.error("文章内容不能为空");
     return;
   }
   listCategories();
@@ -337,15 +331,15 @@ function uploadImg(pos, file) {
 
 function saveArticleDraft() {
   if (article.value.article_title.trim() === "") {
-    alert("文章标题不能为空");
+    ElMessage.error("文章标题不能为空");
     return;
   }
   if (article.value.article_content.trim() === "") {
-    alert("文章内容不能为空");
+    ElMessage.error("文章内容不能为空");
     return;
   }
   article.value.status = 3;
-  saveArticleApi(article.value).then(res => {
+  updateArticleApi(article.value).then(res => {
     if (res.code == 200) {
       if (article.value.id === null) {
         // store.commit("removeTab", "发布文章")
@@ -354,9 +348,9 @@ function saveArticleDraft() {
       }
       sessionStorage.removeItem("article");
       router.push({ path: "/article/list" });
-      alert("保存草稿成功");
+      ElMessage.success("保存草稿成功");
     } else {
-      alert("保存草稿失败");
+      ElMessage.error("保存草稿失败");
     }
   });
 
@@ -365,26 +359,26 @@ function saveArticleDraft() {
 
 function saveOrUpdateArticle() {
   if (article.value.article_title.trim() === "") {
-    alert("文章标题不能为空");
+    ElMessage.error("文章标题不能为空");
     return;
   }
   if (article.value.article_content.trim() === "") {
-    alert("文章内容不能为空");
+    ElMessage.error("文章内容不能为空");
     return;
   }
   if (article.value.category_name === null) {
-    alert("文章分类不能为空");
+    ElMessage.error("文章分类不能为空");
     return;
   }
   if (article.value.tag_name_list.length === 0) {
-    alert("文章标签不能为空");
+    ElMessage.error("文章标签不能为空");
     return;
   }
   if (article.value.article_cover.trim() === "") {
-    alert("文章封面不能为空");
+    ElMessage.error("文章封面不能为空");
     return;
   }
-  saveArticleApi(article.value).then(res => {
+  updateArticleApi(article.value).then(res => {
     if (res.code === 200) {
       if (article.value.id === null) {
         // store.commit("removeTab", "发布文章")
@@ -393,9 +387,9 @@ function saveOrUpdateArticle() {
       }
       sessionStorage.removeItem("article");
       router.push({ path: "/article/list" });
-      alert("发布文章成功");
+      ElMessage.success("发布文章成功");
     } else {
-      alert("发布文章失败");
+      ElMessage.error("发布文章失败");
     }
     addOrEdit.value = false;
   });
@@ -411,7 +405,7 @@ function autoSaveArticle() {
     article.value.article_content.trim() !== "" &&
     article.value.id !== null
   ) {
-    saveArticleApi(article.value).then(res => {
+    updateArticleApi(article.value).then(res => {
       if (res.code === 200) {
         ElMessage.success("自动保存成功");
       } else {
@@ -426,13 +420,7 @@ function autoSaveArticle() {
 
 function searchCategories(keywords: string, cb: any) {
   findCategoryListApi({
-    conditions: [
-      {
-        field: "category_name",
-        value: keywords,
-        operator: "like"
-      }
-    ]
+    category_name: keywords
   }).then(res => {
     cb(res.data.list);
   });
@@ -462,19 +450,13 @@ function removeCategory() {
 
 function searchTags(keywords: string, cb: any) {
   findTagListApi({
-    conditions: [
-      {
-        field: "tag_name",
-        value: keywords,
-        operator: "like"
-      }
-    ]
+    tag_name: keywords
   }).then(res => {
     cb(res.data.list);
   });
 }
 
-function handleSelectTag(item: Tag) {
+function handleSelectTag(item: TagBackDTO) {
   addTag(item.tag_name);
 }
 
@@ -498,7 +480,7 @@ function removeTag(name: string) {
   }
 }
 
-const tagClass = (item: Tag) => {
+const tagClass = (item: TagBackDTO) => {
   const index = article.value.tag_name_list.indexOf(item.tag_name);
   return index !== -1 ? "tag-item-select" : "tag-item";
 };
@@ -516,7 +498,7 @@ function listTags() {
 }
 
 const getArticle = (articleId: number) => {
-  findArticleApi({ id: articleId }).then(res => {
+  getArticleApi({ id: articleId }).then(res => {
     article.value = res.data;
   });
 };
@@ -528,6 +510,7 @@ onMounted(() => {
     getArticle(Number(articleId));
   } else {
     const articleData = sessionStorage.getItem("article");
+    console.log("articleData", articleData);
     if (articleData) {
       article.value = JSON.parse(articleData);
     }

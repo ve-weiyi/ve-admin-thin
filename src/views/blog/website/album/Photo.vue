@@ -225,14 +225,15 @@ import {
 import * as imageConversion from "image-conversion";
 import { computed, onMounted, reactive, ref, toRefs, watch } from "vue";
 import { useRoute } from "vue-router";
-import { findPhotoAlbumApi } from "@/api/photo_album.ts";
+import { getAlbumApi } from "@/api/album.ts";
 import {
-  createPhotoApi,
-  deletePhotoListApi,
+  addPhotoApi,
+  batchDeletePhotoApi,
+  deletePhotoApi,
   findPhotoListApi,
   updatePhotoApi
 } from "@/api/photo.ts";
-import { Photo, PhotoAlbum } from "@/api/types.ts";
+import { PhotoBackDTO, AlbumBackDTO } from "@/api/types.ts";
 import { compressImage, uploadFileLabel } from "@/utils/file.ts";
 import VeTablePagination from "@/components/VeTable/TablePagination.vue";
 
@@ -259,8 +260,8 @@ const data = reactive({
   photoForm: {} as any,
   photoIdList: [] as number[],
   selectPhotoIdList: [] as number[],
-  photoList: [] as Photo[],
-  albumInfo: {} as PhotoAlbum,
+  photoList: [] as PhotoBackDTO[],
+  albumInfo: {} as AlbumBackDTO,
   uploadList: [] as any
 });
 const {
@@ -309,7 +310,7 @@ const handleCheckedPhotoChange = (value: number[]) => {
   isIndeterminate.value =
     checkedCount > 0 && checkedCount < photoIdList.value.length;
 };
-const handleCommand = (photo: Photo) => {
+const handleCommand = (photo: PhotoBackDTO) => {
   photoFormRef.value?.resetFields();
   photoForm.value = photo;
   update.value = true;
@@ -350,7 +351,7 @@ const handleMove = () => {};
 const handleDelete = () => {
   messageConfirm("确认删除已选中的数据项?")
     .then(() => {
-      deletePhotoListApi({ ids: selectPhotoIdList.value }).then(res => {
+      batchDeletePhotoApi({ ids: selectPhotoIdList.value }).then(res => {
         if (res.flag) {
           notifySuccess(res.message);
           getList();
@@ -369,9 +370,9 @@ const handleAdd = () => {
     });
   }
 
-  let data: Photo = {
-    album_id: 0
-  };
+  // let data: Photo = {
+  //   album_id: 0
+  // };
 
   // createPhotoApi({
   //   albumId: Number(route.params.albumId),
@@ -416,7 +417,7 @@ const getList = () => {
 };
 
 function getAlbumInfo(id: number) {
-  findPhotoAlbumApi({
+  getAlbumApi({
     id
   }).then(res => {
     console.log("getAlbumInfo", res);

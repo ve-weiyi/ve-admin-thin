@@ -1,23 +1,20 @@
 import request from "@/utils/request";
-import type { EmptyReq, EmptyResp, LoginReq, LoginResp } from "./types";
+import { LoginReq, LoginResp, EmptyReq, EmptyResp } from "./types";
 
 /** "登录" */
-export function loginApi(
-  data?: LoginReq
-): Promise<IApiResponseData<LoginResp>> {
+export function loginApi(data?: LoginReq): Promise<IApiResponse<LoginResp>> {
   return request({
     url: "/api/v1/login",
     method: "post",
-    data: data
+    data: data,
   });
 }
+
 /** "登出" */
-export function logoutApi(
-  data?: EmptyReq
-): Promise<IApiResponseData<EmptyResp>> {
+export function logoutApi(data?: EmptyReq): Promise<IApiResponse<EmptyResp>> {
   return request({
     url: "/api/v1/logout",
     method: "post",
-    data: data
+    data: data,
   });
 }

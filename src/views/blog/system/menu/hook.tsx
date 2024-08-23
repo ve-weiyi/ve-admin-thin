@@ -2,16 +2,16 @@ import { getCurrentInstance, h } from "vue";
 import type { Column } from "element-plus";
 import { type FormField, RenderType } from "@/utils/render.tsx";
 import {
-  createMenuApi,
+  addMenuApi,
   deleteMenuApi,
-  deleteMenuListApi,
+  batchDeleteMenuApi,
   findMenuListApi,
   updateMenuApi
 } from "@/api/menu.ts";
 import { transformI18n } from "@/plugins/i18n.ts";
 import { useRenderIcon } from "@/components/ReIcon/src/hooks.ts";
-import type { MenuDetails } from "@/api/types.ts";
-import { formatDate } from "@/utils/formatDate.ts";
+import type { MenuBackDTO } from "@/api/types.ts";
+import { formatDate } from "@/utils/date.ts";
 
 const align = "center";
 
@@ -174,7 +174,7 @@ function getColumnFields(): Column[] {
               size="small"
               icon="Plus"
               onClick={() => {
-                let data: MenuDetails = {
+                let data: MenuBackDTO = {
                   id: 0,
                   type: 0,
                   parent_id: scope.row.id,
@@ -293,13 +293,13 @@ function handleApi(event: string, data: any) {
   console.log("event", event);
   switch (event) {
     case "create":
-      return createMenuApi(data);
+      return addMenuApi(data);
     case "update":
       return updateMenuApi(data);
     case "delete":
       return deleteMenuApi(data);
     case "deleteByIds":
-      return deleteMenuListApi(data);
+      return batchDeleteMenuApi(data);
     case "list":
       return findMenuListApi({});
     default:

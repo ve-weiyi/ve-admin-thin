@@ -3,14 +3,13 @@ import { type Column, ElMessage, ElTag } from "element-plus";
 import { type FormField, RenderType } from "@/utils/render";
 
 import {
-  createRemarkApi,
+  batchDeleteRemarkApi,
   deleteRemarkApi,
-  deleteRemarkListApi,
   findRemarkListApi,
   updateRemarkApi
 } from "@/api/remark";
-import type { Remark } from "@/api/types";
-import { formatDate } from "@/utils/formatDate.ts";
+import type { RemarkBackDTO } from "@/api/types";
+import { formatDate } from "@/utils/date.ts";
 
 const align = "center";
 
@@ -195,7 +194,7 @@ function getSearchFields(): FormField[] {
 }
 
 // 表单字段
-function getFormFields(model: Remark): FormField[] {
+function getFormFields(model: RemarkBackDTO): FormField[] {
   return [];
 }
 
@@ -203,13 +202,13 @@ function handleApi(event: string, data: any) {
   console.log("event", event);
   switch (event) {
     case "create":
-      return createRemarkApi(data);
+      return;
     case "update":
       return updateRemarkApi(data);
     case "delete":
       return deleteRemarkApi(data);
     case "deleteByIds":
-      return deleteRemarkListApi(data);
+      return batchDeleteRemarkApi(data);
     case "list":
       return findRemarkListApi(data);
     default:

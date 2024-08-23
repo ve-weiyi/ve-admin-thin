@@ -3,14 +3,14 @@ import type { Column } from "element-plus";
 import { type FormField, RenderType } from "@/utils/render";
 
 import {
-  createTagApi,
+  addTagApi,
+  batchDeleteTagApi,
   deleteTagApi,
-  deleteTagListApi,
   findTagListApi,
   updateTagApi
 } from "@/api/tag";
-import type { Tag } from "@/api/types";
-import { formatDate } from "@/utils/formatDate.ts";
+import type { TagBackDTO } from "@/api/types";
+import { formatDate } from "@/utils/date.ts";
 
 const align = "center";
 
@@ -121,7 +121,7 @@ function getSearchFields(): FormField[] {
 }
 
 // 表单字段
-function getFormFields(model: Tag): FormField[] {
+function getFormFields(model: TagBackDTO): FormField[] {
   return [
     {
       type: RenderType.Input,
@@ -135,13 +135,13 @@ function handleApi(event: string, data: any) {
   console.log("event", event);
   switch (event) {
     case "create":
-      return createTagApi(data);
+      return addTagApi(data);
     case "update":
       return updateTagApi(data);
     case "delete":
       return deleteTagApi(data);
     case "deleteByIds":
-      return deleteTagListApi(data);
+      return batchDeleteTagApi(data);
     case "list":
       return findTagListApi(data);
     default:

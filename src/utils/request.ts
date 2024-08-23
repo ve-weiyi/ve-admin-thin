@@ -39,10 +39,11 @@ requests.interceptors.request.use(
     let dv = "device_id";
     let ts = getTimestampInSeconds().toString();
     const tk = useAdminStoreHook().getToken();
+    const uid = useAdminStoreHook().getUid();
     if (tk) {
       config.headers = Object.assign({}, config.headers, {
-        [HeaderAuthorization]: tk?.access_token,
-        [HeaderUid]: tk?.user_id,
+        [HeaderAuthorization]: tk,
+        [HeaderUid]: uid,
         [HeaderToken]: signWithSalt(dv, ts),
         [HeaderTerminal]: dv,
         [HeaderTimestamp]: ts
@@ -67,6 +68,8 @@ requests.interceptors.request.use(
 requests.interceptors.response.use(
   (response: AxiosResponse) => {
     switch (response.data.code) {
+      case 200:
+        break;
       case 400:
         ElNotification({
           title: "失败",
@@ -74,7 +77,7 @@ requests.interceptors.response.use(
           type: "error"
         });
         break;
-      case 402:
+      case 401:
         useAdminStoreHook().removeToken();
         ElNotification({
           title: "登录过期",
@@ -82,7 +85,7 @@ requests.interceptors.response.use(
           type: "error"
         });
         break;
-      case 500:
+      default:
         ElNotification({
           title: "失败",
           message: response.data.message,

@@ -8,14 +8,12 @@ import VueJsonPretty from "vue-json-pretty";
 import "vue-json-pretty/lib/styles.css";
 
 import {
-  createOperationLogApi,
+  batchDeleteOperationLogApi,
   deleteOperationLogApi,
-  deleteOperationLogListApi,
-  findOperationLogListApi,
-  updateOperationLogApi
+  findOperationLogListApi
 } from "@/api/operation_log";
-import type { OperationLog } from "@/api/types";
-import { formatDate } from "@/utils/formatDate.ts";
+import type { OperationLogBackDTO } from "@/api/types";
+import { formatDate } from "@/utils/date.ts";
 
 const align = "center";
 
@@ -210,7 +208,7 @@ function getSearchFields(): FormField[] {
 }
 
 // 表单字段
-function getFormFields(model: OperationLog): FormField[] {
+function getFormFields(model: OperationLogBackDTO): FormField[] {
   return [
     {
       field: "user_id",
@@ -307,13 +305,13 @@ function handleApi(event: string, data: any) {
   console.log("event", event);
   switch (event) {
     case "create":
-      return createOperationLogApi(data);
+      return;
     case "update":
-      return updateOperationLogApi(data);
+      return;
     case "delete":
       return deleteOperationLogApi(data);
     case "deleteByIds":
-      return deleteOperationLogListApi(data);
+      return batchDeleteOperationLogApi(data);
     case "list":
       return findOperationLogListApi(data);
     default:

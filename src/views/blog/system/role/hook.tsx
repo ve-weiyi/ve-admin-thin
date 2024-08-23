@@ -1,15 +1,15 @@
 import { type Column, ElMessage } from "element-plus";
 import { type FormField, RenderType } from "@/utils/render.tsx";
 import {
-  createRoleApi,
+  addRoleApi,
   deleteRoleApi,
-  deleteRoleListApi,
+  batchDeleteRoleApi,
   findRoleListApi,
   updateRoleApi
 } from "@/api/role.ts";
 import { getCurrentInstance } from "vue";
 import { FixedDir } from "element-plus/es/components/table-v2/src/constants";
-import { formatDate } from "@/utils/formatDate.ts";
+import { formatDate } from "@/utils/date.ts";
 
 const align = "center";
 
@@ -260,13 +260,13 @@ function handleApi(event: string, data: any) {
   console.log("event", event);
   switch (event) {
     case "create":
-      return createRoleApi(data);
+      return addRoleApi(data);
     case "update":
       return updateRoleApi(data);
     case "delete":
       return deleteRoleApi(data);
     case "deleteByIds":
-      return deleteRoleListApi(data);
+      return batchDeleteRoleApi(data);
     case "list":
       return findRoleListApi(data);
     default:

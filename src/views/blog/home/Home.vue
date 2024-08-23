@@ -119,7 +119,7 @@ import ChinaMap from "@/views/blog/home/components/ChinaMap.vue";
 import { onMounted, reactive, ref } from "vue";
 import { getAdminHomeInfoApi } from "@/api/website.ts";
 import { ArticleStatisticsDTO, TagDTO, UserArea } from "@/api/types.ts";
-import { findUserAreasApi } from "@/api/account.ts";
+import { getUserAreaAnalysisApi } from "@/api/account.ts";
 
 const loading = ref(true);
 
@@ -310,7 +310,7 @@ const getList = () => {
 const type = ref(1);
 const listUserArea = () => {
   // 发送请求获取用户地域分布数据
-  findUserAreasApi().then(res => {
+  getUserAreaAnalysisApi().then(res => {
     // userAreaMap.series[0].data = res.data
     areaData.value = res.data.list;
   });

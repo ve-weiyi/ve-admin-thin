@@ -68,13 +68,12 @@ const onLogin = async (formEl: FormInstance | undefined) => {
   await formEl.validate((valid, fields) => {
     if (valid) {
       loading.value = true;
-      loginApi(ruleForm)
+      useAdminStoreHook()
+        .loginByUsername(ruleForm)
         .then(res => {
           loading.value = false;
-          console.log("res", res);
           message("登录成功", { type: "success" });
           // 保存token
-          useAdminStoreHook().setToken(res.data.token);
           // 获取后端路由
           initRouter().then(() => {
             // 跳转到首页

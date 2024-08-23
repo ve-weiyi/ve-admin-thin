@@ -116,8 +116,8 @@ import { computed, onMounted, ref, toRefs, watch } from "vue";
 import { compressImage, uploadFileLabel } from "@/utils/file.ts";
 import EmojiList from "@/assets/emojis/qq_emoji.json";
 import Editor from "@/views/blog/website/talk/Editor.vue";
-import { createTalkApi, findTalkApi, updateTalkApi } from "@/api/talk.ts";
-import { TalkDetails } from "@/api/types.ts";
+import { addTalkApi, getTalkApi, updateTalkApi } from "@/api/talk.ts";
+import { TalkBackDTO } from "@/api/types.ts";
 import { ElMessage, UploadRawFile, UploadRequestOptions } from "element-plus";
 
 const props = defineProps({
@@ -134,7 +134,7 @@ const props = defineProps({
 
 // const route = useRoute();
 const emojiList = ref<any>(EmojiList);
-const talk = ref<TalkDetails>({
+const talk = ref<TalkBackDTO>({
   id: null,
   content: "",
   is_top: 0,
@@ -162,7 +162,7 @@ watch(talkId, (newValue, oldValue) => {
 
 function findTalk(talkId: number) {
   if (talkId) {
-    findTalkApi({ id: talkId }).then(res => {
+    getTalkApi({ id: talkId }).then(res => {
       talk.value = res.data;
       if (res.data.img_list) {
         res.data.img_list.forEach(item => {
@@ -234,7 +234,7 @@ function saveOrUpdateTalk() {
       ElMessage.success("更新说说成功");
     });
   } else {
-    createTalkApi(talk.value).then(res => {
+    addTalkApi(talk.value).then(res => {
       editorRef.value.clear();
       uploadList.value = [];
       ElMessage.success("发布说说成功");

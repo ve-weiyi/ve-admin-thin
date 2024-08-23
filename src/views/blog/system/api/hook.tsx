@@ -3,13 +3,13 @@ import { type Column, ElMessage } from "element-plus";
 import { type FormField, RenderType } from "@/utils/render.tsx";
 
 import {
-  createApiApi,
+  addApiApi,
   deleteApiApi,
-  deleteApiListApi,
+  batchDeleteApiApi,
   findApiListApi,
   updateApiApi
 } from "@/api/api.ts";
-import { formatDate } from "@/utils/formatDate.ts";
+import { formatDate } from "@/utils/date.ts";
 
 const align = "center";
 
@@ -256,13 +256,13 @@ function handleApi(event: string, data: any) {
   console.log("event", event);
   switch (event) {
     case "create":
-      return createApiApi(data);
+      return addApiApi(data);
     case "update":
       return updateApiApi(data);
     case "delete":
       return deleteApiApi(data);
     case "deleteByIds":
-      return deleteApiListApi(data);
+      return batchDeleteApiApi(data);
     case "list":
       return findApiListApi({});
     default:

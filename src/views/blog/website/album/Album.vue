@@ -165,13 +165,13 @@ import { useRouter } from "vue-router";
 import { ElMessage, UploadRawFile, UploadRequestOptions } from "element-plus";
 import "@/style/table.scss";
 import {
-  createPhotoAlbumApi,
-  deletePhotoAlbumApi,
-  findPhotoAlbumListApi,
-  updatePhotoAlbumApi
-} from "@/api/photo_album.ts";
+  addAlbumApi,
+  deleteAlbumApi,
+  findAlbumListApi,
+  updateAlbumApi
+} from "@/api/album.ts";
 import VeTablePagination from "@/components/VeTable/TablePagination.vue";
-import { PhotoAlbum } from "@/api/types.ts";
+import { AlbumNew, AlbumBackDTO } from "@/api/types.ts";
 import { compressImage, uploadFileLabel } from "@/utils/file.ts";
 
 // 上传文件之前的钩子，参数为上传的文件， 若返回false或者返回 Promise 且被 reject，则停止上传。
@@ -207,7 +207,7 @@ const data = reactive({
   },
   searchData: {} as any,
   tableData: [],
-  formData: {} as PhotoAlbum
+  formData: {} as AlbumNew
 });
 
 const {
@@ -222,7 +222,7 @@ const {
 } = toRefs(data);
 
 function refreshList() {
-  findPhotoAlbumListApi({}).then(res => {
+  findAlbumListApi({}).then(res => {
     tableData.value = res.data.list;
   });
 }
@@ -250,7 +250,7 @@ const checkPhoto = item => {
   router.push({ path: "/albums/" + item.id });
 };
 
-const handleCommand = (command: string, data: PhotoAlbum) => {
+const handleCommand = (command: string, data: AlbumBackDTO) => {
   if (command.includes("update")) {
     formData.value = data;
     addFormVisibility.value = true;
@@ -264,13 +264,13 @@ function confirmSave() {
   let data = formData.value;
   console.log("confirmSave", data);
   if (data.id > 0) {
-    createPhotoAlbumApi(data).then(res => {
+    addAlbumApi(data).then(res => {
       batchDeleteVisibility.value = false;
       ElMessage.success("创建成功");
       refreshList();
     });
   } else {
-    updatePhotoAlbumApi(data).then(res => {
+    updateAlbumApi(data).then(res => {
       batchDeleteVisibility.value = false;
       ElMessage.success("编辑成功");
       refreshList();
@@ -280,7 +280,7 @@ function confirmSave() {
 
 function confirmDelete() {
   console.log("confirmDelete", deleteId.value);
-  deletePhotoAlbumApi({ id: deleteId.value }).then(res => {
+  deleteAlbumApi({ id: deleteId.value }).then(res => {
     batchDeleteVisibility.value = false;
     ElMessage.success("删除成功");
     refreshList();

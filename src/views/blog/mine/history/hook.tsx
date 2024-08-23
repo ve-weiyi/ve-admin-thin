@@ -2,11 +2,8 @@ import { getCurrentInstance } from "vue";
 import { type Column, ElMessage } from "element-plus";
 import { type FormField, RenderType } from "@/utils/render";
 
-import {
-  deleteUserLoginHistoryListApi,
-  findUserLoginHistoryListApi
-} from "@/api/account";
-import type { LoginHistory } from "@/api/types";
+import { findUserLoginHistoryListApi } from "@/api/account";
+import type { UserLoginHistory } from "@/api/types";
 
 const align = "center";
 
@@ -112,7 +109,7 @@ function getSearchFields(): FormField[] {
 }
 
 // 表单字段
-function getFormFields(model: LoginHistory): FormField[] {
+function getFormFields(model: UserLoginHistory): FormField[] {
   return [];
 }
 
@@ -122,7 +119,7 @@ function handleApi(event: string, data: any) {
     case "list":
       return findUserLoginHistoryListApi(data);
     case "deleteByIds":
-      return deleteUserLoginHistoryListApi(data);
+      return;
     default:
       ElMessage.error("未知事件");
       return;

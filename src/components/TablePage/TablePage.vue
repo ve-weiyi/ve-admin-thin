@@ -226,20 +226,22 @@ async function refreshList(query?: PageQuery): Promise<any> {
 
   const conditions: Condition[] = query?.conditions || [];
   const sorts: Sort[] = query?.sorts || [];
+  const q = {};
 
   // 搜索条件
   for (const key in searchData.value) {
     const item = searchFields.value.find(v => v.field === key);
     const value = searchData.value[key];
-    if (value === "") {
-      continue;
-    }
-    conditions.push({
-      field: key,
-      value: value instanceof String ? value : JSON.stringify(value),
-      logic: item?.searchRules.flag || "and",
-      operator: item?.searchRules.rule || "="
-    });
+    q[key] = value;
+    // if (value === "") {
+    //   continue;
+    // }
+    // conditions.push({
+    //   field: key,
+    //   value: value instanceof String ? value : JSON.stringify(value),
+    //   logic: item?.searchRules.flag || "and",
+    //   operator: item?.searchRules.rule || "="
+    // });
   }
 
   // 排序条件
@@ -251,16 +253,20 @@ async function refreshList(query?: PageQuery): Promise<any> {
     });
   }
 
-  const page: PageQuery = {
+  let page: PageQuery = {
     page: pageData.value.currentPage,
     page_size: pageData.value.pageSize,
-    sorts: sorts,
-    conditions: conditions
+    sorts: sorts
   };
+
+  page = Object.assign(page, q);
 
   loading.value = true;
   return props.handleApi("list", page).then(res => {
-    if (res.data.page_size !== pageData.value.pageSize) {
+    if (
+      res.data.page_size !== 0 &&
+      res.data.page_size !== pageData.value.pageSize
+    ) {
       pageData.value.currentPage = res.data.page;
       pageData.value.pageSize = res.data.page_size;
     }

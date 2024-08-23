@@ -3,13 +3,12 @@ import { type Column, ElMessage, ElTag } from "element-plus";
 import { type FormField, RenderType } from "@/utils/render";
 
 import {
-  createCommentApi,
   deleteCommentApi,
-  deleteCommentListApi,
+  batchDeleteCommentApi,
   findCommentBackListApi,
-  updateCommentApi
+  updateCommentReviewApi
 } from "@/api/comment";
-import { formatDate } from "@/utils/formatDate.ts";
+import { formatDate } from "@/utils/date.ts";
 
 const align = "center";
 
@@ -158,7 +157,7 @@ function getColumnFields(): Column[] {
                 size="default"
                 onClick={() => {
                   scope.row.is_review = 1;
-                  updateCommentApi(scope.row).then(res => {
+                  updateCommentReviewApi(scope.row).then(res => {
                     ElMessage.success("审核通过");
                   });
                 }}
@@ -238,13 +237,13 @@ function handleApi(event: string, data: any) {
   console.log("event", event);
   switch (event) {
     case "create":
-      return createCommentApi(data);
+      return;
     case "update":
-      return updateCommentApi(data);
+      return;
     case "delete":
       return deleteCommentApi(data);
     case "deleteByIds":
-      return deleteCommentListApi(data);
+      return batchDeleteCommentApi(data);
     case "list":
       return findCommentBackListApi(data);
     default:

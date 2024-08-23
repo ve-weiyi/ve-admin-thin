@@ -39,8 +39,8 @@
               </template>
             </el-dropdown>
           </div>
-          <el-image :src="item.page_cover" class="page-cover" fit="cover" />
-          <div class="page-name">{{ item.page_name }}</div>
+          <el-image :src="item.banner_cover" class="page-cover" fit="cover" />
+          <div class="page-name">{{ item.banner_name }}</div>
         </div>
       </el-col>
     </el-row>
@@ -50,10 +50,10 @@
       </template>
       <el-form :model="pageForum" label-width="80px" size="default">
         <el-form-item label="页面名称">
-          <el-input v-model="pageForum.page_name" style="width: 220px" />
+          <el-input v-model="pageForum.banner_name" style="width: 220px" />
         </el-form-item>
         <el-form-item label="页面标签">
-          <el-input v-model="pageForum.page_label" style="width: 220px" />
+          <el-input v-model="pageForum.banner_label" style="width: 220px" />
         </el-form-item>
         <el-form-item label="页面封面">
           <el-upload
@@ -65,13 +65,13 @@
             drag
             multiple
           >
-            <i v-if="pageForum.page_cover == ''" class="el-icon-upload" />
-            <div v-if="pageForum.page_cover == ''" class="el-upload__text">
+            <i v-if="pageForum.banner_cover == ''" class="el-icon-upload" />
+            <div v-if="pageForum.banner_cover == ''" class="el-upload__text">
               将文件拖到此处，或<em>点击上传</em>
             </div>
             <el-image
               v-else
-              :src="pageForum.page_cover"
+              :src="pageForum.banner_cover"
               class="page-cover"
               fit="cover"
               height="180px"
@@ -112,9 +112,9 @@ import {
   UploadRawFile,
   UploadRequestOptions
 } from "element-plus";
-import { findPageListApi } from "@/api/page";
 import "@/style/table.scss";
-import { Page } from "@/api/types";
+import { BannerBackDTO } from "@/api/types";
+import { findBannerListApi } from "@/api/banner.ts";
 
 const keywords = ref("");
 const loading = ref(true);
@@ -125,11 +125,11 @@ const isdeletePage = ref(false);
 const addOrEdit = ref(false);
 const pageForum = reactive({
   id: null,
-  page_name: "",
-  page_label: "",
-  page_cover: ""
+  banner_name: "",
+  banner_label: "",
+  banner_cover: ""
 });
-const pageList = ref<Page[]>([]);
+const pageList = ref<BannerBackDTO[]>([]);
 const pageTitle = ref();
 
 const openModel = item => {
@@ -140,9 +140,9 @@ const openModel = item => {
   } else {
     Object.assign(pageForum, {
       id: null,
-      page_name: "",
-      page_label: "",
-      page_cover: ""
+      banner_name: "",
+      banner_label: "",
+      banner_cover: ""
     });
     pageTitle.value = "新建页面";
   }
@@ -150,26 +150,26 @@ const openModel = item => {
 };
 
 const listPages = () => {
-  findPageListApi({}).then(res => {
+  findBannerListApi({}).then(res => {
     pageList.value = res.data.list;
     loading.value = false;
   });
 };
 
 const addOrEditPage = () => {
-  if (pageForum.page_name.trim() == "") {
+  if (pageForum.banner_name.trim() == "") {
     ElMessage.error("页面名称不能为空");
     return false;
   }
-  if (pageForum.page_label.trim() == "") {
+  if (pageForum.banner_label.trim() == "") {
     ElMessage.error("页面标签不能为空");
     return false;
   }
-  if (pageForum.page_cover == null) {
+  if (pageForum.banner_cover == null) {
     ElMessage.error("页面封面不能为空");
     return false;
   }
-  findPageListApi({}).then(res => {
+  findBannerListApi({}).then(res => {
     pageList.value = res.data.list;
   });
   addOrEdit.value = false;
@@ -191,7 +191,7 @@ function onUpload(options: UploadRequestOptions) {
 }
 
 const afterUpload = response => {
-  pageForum.page_cover = response.data;
+  pageForum.banner_cover = response.data;
 };
 
 const handleCommand = command => {

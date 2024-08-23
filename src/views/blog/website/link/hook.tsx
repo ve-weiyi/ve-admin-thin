@@ -3,14 +3,14 @@ import type { Column } from "element-plus";
 import { type FormField, RenderType } from "@/utils/render.tsx";
 
 import {
-  createFriendLinkApi,
-  deleteFriendLinkApi,
-  deleteFriendLinkListApi,
-  findFriendLinkListApi,
-  updateFriendLinkApi
-} from "@/api/friend_link.ts";
-import type { FriendLink } from "@/api/types.ts";
-import { formatDate } from "@/utils/formatDate.ts";
+  addFriendApi,
+  batchDeleteFriendApi,
+  deleteFriendApi,
+  findFriendListApi,
+  updateFriendApi
+} from "@/api/friend.ts";
+import type { FriendBackDTO } from "@/api/types.ts";
+import { formatDate } from "@/utils/date.ts";
 
 const align = "center";
 
@@ -142,7 +142,7 @@ function getSearchFields(): FormField[] {
 }
 
 // 表单字段
-function getFormFields(model: FriendLink): FormField[] {
+function getFormFields(model: FriendBackDTO): FormField[] {
   return [
     {
       type: RenderType.Input,
@@ -171,15 +171,15 @@ function handleApi(event: string, data: any) {
   console.log("event", event);
   switch (event) {
     case "create":
-      return createFriendLinkApi(data);
+      return addFriendApi(data);
     case "update":
-      return updateFriendLinkApi(data);
+      return updateFriendApi(data);
     case "delete":
-      return deleteFriendLinkApi(data);
+      return deleteFriendApi(data);
     case "deleteByIds":
-      return deleteFriendLinkListApi(data);
+      return batchDeleteFriendApi(data);
     case "list":
-      return findFriendLinkListApi(data);
+      return findFriendListApi(data);
     default:
       return;
   }

@@ -3,14 +3,14 @@ import type { Column } from "element-plus";
 import { type FormField, RenderType } from "@/utils/render";
 
 import {
-  createCategoryApi,
+  addCategoryApi,
+  batchDeleteCategoryApi,
   deleteCategoryApi,
-  deleteCategoryListApi,
   findCategoryListApi,
   updateCategoryApi
 } from "@/api/category";
-import type { Category } from "@/api/types";
-import { formatDate } from "@/utils/formatDate.ts";
+import type { CategoryBackDTO } from "@/api/types";
+import { formatDate } from "@/utils/date.ts";
 
 const align = "center";
 
@@ -114,7 +114,7 @@ function getSearchFields(): FormField[] {
 }
 
 // 表单字段
-function getFormFields(model: Category): FormField[] {
+function getFormFields(model: CategoryBackDTO): FormField[] {
   return [
     {
       type: RenderType.Input,
@@ -128,13 +128,13 @@ function handleApi(event: string, data: any) {
   console.log("event", event);
   switch (event) {
     case "create":
-      return createCategoryApi(data);
+      return addCategoryApi(data);
     case "update":
       return updateCategoryApi(data);
     case "delete":
       return deleteCategoryApi(data);
     case "deleteByIds":
-      return deleteCategoryListApi(data);
+      return batchDeleteCategoryApi(data);
     case "list":
       return findCategoryListApi(data);
     default:

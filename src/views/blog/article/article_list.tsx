@@ -7,7 +7,7 @@ import {
   topArticleApi
 } from "@/api/article";
 import { getCurrentInstance } from "vue";
-import { formatDate } from "@/utils/formatDate.ts";
+import { formatDate } from "@/utils/date.ts";
 import router from "@/router";
 
 const align = "center";

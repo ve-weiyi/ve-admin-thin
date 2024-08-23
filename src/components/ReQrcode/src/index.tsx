@@ -83,7 +83,7 @@ export default defineComponent({
           options
         );
         if (props.logo) {
-          const url = await createLogoCode(canvasRef);
+          const url = await addLogoCode(canvasRef);
           emit("done", url);
           loading.value = false;
         } else {
@@ -114,7 +114,7 @@ export default defineComponent({
         immediate: true
       }
     );
-    const createLogoCode = (canvasRef: HTMLCanvasElement) => {
+    const addLogoCode = (canvasRef: HTMLCanvasElement) => {
       const canvasWidth = canvasRef.width;
       const logoOptions: QrcodeLogo = Object.assign(
         {

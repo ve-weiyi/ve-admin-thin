@@ -3,7 +3,7 @@ import request from "@/utils/request.ts";
 
 export function uploadFileApi(
   data?: UploadFileReq
-): Promise<IApiResponseData<UploadFileResp>> {
+): Promise<IApiResponse<UploadFileResp>> {
   const formData = new FormData();
   formData.append("label", data.label);
   formData.append("file", data.file);
@@ -24,7 +24,7 @@ export function uploadFileApi(
 export function uploadVoiceApi(
   label: string,
   formData: FormData
-): Promise<IApiResponseData<any>> {
+): Promise<IApiResponse<any>> {
   return request({
     url: `/api/v1/voice`,
     method: "post",
