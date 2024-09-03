@@ -224,8 +224,10 @@ async function refreshList(query?: PageQuery): Promise<any> {
 
   console.log("refreshList", query);
 
-  const conditions: Condition[] = query?.conditions || [];
-  const sorts: Sort[] = query?.sorts || [];
+  // const conditions: Condition[] = query?.conditions || [];
+  // const sorts: String[] = query?.sorts || [];
+
+  const sorts: string[] = [];
   const q = {};
 
   // 搜索条件
@@ -247,13 +249,10 @@ async function refreshList(query?: PageQuery): Promise<any> {
   // 排序条件
   for (const key in orderData.value) {
     const value = orderData.value[key];
-    sorts.push({
-      field: key,
-      order: value
-    });
+    sorts.push(`${key} ${value}`);
   }
 
-  let page: PageQuery = {
+  let page = {
     page: pageData.value.currentPage,
     page_size: pageData.value.pageSize,
     sorts: sorts

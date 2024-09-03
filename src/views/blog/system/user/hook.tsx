@@ -25,9 +25,9 @@ function getColumnFields(): Column[] {
       align: align
     },
     {
-      key: "id",
-      title: "id",
-      dataKey: "id",
+      key: "user_id",
+      title: "uid",
+      dataKey: "user_id",
       width: 70,
       align: align,
       sortable: true

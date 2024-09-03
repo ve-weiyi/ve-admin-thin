@@ -14,19 +14,19 @@ export default {
     {
       path: "/article/publish",
       name: "article/publish",
-      component: () => import("@/views/blog/article/Article.vue"),
+      component: () => import("@/views/blog/article/Write.vue"),
       meta: { title: "发布文章" }
     },
     {
       path: "/article/edit/:articleId",
       name: "article/edit",
-      component: () => import("@/views/blog/article/Article.vue"),
+      component: () => import("@/views/blog/article/Write.vue"),
       meta: { title: "查看文章", showLink: false }
     },
     {
       path: "/article/list",
       name: "article/list",
-      component: () => import("@/views/blog/article/ArticleList.vue"),
+      component: () => import("@/views/blog/article/Article.vue"),
       meta: { title: "文章列表" }
     },
     {

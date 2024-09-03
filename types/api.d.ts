@@ -16,8 +16,8 @@ interface PageResult<T> {
 interface PageQuery {
   page?: number;
   page_size?: number;
-  sorts?: Sort[];
-  conditions?: Condition[];
+  // sorts?: Sort[];
+  // conditions?: Condition[];
 }
 
 interface Sort {

@@ -9,8 +9,27 @@ import {
 import { getCurrentInstance } from "vue";
 import { formatDate } from "@/utils/date.ts";
 import router from "@/router";
+import { FixedDir } from "element-plus/es/components/table-v2/src/constants";
 
 const align = "center";
+
+const options = [
+  {
+    value: 1,
+    label: "原创",
+    style: "success"
+  },
+  {
+    value: 2,
+    label: "转载",
+    style: "warning"
+  },
+  {
+    value: 3,
+    label: "翻译",
+    style: "danger"
+  }
+];
 
 const typeOptions = (type: number) => {
   switch (type) {
@@ -32,7 +51,7 @@ function getColumnFields(): Column[] {
       key: "id",
       title: "id",
       dataKey: "id",
-      width: 100,
+      width: 80,
       align: align,
       sortable: true
     },
@@ -54,8 +73,24 @@ function getColumnFields(): Column[] {
       key: "article_title",
       title: "标题",
       dataKey: "article_title",
-      width: 0,
+      width: 180,
       align: align
+    },
+    {
+      key: "article_type",
+      title: "类型",
+      dataKey: "article_type",
+      width: 0,
+      align: align,
+      cellRenderer: (scope: any) => {
+        const articleType = options.find(
+          item => item.value === scope.row.article_type
+        );
+        if (!articleType) {
+          return <el-tag type="info">未知</el-tag>;
+        }
+        return <el-tag type={articleType.style}>{articleType.label}</el-tag>;
+      }
     },
     {
       key: "category_name",
@@ -68,7 +103,7 @@ function getColumnFields(): Column[] {
       key: "tag_name_list",
       title: "标签",
       dataKey: "tag_name_list",
-      width: 160,
+      width: 140,
       align: align,
       cellRenderer: (scope: any) => {
         return (
@@ -93,20 +128,6 @@ function getColumnFields(): Column[] {
       dataKey: "like_count",
       width: 70,
       align: align
-    },
-    {
-      key: "type",
-      title: "类型",
-      dataKey: "type",
-      width: 0,
-      align: align,
-      cellRenderer: (scope: any) => {
-        return (
-          <el-tag type={typeOptions(scope.row.type).value}>
-            {typeOptions(scope.row.type).label}
-          </el-tag>
-        );
-      }
     },
     {
       key: "is_top",
@@ -158,6 +179,7 @@ function getColumnFields(): Column[] {
       dataKey: "operation",
       width: 160,
       align: align,
+      fixed: FixedDir.RIGHT,
       cellRenderer: (scope: any) => {
         return (
           <div>
@@ -248,29 +270,23 @@ function getSearchFields(): FormField[] {
     {
       type: RenderType.Input,
       label: "文章标题",
-      field: "article_title",
-      searchRules: {
-        flag: "and",
-        rule: "like"
-      }
+      field: "article_title"
+    },
+    {
+      type: RenderType.Select,
+      label: "文章类型",
+      field: "article_type",
+      options: options
     },
     {
       type: RenderType.Input,
       label: "文章分类",
-      field: "category_name",
-      searchRules: {
-        flag: "and",
-        rule: "="
-      }
+      field: "category_name"
     },
     {
       type: RenderType.Input,
       label: "文章标签",
-      field: "tag_name",
-      searchRules: {
-        flag: "and",
-        rule: "="
-      }
+      field: "tag_name"
     }
   ];
 }
