@@ -68,6 +68,13 @@ function getColumnFields(): Column[] {
       align: align
     },
     {
+      key: "to_nickname",
+      title: "回复人",
+      dataKey: "to_nickname",
+      width: 100,
+      align: align
+    },
+    {
       key: "topic_title",
       title: "文章标题",
       dataKey: "topic_title",

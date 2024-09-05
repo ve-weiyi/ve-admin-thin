@@ -11,9 +11,10 @@
           <el-form-item label="网站头像">
             <el-upload
               :show-file-list="false"
-              action="/api/admin/config/images"
+              :http-request="onUpload"
+              :before-upload="beforeUpload"
               class="avatar-uploader"
-              @on-success="handleWebsiteAvatarSuccess"
+              :on-success="handleWebsiteAvatarSuccess"
             >
               <img
                 v-if="websiteConfigForm.website_avatar"
@@ -51,7 +52,7 @@
               placeholder="选择日期"
               style="width: 400px"
               type="date"
-              value-format="yyyy-MM-dd"
+              value-format="YYYY-MM-DD"
             />
           </el-form-item>
           <el-form-item label="网站公告">
@@ -138,9 +139,10 @@
               <el-form-item label="用户头像">
                 <el-upload
                   :show-file-list="false"
-                  action="/api/admin/config/images"
+                  :http-request="onUpload"
+                  :before-upload="beforeUpload"
                   class="avatar-uploader"
-                  @on-success="handleUserAvatarSuccess"
+                  :on-success="handleUserAvatarSuccess"
                 >
                   <img
                     v-if="websiteConfigForm.user_avatar"
@@ -155,9 +157,10 @@
               <el-form-item label="游客头像">
                 <el-upload
                   :show-file-list="false"
-                  action="/api/admin/config/images"
+                  :http-request="onUpload"
+                  :before-upload="beforeUpload"
+                  :on-success="handleTouristAvatarSuccess"
                   class="avatar-uploader"
-                  @on-success="handleTouristAvatarSuccess"
                 >
                   <img
                     v-if="websiteConfigForm.tourist_avatar"
@@ -201,9 +204,10 @@
               <el-form-item label="微信收款码">
                 <el-upload
                   :show-file-list="false"
-                  action="/api/admin/config/images"
+                  :http-request="onUpload"
+                  :before-upload="beforeUpload"
                   class="avatar-uploader"
-                  @on-success="handleWeiXinSuccess"
+                  :on-success="handleWeiXinSuccess"
                 >
                   <img
                     v-if="websiteConfigForm.weixin_qr_code"
@@ -218,9 +222,10 @@
               <el-form-item label="支付宝收款码">
                 <el-upload
                   :show-file-list="false"
-                  action="/api/admin/config/images"
+                  :http-request="onUpload"
+                  :before-upload="beforeUpload"
                   class="avatar-uploader"
-                  @on-success="handleAlipaySuccess"
+                  :on-success="handleAlipaySuccess"
                 >
                   <img
                     v-if="websiteConfigForm.alipay_qr_code"
@@ -270,9 +275,10 @@
 
 <script setup lang="ts">
 import { onMounted, ref } from "vue";
-import { ElMessage } from "element-plus";
+import { ElMessage, UploadRawFile, UploadRequestOptions } from "element-plus";
 import { getWebsiteConfigApi, updateWebsiteConfigApi } from "@/api/website";
 import { WebsiteConfig } from "@/api/types.ts";
+import { compressImage, uploadFileLabel } from "@/utils/file.ts";
 
 const websiteConfigForm = ref<WebsiteConfig>({
   website_avatar: "",
@@ -323,24 +329,34 @@ function handleClick(tab) {
   console.log(tab);
 }
 
+// 上传文件之前的钩子，参数为上传的文件， 若返回false或者返回 Promise 且被 reject，则停止上传。
+function beforeUpload(rawFile: UploadRawFile) {
+  return rawFile;
+}
+
+function onUpload(options: UploadRequestOptions) {
+  return uploadFileLabel(options, "website");
+}
+
 function handleWebsiteAvatarSuccess(response) {
-  websiteConfigForm.value.website_avatar = response.data;
+  websiteConfigForm.value.website_avatar = response.data.file_url;
+  updateWebsiteConfig();
 }
 
 function handleUserAvatarSuccess(response) {
-  websiteConfigForm.value.user_avatar = response.data;
+  websiteConfigForm.value.user_avatar = response.data.file_url;
 }
 
 function handleTouristAvatarSuccess(response) {
-  websiteConfigForm.value.tourist_avatar = response.data;
+  websiteConfigForm.value.tourist_avatar = response.data.file_url;
 }
 
 function handleWeiXinSuccess(response) {
-  websiteConfigForm.value.weixin_qr_code = response.data;
+  websiteConfigForm.value.weixin_qr_code = response.data.file_url;
 }
 
 function handleAlipaySuccess(response) {
-  websiteConfigForm.value.alipay_qr_code = response.data;
+  websiteConfigForm.value.alipay_qr_code = response.data.file_url;
 }
 </script>
 
