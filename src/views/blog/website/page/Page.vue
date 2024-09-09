@@ -1,6 +1,6 @@
 <template>
   <el-card class="main-card">
-    <div class="table-title">{{ $route.meta.title }}</div>
+    <div class="table-title">{{ route.meta.title }}</div>
     <div class="operation-container">
       <el-button
         icon="plus"
@@ -115,6 +115,10 @@ import {
 import "@/style/table.scss";
 import { BannerBackDTO } from "@/api/types";
 import { findBannerListApi } from "@/api/banner.ts";
+import { useRoute, useRouter } from "vue-router";
+
+const route = useRoute();
+const router = useRouter();
 
 const keywords = ref("");
 const loading = ref(true);

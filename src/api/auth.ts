@@ -4,7 +4,7 @@ import { LoginReq, LoginResp, EmptyReq, EmptyResp } from "./types";
 /** "登录" */
 export function loginApi(data?: LoginReq): Promise<IApiResponse<LoginResp>> {
   return request({
-    url: "/api/v1/login",
+    url: "/admin_api/v1/login",
     method: "post",
     data: data,
   });
@@ -13,7 +13,7 @@ export function loginApi(data?: LoginReq): Promise<IApiResponse<LoginResp>> {
 /** "登出" */
 export function logoutApi(data?: EmptyReq): Promise<IApiResponse<EmptyResp>> {
   return request({
-    url: "/api/v1/logout",
+    url: "/admin_api/v1/logout",
     method: "post",
     data: data,
   });

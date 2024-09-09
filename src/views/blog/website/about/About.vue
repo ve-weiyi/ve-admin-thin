@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <el-card class="main-card">
-      <div class="table-title">{{ $route.meta.title }}</div>
+      <div class="table-title">{{ route.meta.title }}</div>
       <!--    <mavon-editor-->
       <!--      ref="mdRef"-->
       <!--      @imgAdd="uploadImg"-->
@@ -34,6 +34,10 @@ import { MdEditor } from "md-editor-v3";
 import "md-editor-v3/lib/style.css";
 import { uploadFileApi } from "@/api/file";
 import { getAboutMeApi, updateAboutMeApi } from "@/api/website";
+import { useRoute, useRouter } from "vue-router";
+
+const route = useRoute();
+const router = useRouter();
 
 const mdRef = ref(null);
 const aboutContent = ref("");

@@ -58,7 +58,7 @@ const { locale, translationCh, translationEn } = useTranslationLang();
 const ruleForm = reactive({
   username: "admin@qq.com",
   password: "admin@qq.com",
-  verifyCode: ""
+  verify_code: ""
 });
 
 const onLogin = async (formEl: FormInstance | undefined) => {
@@ -200,20 +200,20 @@ useEventListener(document, "keypress", ({ code }) => {
               </el-form-item>
             </Motion>
 
-            <Motion :delay="200">
-              <el-form-item prop="verifyCode">
-                <el-input
-                  v-model="ruleForm.verifyCode"
-                  clearable
-                  :placeholder="t('login.pureVerifyCode')"
-                  :prefix-icon="useRenderIcon('ri:shield-keyhole-line')"
-                >
-                  <template v-slot:append>
-                    <ReImageVerify v-model:code="imgCode" />
-                  </template>
-                </el-input>
-              </el-form-item>
-            </Motion>
+            <!--            <Motion :delay="200">-->
+            <!--              <el-form-item prop="verifyCode">-->
+            <!--                <el-input-->
+            <!--                  v-model="ruleForm.verify_code"-->
+            <!--                  clearable-->
+            <!--                  :placeholder="t('login.pureVerifyCode')"-->
+            <!--                  :prefix-icon="useRenderIcon('ri:shield-keyhole-line')"-->
+            <!--                >-->
+            <!--                  <template v-slot:append>-->
+            <!--                    <ReImageVerify v-model:code="imgCode" />-->
+            <!--                  </template>-->
+            <!--                </el-input>-->
+            <!--              </el-form-item>-->
+            <!--            </Motion>-->
 
             <Motion :delay="250">
               <el-form-item>

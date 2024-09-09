@@ -1,10 +1,10 @@
 import request from "@/utils/request";
-import { EmptyResp, WebsiteConfig, Server, EmptyReq, AdminHomeInfo, AboutMe } from "./types";
+import { EmptyReq, AdminHomeInfo, AboutMe, EmptyResp, WebsiteConfig, Server } from "./types";
 
 /** "获取后台首页信息" */
 export function getAdminHomeInfoApi(data?: EmptyReq): Promise<IApiResponse<AdminHomeInfo>> {
   return request({
-    url: "/api/v1/admin",
+    url: "/admin_api/v1/admin",
     method: "get",
     data: data,
   });
@@ -13,7 +13,7 @@ export function getAdminHomeInfoApi(data?: EmptyReq): Promise<IApiResponse<Admin
 /** "获取关于我的信息" */
 export function getAboutMeApi(data?: EmptyReq): Promise<IApiResponse<AboutMe>> {
   return request({
-    url: "/api/v1/admin/about_me",
+    url: "/admin_api/v1/admin/about_me",
     method: "get",
     data: data,
   });
@@ -22,7 +22,7 @@ export function getAboutMeApi(data?: EmptyReq): Promise<IApiResponse<AboutMe>> {
 /** "更新关于我的信息" */
 export function updateAboutMeApi(data?: AboutMe): Promise<IApiResponse<EmptyResp>> {
   return request({
-    url: "/api/v1/admin/about_me",
+    url: "/admin_api/v1/admin/about_me",
     method: "put",
     data: data,
   });
@@ -31,7 +31,7 @@ export function updateAboutMeApi(data?: AboutMe): Promise<IApiResponse<EmptyResp
 /** "获取网站配置" */
 export function getWebsiteConfigApi(data?: EmptyReq): Promise<IApiResponse<WebsiteConfig>> {
   return request({
-    url: "/api/v1/admin/get_website_config",
+    url: "/admin_api/v1/admin/get_website_config",
     method: "get",
     data: data,
   });
@@ -40,7 +40,7 @@ export function getWebsiteConfigApi(data?: EmptyReq): Promise<IApiResponse<Websi
 /** "获取服务器信息" */
 export function getSystemStateApi(data?: EmptyReq): Promise<IApiResponse<Server>> {
   return request({
-    url: "/api/v1/admin/system_state",
+    url: "/admin_api/v1/admin/system_state",
     method: "get",
     data: data,
   });
@@ -49,7 +49,7 @@ export function getSystemStateApi(data?: EmptyReq): Promise<IApiResponse<Server>
 /** "更新网站配置" */
 export function updateWebsiteConfigApi(data?: WebsiteConfig): Promise<IApiResponse<EmptyResp>> {
   return request({
-    url: "/api/v1/admin/update_website_config",
+    url: "/admin_api/v1/admin/update_website_config",
     method: "put",
     data: data,
   });

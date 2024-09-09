@@ -11,7 +11,7 @@ export function uploadFileApi(
   formData.append("file_md5", data.file_md5);
 
   return request({
-    url: `/api/v1/upload/upload_file`,
+    url: `/admin_api/v1/upload/upload_file`,
     method: "post",
     data: formData,
     headers: {
@@ -26,7 +26,7 @@ export function uploadVoiceApi(
   formData: FormData
 ): Promise<IApiResponse<any>> {
   return request({
-    url: `/api/v1/voice`,
+    url: `/admin_api/v1/voice`,
     method: "post",
     data: formData,
     headers: {

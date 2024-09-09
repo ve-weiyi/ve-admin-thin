@@ -2,7 +2,7 @@
   <div class="app-container">
     <el-card class="main-card">
       <!-- 标题 -->
-      <div class="table-title">{{ $route.meta.title }}</div>
+      <div class="table-title">{{ route.meta.title }}</div>
       <!-- 相册信息 -->
       <el-row :gutter="12" style="margin-bottom: 15px">
         <el-col :span="1.5">
@@ -233,7 +233,7 @@ import {
   findPhotoListApi,
   updatePhotoApi
 } from "@/api/photo.ts";
-import { PhotoBackDTO, AlbumBackDTO } from "@/api/types.ts";
+import { PhotoBackDTO, AlbumBackDTO, PhotoQuery } from "@/api/types.ts";
 import { compressImage, uploadFileLabel } from "@/utils/file.ts";
 import VeTablePagination from "@/components/VeTable/TablePagination.vue";
 
@@ -401,12 +401,10 @@ const submitForm = () => {
 };
 const getList = () => {
   loading.value = true;
-  const data: PageQuery = {
+  const data: PhotoQuery = {
     page: 1,
     page_size: 10,
-    conditions: [
-      { field: "album_id", value: albumId.toString(), operator: "=" }
-    ]
+    album_id: albumId
   };
 
   findPhotoListApi(data).then(res => {

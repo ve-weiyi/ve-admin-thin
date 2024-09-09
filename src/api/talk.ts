@@ -1,10 +1,10 @@
 import request from "@/utils/request";
-import { TalkNewReq, TalkBackDTO, IdReq, BatchResp, TalkQuery, PageResp } from "./types";
+import { BatchResp, TalkQuery, PageResp, TalkNewReq, TalkBackDTO, IdReq } from "./types";
 
 /** "分页获取说说列表" */
 export function findTalkListApi(data?: TalkQuery): Promise<IApiResponse<PageResp>> {
   return request({
-    url: "/api/v1/talk/find_talk_list",
+    url: "/admin_api/v1/talk/find_talk_list",
     method: "post",
     data: data,
   });
@@ -13,7 +13,7 @@ export function findTalkListApi(data?: TalkQuery): Promise<IApiResponse<PageResp
 /** "创建说说" */
 export function addTalkApi(data?: TalkNewReq): Promise<IApiResponse<TalkBackDTO>> {
   return request({
-    url: "/api/v1/talk/add_talk",
+    url: "/admin_api/v1/talk/add_talk",
     method: "post",
     data: data,
   });
@@ -22,7 +22,7 @@ export function addTalkApi(data?: TalkNewReq): Promise<IApiResponse<TalkBackDTO>
 /** "删除说说" */
 export function deleteTalkApi(data?: IdReq): Promise<IApiResponse<BatchResp>> {
   return request({
-    url: "/api/v1/talk/delete_talk",
+    url: "/admin_api/v1/talk/delete_talk",
     method: "delete",
     data: data,
   });
@@ -31,7 +31,7 @@ export function deleteTalkApi(data?: IdReq): Promise<IApiResponse<BatchResp>> {
 /** "查询说说" */
 export function getTalkApi(data?: IdReq): Promise<IApiResponse<TalkBackDTO>> {
   return request({
-    url: "/api/v1/talk/get_talk",
+    url: "/admin_api/v1/talk/get_talk",
     method: "post",
     data: data,
   });
@@ -40,7 +40,7 @@ export function getTalkApi(data?: IdReq): Promise<IApiResponse<TalkBackDTO>> {
 /** "更新说说" */
 export function updateTalkApi(data?: TalkNewReq): Promise<IApiResponse<TalkBackDTO>> {
   return request({
-    url: "/api/v1/talk/update_talk",
+    url: "/admin_api/v1/talk/update_talk",
     method: "put",
     data: data,
   });

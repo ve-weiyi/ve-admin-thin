@@ -18,9 +18,9 @@
               <el-form-item label="昵称">
                 <el-input v-model="infoForm.nickname" size="default" />
               </el-form-item>
-              <el-form-item label="邮箱">
-                <el-input v-model="infoForm.email" size="default" />
-              </el-form-item>
+              <!--              <el-form-item label="邮箱">-->
+              <!--                <el-input v-model="infoForm.email" size="default" />-->
+              <!--              </el-form-item>-->
               <el-form-item label="个人简介">
                 <el-input v-model="infoForm.intro" size="default" />
               </el-form-item>

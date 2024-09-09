@@ -4,7 +4,7 @@ import { PingReq, PingResp } from "./types";
 /** "ping" */
 export function pingApi(data?: PingReq): Promise<IApiResponse<PingResp>> {
   return request({
-    url: "/api/v1/ping",
+    url: "/admin_api/v1/ping",
     method: "get",
     data: data,
   });

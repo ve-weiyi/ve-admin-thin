@@ -4,8 +4,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "NODE_OPTIONS=--max-old-space-size=4096 vite",
-    "serve": "pnpm dev",
+    "dev": "vite",
+    "prod": "vite --mode production --host",
     "build": "rimraf dist && vue-tsc --noEmit && vite --mode production build",
     "build:staging": "rimraf dist && vite build --mode staging",
     "report": "rimraf dist && vite build",

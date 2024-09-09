@@ -2,7 +2,7 @@
   <div class="app-container">
     <el-card class="main-card">
       <!-- 标题 -->
-      <div class="table-title">{{ $route.meta.title }}</div>
+      <div class="table-title">{{ route.meta.title }}</div>
       <div class="operation-container">
         <el-button
           icon="plus"
@@ -161,7 +161,7 @@
 
 <script setup lang="ts">
 import { computed, onMounted, reactive, toRefs } from "vue";
-import { useRouter } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import { ElMessage, UploadRawFile, UploadRequestOptions } from "element-plus";
 import "@/style/table.scss";
 import {
@@ -171,9 +171,11 @@ import {
   updateAlbumApi
 } from "@/api/album.ts";
 import VeTablePagination from "@/components/VeTable/TablePagination.vue";
-import { AlbumNew, AlbumBackDTO } from "@/api/types.ts";
+import { AlbumNewReq, AlbumBackDTO } from "@/api/types.ts";
 import { compressImage, uploadFileLabel } from "@/utils/file.ts";
 
+const route = useRoute();
+const router = useRouter();
 // 上传文件之前的钩子，参数为上传的文件， 若返回false或者返回 Promise 且被 reject，则停止上传。
 function beforeUpload(rawFile: UploadRawFile) {
   console.log("beforeUpload", rawFile.name, rawFile.size);
@@ -207,7 +209,7 @@ const data = reactive({
   },
   searchData: {} as any,
   tableData: [],
-  formData: {} as AlbumNew
+  formData: {} as AlbumNewReq
 });
 
 const {
@@ -230,9 +232,6 @@ function refreshList() {
 onMounted(() => {
   refreshList();
 });
-
-// 路由
-const router = useRouter();
 
 const dialogTitle = computed(() => {
   if (formData.value.id == 0) {

@@ -29,7 +29,7 @@ export default ({ mode }: ConfigEnv): UserConfigExport => {
       /** 设置 host: true 才可以使用 Network 的形式，以 IP 访问项目 */
       host: true, // host: "0.0.0.0"
       /** 端口号 */
-      port: 7777,
+      port: 9091,
       /** 是否自动打开浏览器 */
       open: false,
       /** 跨域设置允许 */
@@ -46,12 +46,17 @@ export default ({ mode }: ConfigEnv): UserConfigExport => {
           rewrite: path => path.replace("", "")
         },
         // 前缀
-        "/api": {
+        "/admin_api": {
           target: env.VITE_API_PROXY_URL, // 代理后的地址 =target/path
           ws: true,
           /** 是否允许跨域 */
           changeOrigin: true,
-          rewrite: path => path.replace("", "")
+          rewrite: path => path.replace("", ""),
+          bypass(req, res, options) {
+            const proxyURL = options.target + options.rewrite(req.url);
+            console.log("proxyURL", proxyURL);
+            res.setHeader("x-req-proxyURL", proxyURL); // 设置响应头可以看到
+          }
         }
       }
     },

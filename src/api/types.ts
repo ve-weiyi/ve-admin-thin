@@ -36,9 +36,7 @@ export interface AlbumNewReq {
   status?: number; // 状态值 1公开 2私密
 }
 
-export interface AlbumQuery {
-  page?: number; // 页码
-  page_size?: number; // 每页数量
+export interface AlbumQuery extends PageQuery {
 }
 
 export interface ApiBackDTO {
@@ -64,9 +62,7 @@ export interface ApiNewReq {
   status?: number; // 状态 1开，2关
 }
 
-export interface ApiQuery {
-  page?: number; // 页码
-  page_size?: number; // 每页数量
+export interface ApiQuery extends PageQuery {
   name?: string; // api名称
   method?: string; // api请求方法
 }
@@ -80,7 +76,7 @@ export interface ArticleBackDTO {
   original_url?: string; // 原文链接
   is_top?: number; // 是否置顶
   is_delete?: number; // 是否删除
-  status?: number; // 状态值 1 公开 2 私密 3 评论可见
+  status?: number; // 状态值 1 公开 2 私密 3 草稿 4 已删除
   created_at?: number; // 发表时间
   updated_at?: number; // 更新时间
   category_name?: string; // 文章分类名
@@ -96,19 +92,17 @@ export interface ArticleNewReq {
   article_content?: string; // 内容
   article_type?: number; // 文章类型 1原创 2转载 3翻译
   original_url?: string; // 原文链接
-  status?: number; // 状态值 1公开 2私密 3评论可见
-  category_id?: number; // 文章分类
+  status?: number; // 状态值 1 公开 2 私密 3 草稿 4 已删除
   category_name?: string; // 文章分类名
-  tag_ids?: number[]; // 文章标签
   tag_name_list?: string[]; // 文章标签列表
 }
 
-export interface ArticleQuery {
-  page?: number; // 页码
-  page_size?: number; // 每页数量
+export interface ArticleQuery extends PageQuery {
   article_title?: string; // 标题
-  category_id?: number; // 分类ID
-  tag_id?: number; // 标签ID
+  article_type?: number; // 文章类型 1原创 2转载 3翻译
+  status?: number; // 状态值 1 公开 2 私密 3 草稿 4 已删除
+  category_name?: string; // 文章分类名
+  tag_name?: string; 
 }
 
 export interface ArticleRecycleReq {
@@ -148,9 +142,7 @@ export interface BannerNewReq {
   banner_cover?: string; // 页面封面
 }
 
-export interface BannerQuery {
-  page?: number; // 页码
-  page_size?: number; // 每页数量
+export interface BannerQuery extends PageQuery {
   banner_name?: string; // 页面名
 }
 
@@ -185,33 +177,23 @@ export interface CategoryNewReq {
   category_name?: string; // 分类名
 }
 
-export interface CategoryQuery {
-  page?: number; // 页码
-  page_size?: number; // 每页数量
+export interface CategoryQuery extends PageQuery {
   category_name?: string; // 分类名
 }
 
 export interface CommentBackDTO {
-  id?: number; // 评论id
-  topic_id?: number; // 主题id
-  parent_id?: number; // 父评论id
-  session_id?: number; // 会话id
-  user_id?: number; // 用户id
-  reply_user_id?: number; // 被回复用户id
-  comment_content?: string; // 评论内容
+  id?: number; // 评论ID
   type?: number; // 评论类型 1.文章 2.友链 3.说说
-  created_at?: number; // 评论时间
-  like_count?: number; // 点赞数
-  user?: CommentUserInfo; // 评论用户
-  reply_user?: CommentUserInfo; // 被回复评论用户
-  reply_count?: number; // 回复量
-  topic_title?: string; 
+  topic_title?: string; // 评论主题
+  avatar?: string; // 用户头像
+  nickname?: string; // 用户昵称
+  to_nickname?: string; // 被回复人昵称
+  comment_content?: string; // 评论内容
+  is_review?: number; // 是否审核 0.未审核 1.已审核
+  created_at?: number; // 创建时间
 }
 
-export interface CommentQuery {
-  page?: number; // 页码
-  page_size?: number; // 每页数量
-  order_by?: string; // 排序字段 add_at|like_count
+export interface CommentQuery extends PageQuery {
   avatar?: string; // 用户头像
   is_review?: number; 
   type?: number; // 评论类型 1.文章 2.友链 3.说说
@@ -220,13 +202,6 @@ export interface CommentQuery {
 export interface CommentReviewReq {
   id?: number; 
   is_review?: number; 
-}
-
-export interface CommentUserInfo {
-  id?: number; 
-  nickname?: string; 
-  avatar?: string; 
-  website?: string; 
 }
 
 export interface EmptyReq {
@@ -253,9 +228,7 @@ export interface FriendNewReq {
   link_intro?: string; // 链接介绍
 }
 
-export interface FriendQuery {
-  page?: number; // 页码
-  page_size?: number; // 每页数量
+export interface FriendQuery extends PageQuery {
   link_name?: string; // 链接名
 }
 
@@ -292,9 +265,7 @@ export interface MenuBackDTO {
   updated_at?: number; // 更新时间
 }
 
-export interface MenuQuery {
-  page?: number; // 页码
-  page_size?: number; // 每页数量
+export interface MenuQuery extends PageQuery {
   name?: string; // 路由名字
 }
 
@@ -335,16 +306,7 @@ export interface OperationLogBackDTO {
   updated_at?: number; // 更新时间
 }
 
-export interface OperationLogQuery {
-  page?: number; // 页码
-  page_size?: number; // 每页数量
-}
-
-export interface PageCondition {
-  field?: string; // 字段
-  value?: string; // 值
-  logic?: string; // and | or
-  operator?: string; // = | >= | < | in | not in |....
+export interface OperationLogQuery extends PageQuery {
 }
 
 export interface PageDTO {
@@ -354,16 +316,10 @@ export interface PageDTO {
   page_cover?: string; // 页面封面
 }
 
-export interface PageLimit {
-  page?: number; 
-  page_size?: number; 
-}
-
 export interface PageQuery {
-  page?: number; 
-  page_size?: number; 
-  sorts?: PageSort[]; 
-  conditions?: PageCondition[]; 
+  page?: number; // 当前页码
+  page_size?: number; // 每页数量
+  sorts?: string[]; // 排序
 }
 
 export interface PageResp {
@@ -371,11 +327,6 @@ export interface PageResp {
   page_size?: number; 
   total?: number; 
   list?: any; 
-}
-
-export interface PageSort {
-  field?: string; 
-  order?: string; // asc | desc
 }
 
 export interface PhotoBackDTO {
@@ -398,9 +349,7 @@ export interface PhotoNewReq {
   is_delete?: number; // 是否删除
 }
 
-export interface PhotoQuery {
-  page?: number; // 页码
-  page_size?: number; // 每页数量
+export interface PhotoQuery extends PageQuery {
   album_id?: number; // 相册id
 }
 
@@ -440,9 +389,7 @@ export interface RemarkNewReq {
   is_review?: number; // 是否审核
 }
 
-export interface RemarkQuery {
-  page?: number; // 页码
-  page_size?: number; // 每页数量
+export interface RemarkQuery extends PageQuery {
   nickname?: string; // 昵称
   is_review?: number; // 是否审核
 }
@@ -486,9 +433,7 @@ export interface RoleNewReq {
   is_default?: number; // 是否默认角色 0否 1是
 }
 
-export interface RoleQuery {
-  page?: number; // 页码
-  page_size?: number; // 每页数量
+export interface RoleQuery extends PageQuery {
   role_name?: string; // 角色名
   is_disable?: number; // 是否禁用  0否 1是
 }
@@ -538,9 +483,7 @@ export interface TagNewReq {
   tag_name?: string; // 标签名
 }
 
-export interface TagQuery {
-  page?: number; // 页码
-  page_size?: number; // 每页数量
+export interface TagQuery extends PageQuery {
   tag_name?: string; // 标签名
 }
 
@@ -570,9 +513,7 @@ export interface TalkNewReq {
   status?: number; // 状态 1.公开 2.私密
 }
 
-export interface TalkQuery {
-  page?: number; // 页码
-  page_size?: number; // 每页数量
+export interface TalkQuery extends PageQuery {
   status?: number; // 状态 1.公开 2.私密
 }
 
@@ -728,9 +669,7 @@ export interface UserMenusResp {
   list?: UserMenu[]; 
 }
 
-export interface UserQuery {
-  page?: number; 
-  page_size?: number; 
+export interface UserQuery extends PageQuery {
   nickname?: string; 
 }
 

@@ -1,10 +1,10 @@
 import request from "@/utils/request";
-import { UserQuery, UserApisResp, UserInfoReq, UpdateUserRolesReq, UserRolesResp, EmptyResp, UpdateUserStatusReq, PageResp, EmptyReq, UserInfoResp, UserMenusResp } from "./types";
+import { EmptyResp, UpdateUserRolesReq, UpdateUserStatusReq, EmptyReq, UserRolesResp, UserApisResp, UserInfoResp, UserMenusResp, UserInfoReq, UserQuery, PageResp } from "./types";
 
 /** "查询在线用户列表" */
 export function findOnlineUserListApi(data?: UserQuery): Promise<IApiResponse<PageResp>> {
   return request({
-    url: "/api/v1/user/find_online_user_list",
+    url: "/admin_api/v1/user/find_online_user_list",
     method: "post",
     data: data,
   });
@@ -13,7 +13,7 @@ export function findOnlineUserListApi(data?: UserQuery): Promise<IApiResponse<Pa
 /** "查询用户列表" */
 export function findUserListApi(data?: UserQuery): Promise<IApiResponse<PageResp>> {
   return request({
-    url: "/api/v1/user/find_user_list",
+    url: "/admin_api/v1/user/find_user_list",
     method: "post",
     data: data,
   });
@@ -22,7 +22,7 @@ export function findUserListApi(data?: UserQuery): Promise<IApiResponse<PageResp
 /** "查询用户登录历史" */
 export function findUserLoginHistoryListApi(data?: UserQuery): Promise<IApiResponse<PageResp>> {
   return request({
-    url: "/api/v1/user/find_user_login_history_list",
+    url: "/admin_api/v1/user/find_user_login_history_list",
     method: "post",
     data: data,
   });
@@ -31,7 +31,7 @@ export function findUserLoginHistoryListApi(data?: UserQuery): Promise<IApiRespo
 /** "获取用户接口权限" */
 export function getUserApisApi(data?: EmptyReq): Promise<IApiResponse<UserApisResp>> {
   return request({
-    url: "/api/v1/user/get_user_apis",
+    url: "/admin_api/v1/user/get_user_apis",
     method: "get",
     data: data,
   });
@@ -40,7 +40,7 @@ export function getUserApisApi(data?: EmptyReq): Promise<IApiResponse<UserApisRe
 /** "获取用户分布地区" */
 export function getUserAreaAnalysisApi(data?: EmptyReq): Promise<IApiResponse<PageResp>> {
   return request({
-    url: "/api/v1/user/get_user_area_analysis",
+    url: "/admin_api/v1/user/get_user_area_analysis",
     method: "post",
     data: data,
   });
@@ -49,7 +49,7 @@ export function getUserAreaAnalysisApi(data?: EmptyReq): Promise<IApiResponse<Pa
 /** "获取用户信息" */
 export function getUserInfoApi(data?: EmptyReq): Promise<IApiResponse<UserInfoResp>> {
   return request({
-    url: "/api/v1/user/get_user_info",
+    url: "/admin_api/v1/user/get_user_info",
     method: "get",
     data: data,
   });
@@ -58,7 +58,7 @@ export function getUserInfoApi(data?: EmptyReq): Promise<IApiResponse<UserInfoRe
 /** "获取用户菜单权限" */
 export function getUserMenusApi(data?: EmptyReq): Promise<IApiResponse<UserMenusResp>> {
   return request({
-    url: "/api/v1/user/get_user_menus",
+    url: "/admin_api/v1/user/get_user_menus",
     method: "get",
     data: data,
   });
@@ -67,7 +67,7 @@ export function getUserMenusApi(data?: EmptyReq): Promise<IApiResponse<UserMenus
 /** "获取用户角色" */
 export function getUserRolesApi(data?: EmptyReq): Promise<IApiResponse<UserRolesResp>> {
   return request({
-    url: "/api/v1/user/get_user_roles",
+    url: "/admin_api/v1/user/get_user_roles",
     method: "get",
     data: data,
   });
@@ -76,7 +76,7 @@ export function getUserRolesApi(data?: EmptyReq): Promise<IApiResponse<UserRoles
 /** "修改用户信息" */
 export function updateUserInfoApi(data?: UserInfoReq): Promise<IApiResponse<EmptyResp>> {
   return request({
-    url: "/api/v1/user/update_user_info",
+    url: "/admin_api/v1/user/update_user_info",
     method: "post",
     data: data,
   });
@@ -85,7 +85,7 @@ export function updateUserInfoApi(data?: UserInfoReq): Promise<IApiResponse<Empt
 /** "修改用户角色" */
 export function updateUserRolesApi(data?: UpdateUserRolesReq): Promise<IApiResponse<EmptyResp>> {
   return request({
-    url: "/api/v1/user/update_user_roles",
+    url: "/admin_api/v1/user/update_user_roles",
     method: "post",
     data: data,
   });
@@ -94,7 +94,7 @@ export function updateUserRolesApi(data?: UpdateUserRolesReq): Promise<IApiRespo
 /** "修改用户状态" */
 export function updateUserStatusApi(data?: UpdateUserStatusReq): Promise<IApiResponse<EmptyResp>> {
   return request({
-    url: "/api/v1/user/update_user_status",
+    url: "/admin_api/v1/user/update_user_status",
     method: "post",
     data: data,
   });

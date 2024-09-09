@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <el-card class="main-card">
-      <div class="table-title">{{ $route.meta.title }}</div>
+      <div class="table-title">{{ route.meta.title }}</div>
       <!-- 操作 -->
       <div class="operation-container">
         <el-row :gutter="10" class="mb15">
@@ -122,6 +122,10 @@ import Talk from "./Talk.vue";
 import VeTablePagination from "@/components/VeTable/TablePagination.vue";
 import { deleteTalkApi, findTalkListApi } from "@/api/talk.ts";
 import { TalkQuery } from "@/api/types.ts";
+import { useRoute, useRouter } from "vue-router";
+
+const route = useRoute();
+const router = useRouter();
 
 const data = reactive({
   pageData: {
