@@ -10,7 +10,7 @@
           size="default"
         />
         <el-button
-          v-if="article.id == null || article.status == 3"
+          v-if="article.id == 0 || article.status == 3"
           class="save-btn"
           size="default"
           type="danger"
@@ -228,8 +228,8 @@ import { formatDate } from "@/utils/date.ts";
 const route = useRoute();
 const router = useRouter();
 const article = ref<ArticleBackDTO>({
-  id: null,
-  article_title: formatDate(new Date(), "yyyy-MM-dd"),
+  id: 0,
+  article_title: formatDate(new Date(), "YYYY-MM-DD"),
   article_content: "",
   article_cover: "",
   category_name: null,
@@ -303,30 +303,35 @@ function afterUpload(response: any) {
   console.log("afterUpload", article.value.article_cover);
 }
 
-function uploadImg(pos, file) {
-  if (file.size / 1024 < 500) {
-    const data = {
-      label: "article",
-      file: file,
-      file_size: file.size,
-      file_md5: ""
-    };
-    uploadFileApi(data).then(res => {
-      mdRef.value.$img2Url(pos, res.data.file_url);
-    });
-  } else {
-    imageConversion.compressAccurately(file, 200).then(res => {
-      const data = {
-        label: "article",
-        file: res,
-        file_size: res.size,
-        file_md5: ""
-      };
-      uploadFileApi(data).then(res => {
-        mdRef.value.$img2Url(pos, res.data.file_url);
+async function uploadImg(
+  files: Array<File>,
+  callback: (urls: string[]) => void
+) {
+  const res = await Promise.all(
+    files.map(file => {
+      return new Promise((rev, rej) => {
+        const data = {
+          label: "article",
+          file: file,
+          file_size: file.size,
+          file_md5: ""
+        };
+        imageConversion.compressAccurately(file, 200).then(res => {
+          const data = {
+            label: "article",
+            file: res,
+            file_size: res.size,
+            file_md5: ""
+          };
+          uploadFileApi(data).then(res => {
+            console.log("upload", res.data);
+            rev(res.data);
+          });
+        });
       });
-    });
-  }
+    })
+  );
+  callback(res.map((item: any) => item.file_url));
 }
 
 function saveArticleDraft() {

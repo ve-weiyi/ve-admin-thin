@@ -110,7 +110,7 @@
       </el-dialog>
       <!-- 添加或修改对话框 -->
       <el-dialog v-model="isEdit" width="60%">
-        <Talk :talk-id="talkId" />
+        <Talk :talk-id="talkId" @on-confirm="afterPublish" />
       </el-dialog>
     </el-card>
   </div>
@@ -192,6 +192,11 @@ function handDelete() {
 function handPublish() {
   talkId.value = 0;
   isEdit.value = true;
+}
+
+function afterPublish() {
+  isEdit.value = false;
+  refreshList();
 }
 
 function changeStatus(s) {

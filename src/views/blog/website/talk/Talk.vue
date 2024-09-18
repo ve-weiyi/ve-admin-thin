@@ -132,6 +132,8 @@ const props = defineProps({
   }
 });
 
+const emit = defineEmits(["onConfirm"]);
+
 // const route = useRoute();
 const emojiList = ref<any>(EmojiList);
 const talk = ref<TalkBackDTO>({
@@ -232,12 +234,14 @@ function saveOrUpdateTalk() {
       editorRef.value.clear();
       uploadList.value = [];
       ElMessage.success("更新说说成功");
+      emit("onConfirm");
     });
   } else {
     addTalkApi(talk.value).then(res => {
       editorRef.value.clear();
       uploadList.value = [];
       ElMessage.success("发布说说成功");
+      emit("onConfirm");
     });
   }
 }

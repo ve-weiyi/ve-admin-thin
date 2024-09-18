@@ -31,7 +31,6 @@
 import TablePage from "@/components/TablePage/TablePage.vue";
 import { useTableHook } from "./hook.tsx";
 import { onMounted, ref } from "vue";
-import { ArticleQuery } from "@/api/types.ts";
 
 const { getSearchFields, getColumnFields, getFormFields, handleApi } =
   useTableHook();
@@ -67,23 +66,10 @@ const isActive = (value: string | number) => {
 const handleStatusCheck = (value: string | number) => {
   status.value = value;
 
-  const conditions = [];
-  const statusData =
+  const conditions =
     statusList.find(v => v.value === status.value)?.condition || {};
-  // // 状态条件
-  // for (const key in statusData) {
-  //   const value = statusData[key];
-  //   conditions.push({
-  //     field: key,
-  //     value: value instanceof String ? value : JSON.stringify(value),
-  //     logic: "and",
-  //     operator: "="
-  //   });
-  // }
 
-  const query: ArticleQuery = Object.assign({}, statusData);
-
-  tableRef.value.refreshList(query);
+  tableRef.value.refreshList(undefined, undefined, conditions);
 };
 </script>
 

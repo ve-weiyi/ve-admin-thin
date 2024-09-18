@@ -7,6 +7,7 @@ import { ElMessage, ElNotification } from "element-plus";
 import { useAdminStoreHook } from "@/store/blog/admin.ts";
 
 import MD5 from "crypto-js/md5";
+import { useRouter } from "vue-router";
 
 function signWithSalt(message: string, salt: string): string {
   const saltedMessage = salt + message;
@@ -77,13 +78,15 @@ requests.interceptors.response.use(
           type: "error"
         });
         break;
-      case 401:
+      case 403:
         useAdminStoreHook().removeToken();
         ElNotification({
           title: "登录过期",
           message: response.data.message,
           type: "error"
         });
+        const router = useRouter();
+        router.push("/login");
         break;
       default:
         ElNotification({

@@ -304,6 +304,16 @@ function handleApi(event: string, data: any) {
   }
 }
 
+function onAction(event: string, data: any) {
+  const instance = getCurrentInstance();
+  switch (event) {
+    case "list":
+      return function () {};
+    default:
+      return;
+  }
+}
+
 export function useTableHook() {
   return {
     getColumnFields,

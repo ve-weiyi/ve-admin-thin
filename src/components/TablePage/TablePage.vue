@@ -71,7 +71,6 @@
         <VeTable
           ref="tableRef"
           v-model="orderData"
-          v-model:selection-ids="selectionIds"
           row-key="id"
           :data="tableData"
           :size="size"
@@ -147,22 +146,6 @@ import VeTablePagination from "@/components/VeTable/TablePagination.vue";
 import cloneDeep from "lodash/cloneDeep";
 import "@/style/table.scss";
 
-const data = reactive({
-  selectionIds: [],
-  pageData: {
-    currentPage: 1,
-    pageSize: 10,
-    total: 20
-  },
-  searchData: {} as any,
-  orderData: {} as any,
-  tableData: [],
-  formData: {} as any
-});
-
-const { selectionIds, pageData, searchData, orderData, tableData, formData } =
-  toRefs(data);
-
 const props = defineProps({
   getColumnFields: {
     type: Function as PropType<() => Column[]>,
@@ -204,10 +187,28 @@ const props = defineProps({
   }
 });
 
-// 需要包装基本类型数据，使用 ref；如果你需要包装对象，使用 reactive。
-// 表格加载状态
-const loading = ref(false);
+const emit = defineEmits(["onAction"]);
 
+// 需要包装基本类型数据，使用 ref；如果你需要包装对象，使用 reactive。
+const data = reactive({
+  loading: false,
+  pageData: {
+    currentPage: 1,
+    pageSize: 10,
+    total: 20
+  },
+  orderData: {} as any,
+  searchData: {} as any,
+  formData: {} as any,
+  tableData: []
+});
+
+const { loading, pageData, orderData, searchData, formData, tableData } =
+  toRefs(data);
+
+const selectionIds = computed(() => {
+  return tableRef?.value?.selectionIds || [];
+});
 // 表格结构定义
 const tableRef = ref();
 const tableFields = ref<Column[]>(props.getColumnFields());
@@ -217,33 +218,24 @@ const searchRef = ref();
 const searchFields = ref<FormField[]>(props.getSearchFields());
 
 /** ******** api 操作 **********/
-async function refreshList(query?: PageQuery): Promise<any> {
+async function refreshList(
+  pagination: any = {},
+  sorts: string[] = [],
+  conditions: any = {}
+): Promise<any> {
   // const search = searchData.value;
   // const order = tableRef.value?.getOrderData();
   // const pagination = tableRef.value?.getPaginationData();
 
-  console.log("refreshList", query);
+  console.log("refreshList", conditions);
 
   // const conditions: Condition[] = query?.conditions || [];
   // const sorts: String[] = query?.sorts || [];
 
-  const sorts: string[] = [];
-  const q = {};
-
   // 搜索条件
   for (const key in searchData.value) {
-    const item = searchFields.value.find(v => v.field === key);
     const value = searchData.value[key];
-    q[key] = value;
-    // if (value === "") {
-    //   continue;
-    // }
-    // conditions.push({
-    //   field: key,
-    //   value: value instanceof String ? value : JSON.stringify(value),
-    //   logic: item?.searchRules.flag || "and",
-    //   operator: item?.searchRules.rule || "="
-    // });
+    conditions[key] = value;
   }
 
   // 排序条件
@@ -252,16 +244,16 @@ async function refreshList(query?: PageQuery): Promise<any> {
     sorts.push(`${key} ${value}`);
   }
 
-  let page = {
+  let query = {
     page: pageData.value.currentPage,
     page_size: pageData.value.pageSize,
     sorts: sorts
   };
 
-  page = Object.assign(page, q);
+  query = Object.assign(query, conditions);
 
   loading.value = true;
-  return props.handleApi("list", page).then(res => {
+  return props.handleApi("list", query).then(res => {
     if (
       res.data.page_size !== 0 &&
       res.data.page_size !== pageData.value.pageSize
