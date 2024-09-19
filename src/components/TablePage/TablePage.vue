@@ -218,15 +218,13 @@ const searchRef = ref();
 const searchFields = ref<FormField[]>(props.getSearchFields());
 
 /** ******** api 操作 **********/
-async function refreshList(
-  pagination: any = {},
-  sorts: string[] = [],
-  conditions: any = {}
-): Promise<any> {
+async function refreshList(): Promise<any> {
   // const search = searchData.value;
   // const order = tableRef.value?.getOrderData();
   // const pagination = tableRef.value?.getPaginationData();
-
+  let pagination: any = {};
+  let sorts: string[] = [];
+  let conditions: any = {};
   console.log("refreshList", conditions);
 
   // const conditions: Condition[] = query?.conditions || [];
@@ -399,6 +397,7 @@ onMounted(() => {
 });
 
 defineExpose({
+  searchData,
   onCreate,
   onUpdate,
   onDelete,

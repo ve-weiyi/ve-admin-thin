@@ -49,9 +49,9 @@ type StatusTag = {
 
 const statusList: StatusTag[] = [
   { value: "all", label: "全部", condition: { is_delete: 0 } },
-  { value: "public", label: "公开", condition: { is_delete: 0, status: 0 } },
-  { value: "private", label: "私密", condition: { is_delete: 0, status: 1 } },
-  { value: "draft", label: "草稿", condition: { is_delete: 0, status: 2 } },
+  { value: "public", label: "公开", condition: { is_delete: 0, status: 1 } },
+  { value: "private", label: "私密", condition: { is_delete: 0, status: 2 } },
+  { value: "draft", label: "草稿", condition: { is_delete: 0, status: 3 } },
   { value: "delete", label: "回收站", condition: { is_delete: 1 } }
 ];
 
@@ -65,11 +65,18 @@ const isActive = (value: string | number) => {
 // 选择了状态
 const handleStatusCheck = (value: string | number) => {
   status.value = value;
-
   const conditions =
     statusList.find(v => v.value === status.value)?.condition || {};
 
-  tableRef.value.refreshList(undefined, undefined, conditions);
+  delete tableRef.value.searchData["is_delete"];
+  delete tableRef.value.searchData["status"];
+
+  tableRef.value.searchData = Object.assign(
+    tableRef.value.searchData,
+    conditions
+  );
+
+  tableRef.value.refreshList();
 };
 </script>
 

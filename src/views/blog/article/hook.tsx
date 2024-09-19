@@ -209,7 +209,7 @@ function getColumnFields(): Column[] {
                       id: scope.row.id,
                       is_delete: 1
                     }).then(res => {
-                      ElMessage.success("删除成功,文章可在回收站恢复");
+                      ElMessage.success("回收成功,文章可在回收站恢复");
                       instance.exposed.refreshList();
                     });
                   }}
@@ -228,7 +228,9 @@ function getColumnFields(): Column[] {
                   size="default"
                   onClick={() => {
                     // 物理删除
-                    deleteArticleApi(scope.row.id).then(res => {
+                    deleteArticleApi({
+                      id: scope.row.id
+                    }).then(res => {
                       ElMessage.success("删除成功");
                       instance.exposed.refreshList();
                     });

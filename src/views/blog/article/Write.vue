@@ -218,9 +218,14 @@ import { MdEditor } from "md-editor-v3";
 import "md-editor-v3/lib/style.css";
 import { findCategoryListApi } from "@/api/category";
 import { findTagListApi } from "@/api/tag";
-import { getArticleApi, updateArticleApi } from "@/api/article";
+import { addArticleApi, getArticleApi, updateArticleApi } from "@/api/article";
 import { uploadFileApi } from "@/api/file";
-import { ArticleBackDTO, CategoryBackDTO, TagBackDTO } from "@/api/types";
+import {
+  ArticleBackDTO,
+  ArticleNewReq,
+  CategoryBackDTO,
+  TagBackDTO
+} from "@/api/types";
 import { ElMessage, UploadRawFile, UploadRequestOptions } from "element-plus";
 import { compressImage, uploadFileLabel } from "@/utils/file.ts";
 import { formatDate } from "@/utils/date.ts";
@@ -300,7 +305,7 @@ function onUpload(options: UploadRequestOptions) {
 
 function afterUpload(response: any) {
   article.value.article_cover = response.data.file_url;
-  console.log("afterUpload", article.value.article_cover);
+  console.log("afterUpload", response, article.value.article_cover);
 }
 
 async function uploadImg(
@@ -344,7 +349,7 @@ function saveArticleDraft() {
     return;
   }
   article.value.status = 3;
-  updateArticleApi(article.value).then(res => {
+  saveArticle(article.value).then(res => {
     if (res.code == 200) {
       if (article.value.id === null) {
         // store.commit("removeTab", "发布文章")
@@ -383,7 +388,7 @@ function saveOrUpdateArticle() {
     ElMessage.error("文章封面不能为空");
     return;
   }
-  updateArticleApi(article.value).then(res => {
+  saveArticle(article.value).then(res => {
     if (res.code === 200) {
       if (article.value.id === null) {
         // store.commit("removeTab", "发布文章")
@@ -410,7 +415,7 @@ function autoSaveArticle() {
     article.value.article_content.trim() !== "" &&
     article.value.id !== null
   ) {
-    updateArticleApi(article.value).then(res => {
+    saveArticle(article.value).then(res => {
       if (res.code === 200) {
         ElMessage.success("自动保存成功");
       } else {
@@ -420,6 +425,14 @@ function autoSaveArticle() {
   }
   if (autoSave.value && article.value.id === null) {
     sessionStorage.setItem("article", JSON.stringify(article.value));
+  }
+}
+
+function saveArticle(article: ArticleNewReq) {
+  if (article.id !== 0) {
+    return updateArticleApi(article);
+  } else {
+    return addArticleApi(article);
   }
 }
 
